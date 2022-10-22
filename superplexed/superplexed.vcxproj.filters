@@ -13,5 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\sp_levels">
+      <UniqueIdentifier>{e00dc8e8-7ecf-420f-a8ee-ee72da6539e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sp_levels">
+      <UniqueIdentifier>{f81c923f-79c4-4dcb-838c-58cd9b98f68c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{77947bb4-64ca-414e-bb07-f99848157fc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\klib">
+      <UniqueIdentifier>{b17fa109-e25c-4de5-b65b-b097fe7c58ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{e03162a8-446d-48d0-a82c-2b82d60a242b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\klib">
+      <UniqueIdentifier>{6c865e12-e77b-4844-abc4-21f5a2271f92}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\sp_levels\SP_Level.h">
+      <Filter>Header Files\sp_levels</Filter>
+    </ClInclude>
+    <ClInclude Include="source\common\klib\klib_file.h">
+      <Filter>Header Files\common\klib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_levels\SP_Level.cpp">
+      <Filter>Source Files\sp_levels</Filter>
+    </ClCompile>
+    <ClCompile Include="source\common\klib\klib_file.cpp">
+      <Filter>Source Files\common\klib</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
