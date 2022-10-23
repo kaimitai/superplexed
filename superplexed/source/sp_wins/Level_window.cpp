@@ -4,6 +4,7 @@
 #include "./../common/imgui/imgui.h"
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
+#include <algorithm>
 
 Level_window::Level_window(SDL_Renderer* p_rnd) :
 	m_current_level{ 1 }, m_cam_x{ 0 }
@@ -26,9 +27,16 @@ void Level_window::draw(SDL_Renderer* p_rnd, const Project_gfx& p_gfx, int p_w, 
 	regenerate_texture(p_rnd, p_gfx);
 	SDL_RenderClear(p_rnd);
 
-	klib::gfx::blit_full_spec(p_rnd, m_texture, m_cam_x, 0, p_w, p_h,
-		0, 0,
-		p_w, p_h);
+	// get tile pixel width
+	int l_tpw = get_tile_pixel_w(p_h);
+	// get screen tile widht
+	int l_stw = p_w / l_tpw + 1;
+	// get rest tile count
+	int l_stw_tc = std::min<int>(60 - m_cam_x, l_stw);
+
+	klib::gfx::blit_full_spec(p_rnd, m_texture,
+		0, 0, l_stw_tc * l_tpw, p_h,
+		16 * static_cast<int>(m_cam_x), 0, 16 * l_stw_tc, 16 * 24);
 }
 
 void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx) {
@@ -51,4 +59,8 @@ void Level_window::draw_ui(void) {
 	auto l_lvl_label{ "Level " + m_levels.at(m_current_level).get_title() + "###levels" };
 	ImGui::Begin(l_lvl_label.c_str());
 	ImGui::End();
+}
+
+int Level_window::get_tile_pixel_w(int p_screen_pixel_h) const {
+	return static_cast<int>(static_cast<float>(p_screen_pixel_h) / 24.0f);
 }

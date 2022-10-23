@@ -18,8 +18,6 @@ int main(int argc, char* args[]) {
 	SDL_Renderer* l_rnd{ nullptr };
 	bool l_exit{ false };
 
-	float l_scale{ 1.0f };
-
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError();
 	else {
@@ -42,9 +40,6 @@ int main(int argc, char* args[]) {
 			// Setup Dear ImGui context
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
-			//ImGuiIO& io = ImGui::GetIO(); (void)io;
-			//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-			//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
 			// Setup Dear ImGui style
 			ImGui::StyleColorsDark();
