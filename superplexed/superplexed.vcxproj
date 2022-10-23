@@ -70,6 +70,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\vclib\SDL2-2.24.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\vclib\SDL2-2.24.0\lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -109,6 +113,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,11 +134,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="source\common\klib\klib_file.h" />
+    <ClInclude Include="source\sp_gfx\SP_Gfx.h" />
+    <ClInclude Include="source\sp_gfx\SP_Image.h" />
+    <ClInclude Include="source\sp_gfx\SP_Palette.h" />
     <ClInclude Include="source\sp_levels\SP_Level.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\common\klib\klib_file.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\sp_gfx\SP_Gfx.cpp" />
+    <ClCompile Include="source\sp_gfx\SP_Image.cpp" />
+    <ClCompile Include="source\sp_gfx\SP_Palette.cpp" />
     <ClCompile Include="source\sp_levels\SP_Level.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

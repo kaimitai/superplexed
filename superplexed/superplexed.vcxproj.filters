@@ -31,6 +31,12 @@
     <Filter Include="Source Files\common\klib">
       <UniqueIdentifier>{6c865e12-e77b-4844-abc4-21f5a2271f92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\sp_gfx">
+      <UniqueIdentifier>{4c8dc39f-0485-42e4-9b52-9180b9812b3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sp_gfx">
+      <UniqueIdentifier>{c3454221-1bd8-4ba5-80e0-0f469377ca88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\sp_levels\SP_Level.h">
@@ -38,6 +44,15 @@
     </ClInclude>
     <ClInclude Include="source\common\klib\klib_file.h">
       <Filter>Header Files\common\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sp_gfx\SP_Image.h">
+      <Filter>Header Files\sp_gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sp_gfx\SP_Palette.h">
+      <Filter>Header Files\sp_gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sp_gfx\SP_Gfx.h">
+      <Filter>Header Files\sp_gfx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,6 +64,15 @@
     </ClCompile>
     <ClCompile Include="source\common\klib\klib_file.cpp">
       <Filter>Source Files\common\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_gfx\SP_Image.cpp">
+      <Filter>Source Files\sp_gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_gfx\SP_Palette.cpp">
+      <Filter>Source Files\sp_gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_gfx\SP_Gfx.cpp">
+      <Filter>Source Files\sp_gfx</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

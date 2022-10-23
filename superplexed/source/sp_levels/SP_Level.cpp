@@ -97,9 +97,9 @@ std::vector<byte> SP_Level::Gravity_port::get_bytes(void) const {
 
 	result.push_back(m_x);
 	result.push_back(m_y);
-	result.push_back(m_gravity ? 0 : 1);
-	result.push_back(m_freeze_zonks ? 0 : 2);
-	result.push_back(m_freeze_enemies ? 0 : 1);
+	result.push_back(m_gravity ? 1 : 0);
+	result.push_back(m_freeze_zonks ? 2 : 0);
+	result.push_back(m_freeze_enemies ? 1 : 0);
 	result.push_back(m_unknown);
 
 	return result;
