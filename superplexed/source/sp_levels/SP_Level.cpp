@@ -116,3 +116,37 @@ std::pair<byte, byte> SP_Level::get_start_pos(void) const {
 const std::string& SP_Level::get_title(void) const {
 	return m_title;
 }
+
+int SP_Level::get_solve_it_count(void) const {
+	return static_cast<int>(m_solve_it_count);
+}
+
+bool SP_Level::SP_Level::get_gravity(void) const {
+	return m_gravity;
+}
+
+bool SP_Level::SP_Level::get_freeze_zonks(void) const {
+	return m_freeze_zonks;
+}
+
+// setters
+void SP_Level::set_title(const std::string& p_title) {
+	m_title = p_title;
+
+	while (m_title.size() < LENGTH_TITLE)
+		m_title.push_back(' ');
+	while (m_title.size() > LENGTH_TITLE)
+		m_title.pop_back();
+}
+
+void SP_Level::set_solve_it_count(int p_count) {
+	m_solve_it_count = static_cast<byte>(p_count);
+}
+
+void SP_Level::set_gravity(bool p_param) {
+	m_gravity = p_param;
+}
+
+void SP_Level::set_freeze_zonks(bool p_param) {
+	m_freeze_zonks = p_param;
+}

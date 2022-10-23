@@ -10,11 +10,12 @@
 class Level_window {
 
 	std::vector<SP_Level> m_levels;
-	std::size_t m_current_level, m_cam_x;
+	int m_cam_x, m_current_level;
 	SDL_Texture* m_texture;
 
 	int get_tile_pixel_w(int p_screen_pixel_h) const;
 	void regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx);
+	std::size_t get_current_level_idx(void) const;
 
 public:
 	Level_window(SDL_Renderer* p_rnd);

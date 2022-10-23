@@ -28,9 +28,19 @@ public:
 	SP_Level(const std::vector<byte>& p_bytes);
 	std::vector<byte> get_bytes(void) const;
 
+	// getters
 	byte get_tile_no(int p_x, int p_y) const;
 	std::pair<byte, byte> get_start_pos(void) const;
 	const std::string& get_title(void) const;
+	int get_solve_it_count(void) const;
+	bool get_gravity(void) const;
+	bool get_freeze_zonks(void) const;
+
+	// setters
+	void set_title(const std::string& p_title);
+	void set_solve_it_count(int p_count);
+	void set_gravity(bool p_param);
+	void set_freeze_zonks(bool p_param);
 };
 
 #endif

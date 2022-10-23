@@ -23,6 +23,7 @@ void Main_window::Main_window::move(int p_delta_ms, const klib::User_input& p_in
 }
 
 void Main_window::draw(SDL_Renderer* p_rnd, int p_w, int p_h) {
+	SDL_SetRenderDrawColor(p_rnd, 126, 126, 255, 0);
 	SDL_RenderClear(p_rnd);
 	switch (m_current_window) {
 	case 1:
