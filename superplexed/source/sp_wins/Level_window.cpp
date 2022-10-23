@@ -7,7 +7,7 @@
 #include <algorithm>
 
 Level_window::Level_window(SDL_Renderer* p_rnd) :
-	m_current_level{ 1 }, m_cam_x{ 0 }
+	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
 	auto l_bytes = klib::file::read_file_as_bytes("./gamedata/LEVELS.DAT");
@@ -93,11 +93,59 @@ void Level_window::draw_ui(void) {
 	if (ImGui::Checkbox(l_grav_id.c_str(), &l_grav))
 		m_levels.at(get_current_level_idx()).set_gravity(l_grav);
 
+	ImGui::SameLine();
+
 	// freeze zonks
 	std::string l_fz_id{ "Freeze Zonks###fz" + l_clvl };
 	bool l_fz = m_levels.at(get_current_level_idx()).get_freeze_zonks();
 	if (ImGui::Checkbox(l_fz_id.c_str(), &l_fz))
 		m_levels.at(get_current_level_idx()).set_freeze_zonks(l_fz);
+
+	// gravity ports
+	ImGui::Separator();
+	int l_gp_count = m_levels.at(get_current_level_idx()).get_gravity_port_count();
+	std::string l_gp_text{ "Gravity Ports (" + std::to_string(l_gp_count) + ")" };
+
+	ImGui::Text(l_gp_text.c_str());
+
+	if (m_levels.at(get_current_level_idx()).get_gravity_port_count() > 0) {
+		m_current_gp = std::min(m_current_gp, l_gp_count);
+		ImGui::SliderInt("Port", &m_current_gp, 1, l_gp_count);
+
+		// gravity port position
+		int l_gp_x{ m_levels.at(get_current_level_idx()).get_gp_x(m_current_gp - 1) };
+		int l_gp_y{ m_levels.at(get_current_level_idx()).get_gp_y(m_current_gp - 1) };
+
+		// x and y position
+		std::string l_gp_x_id{ "x###gpx" + l_clvl };
+		if (ImGui::SliderInt(l_gp_x_id.c_str(), &l_gp_x, 1, 60))
+			m_levels.at(get_current_level_idx()).set_gp_x(m_current_gp - 1, l_gp_x);
+		std::string l_gp_y_id{ "y###gpy" + l_clvl };
+		if (ImGui::SliderInt(l_gp_y_id.c_str(), &l_gp_y, 1, 24))
+			m_levels.at(get_current_level_idx()).set_gp_y(m_current_gp - 1, l_gp_y);
+
+		// gravity, freeze zonks and freeze enemies
+		bool l_gp_grav{ m_levels.at(get_current_level_idx()).get_gp_gravity(m_current_gp - 1) };
+		bool l_gp_fz{ m_levels.at(get_current_level_idx()).get_gp_freeze_zonks(m_current_gp - 1) };
+		bool l_gp_fe{ m_levels.at(get_current_level_idx()).get_gp_freeze_enemies(m_current_gp - 1) };
+
+		std::string l_gp_grav_id{ "Gravity###gpg" + l_clvl };
+		std::string l_gp_fz_id{ "Freeze Zonks###gpfz" + l_clvl };
+		std::string l_gp_fe_id{ "Freeze Enemies###gpfe" + l_clvl };
+
+		if (ImGui::Checkbox(l_gp_grav_id.c_str(), &l_gp_grav))
+			m_levels.at(get_current_level_idx()).set_gp_gravity(m_current_gp - 1, l_gp_grav);
+		ImGui::SameLine();
+		if (ImGui::Checkbox(l_gp_fz_id.c_str(), &l_gp_fz))
+			m_levels.at(get_current_level_idx()).set_gp_freeze_zonks(m_current_gp - 1, l_gp_fz);
+		ImGui::SameLine();
+		if (ImGui::Checkbox(l_gp_fe_id.c_str(), &l_gp_fe))
+			m_levels.at(get_current_level_idx()).set_gp_freeze_enemies(m_current_gp - 1, l_gp_fe);
+
+		if (ImGui::Button("Delete Gravity Port")) {
+			m_levels.at(get_current_level_idx()).delete_gravity_port(m_current_gp - 1);
+		}
+	}
 
 	ImGui::End();
 }

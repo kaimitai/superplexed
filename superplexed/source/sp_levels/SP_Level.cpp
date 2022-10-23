@@ -129,6 +129,32 @@ bool SP_Level::SP_Level::get_freeze_zonks(void) const {
 	return m_freeze_zonks;
 }
 
+// gravity port getters
+int SP_Level::get_gravity_port_count(void) const {
+	return static_cast<int>(m_gravity_ports.size());
+}
+
+int SP_Level::get_gp_x(int p_gp_no) const {
+	return static_cast<int>(m_gravity_ports.at(p_gp_no).m_x);
+}
+
+int SP_Level::get_gp_y(int p_gp_no) const {
+	return static_cast<int>(m_gravity_ports.at(p_gp_no).m_y);
+}
+
+bool SP_Level::get_gp_gravity(int p_gp_no) const {
+	return m_gravity_ports.at(p_gp_no).m_gravity;
+}
+
+bool SP_Level::get_gp_freeze_zonks(int p_gp_no) const {
+	return m_gravity_ports.at(p_gp_no).m_freeze_zonks;
+}
+
+bool SP_Level::get_gp_freeze_enemies(int p_gp_no) const {
+	return m_gravity_ports.at(p_gp_no).m_freeze_enemies;
+}
+
+
 // setters
 void SP_Level::set_title(const std::string& p_title) {
 	m_title = p_title;
@@ -149,4 +175,33 @@ void SP_Level::set_gravity(bool p_param) {
 
 void SP_Level::set_freeze_zonks(bool p_param) {
 	m_freeze_zonks = p_param;
+}
+
+// gravity port setters
+void SP_Level::set_gp_x(int p_gp_no, int p_x) {
+	m_gravity_ports.at(p_gp_no).m_x = static_cast<byte>(p_x);
+}
+
+void SP_Level::set_gp_y(int p_gp_no, int p_y) {
+	m_gravity_ports.at(p_gp_no).m_y = static_cast<byte>(p_y);
+}
+
+void SP_Level::set_gp_gravity(int p_gp_no, bool p_param) {
+	m_gravity_ports.at(p_gp_no).m_gravity = p_param;
+}
+
+void SP_Level::set_gp_freeze_zonks(int p_gp_no, bool p_param) {
+	m_gravity_ports.at(p_gp_no).m_freeze_zonks = p_param;
+}
+
+void SP_Level::set_gp_freeze_enemies(int p_gp_no, bool p_param) {
+	m_gravity_ports.at(p_gp_no).m_freeze_enemies = p_param;
+}
+
+void SP_Level::delete_gravity_port(int p_gp_no) {
+	m_gravity_ports.erase(begin(m_gravity_ports) + p_gp_no);
+}
+
+void SP_Level::add_gravity_port(void) {
+	throw std::exception("Not implemented");
 }

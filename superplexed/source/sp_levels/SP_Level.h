@@ -36,11 +36,28 @@ public:
 	bool get_gravity(void) const;
 	bool get_freeze_zonks(void) const;
 
+	// gravity port getters
+	int get_gravity_port_count(void) const;
+	int get_gp_x(int p_gp_no) const;
+	int get_gp_y(int p_gp_no) const;
+	bool get_gp_gravity(int p_gp_no) const;
+	bool get_gp_freeze_zonks(int p_gp_no) const;
+	bool get_gp_freeze_enemies(int p_gp_no) const;
+
 	// setters
 	void set_title(const std::string& p_title);
 	void set_solve_it_count(int p_count);
 	void set_gravity(bool p_param);
 	void set_freeze_zonks(bool p_param);
+
+	// gravity port setters
+	void set_gp_x(int p_gp_no, int p_x);
+	void set_gp_y(int p_gp_no, int p_x);
+	void set_gp_gravity(int p_gp_no, bool p_param);
+	void set_gp_freeze_zonks(int p_gp_no, bool p_param);
+	void set_gp_freeze_enemies(int p_gp_no, bool p_param);
+	void delete_gravity_port(int p_gp_no);
+	void add_gravity_port(void);
 };
 
 #endif
