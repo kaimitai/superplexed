@@ -1,5 +1,35 @@
 #include "klib_gfx.h"
 
+std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surface* full_surface, int p_w, int p_h, bool p_destroy_surface) {
+	std::vector<SDL_Texture*> result;
+
+	SDL_Rect tmpRectangle;
+	tmpRectangle.w = p_w;
+	tmpRectangle.h = p_h;
+
+	for (int j = 0; j < full_surface->h; j += p_h)
+		for (int i = 0; i < full_surface->w; i += p_w) {
+			tmpRectangle.x = i;
+			tmpRectangle.y = j;
+
+			SDL_Surface* tmp = SDL_CreateRGBSurface(0, p_w, p_h, 24, 0, 0, 0, 0);
+			//SDL_SetColorKey(tmp, true, SDL_MapRGB(tmp->format, p_trans_col.r, p_trans_col.g, p_trans_col.b));
+
+			SDL_BlitSurface(full_surface, &tmpRectangle, tmp, nullptr);
+
+			result.push_back(surface_to_texture(rnd, tmp, p_destroy_surface));
+		}
+
+	return(result);
+}
+
+SDL_Texture* klib::gfx::surface_to_texture(SDL_Renderer* p_rnd, SDL_Surface* p_srf, bool p_destroy_surface) {
+	SDL_Texture* result = SDL_CreateTextureFromSurface(p_rnd, p_srf);
+	if (p_destroy_surface)
+		SDL_FreeSurface(p_srf);
+	return(result);
+}
+
 void klib::gfx::put_pixel(SDL_Surface* srf, int x, int y, Uint32 pixel) {
 	SDL_LockSurface(srf);
 

@@ -15,14 +15,15 @@ class Project_gfx {
 	std::vector<SP_Palette> m_palettes;
 	std::map<std::string, SP_Image> m_image_files;
 
-	bool save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename);
+	SDL_Surface* sp_image_to_sdl_surface(const SP_Image& p_image, const SP_Palette& p_palette) const;
+	bool save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const;
 
 public:
-	Project_gfx(void);
+	Project_gfx(SDL_Renderer* p_rnd);
 	~Project_gfx(void);
-	SDL_Texture* get_static(std::size_t p_texture_no);
+	SDL_Texture* get_static(std::size_t p_texture_no) const;
 
-	bool save_bmp(const std::string& p_filename);
+	bool save_bmp(const std::string& p_filename) const;
 };
 
 #endif
