@@ -112,3 +112,7 @@ byte SP_Level::get_tile_no(int p_x, int p_y) const {
 std::pair<byte, byte> SP_Level::get_start_pos(void) const {
 	return std::make_pair(m_player_x, m_player_y);
 }
+
+const std::string& SP_Level::get_title(void) const {
+	return m_title;
+}

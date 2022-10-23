@@ -133,6 +133,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="source\common\imgui\imconfig.h" />
+    <ClInclude Include="source\common\imgui\imgui.h" />
+    <ClInclude Include="source\common\imgui\imgui_impl_sdl.h" />
+    <ClInclude Include="source\common\imgui\imgui_impl_sdlrenderer.h" />
+    <ClInclude Include="source\common\imgui\imgui_internal.h" />
+    <ClInclude Include="source\common\imgui\imstb_rectpack.h" />
+    <ClInclude Include="source\common\imgui\imstb_textedit.h" />
+    <ClInclude Include="source\common\imgui\imstb_truetype.h" />
     <ClInclude Include="source\common\klib\klib_file.h" />
     <ClInclude Include="source\common\klib\klib_gfx.h" />
     <ClInclude Include="source\common\klib\User_input.h" />
@@ -143,6 +151,13 @@
     <ClInclude Include="source\sp_wins\Main_window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\common\imgui\imgui.cpp" />
+    <ClCompile Include="source\common\imgui\imgui_demo.cpp" />
+    <ClCompile Include="source\common\imgui\imgui_draw.cpp" />
+    <ClCompile Include="source\common\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="source\common\imgui\imgui_impl_sdlrenderer.cpp" />
+    <ClCompile Include="source\common\imgui\imgui_tables.cpp" />
+    <ClCompile Include="source\common\imgui\imgui_widgets.cpp" />
     <ClCompile Include="source\common\klib\klib_file.cpp" />
     <ClCompile Include="source\common\klib\klib_gfx.cpp" />
     <ClCompile Include="source\common\klib\User_input.cpp" />

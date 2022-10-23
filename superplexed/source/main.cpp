@@ -1,8 +1,15 @@
 #include <iostream>
 #include <vector>
+#include "./common/imgui/imgui.h"
+#include "./common/imgui/imgui_impl_sdl.h"
+#include "./common/imgui/imgui_impl_sdlrenderer.h"
 #include "./common/klib/User_input.h"
 #include "./sp_gfx/Project_gfx.h"
 #include "./sp_wins/Main_window.h"
+
+#if !SDL_VERSION_ATLEAST(2,0,17)
+#error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
+#endif
 
 using byte = unsigned char;
 
@@ -32,6 +39,21 @@ int main(int argc, char* args[]) {
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
 			}
 
+			// Setup Dear ImGui context
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+			//ImGuiIO& io = ImGui::GetIO(); (void)io;
+			//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+			//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+			// Setup Dear ImGui style
+			ImGui::StyleColorsDark();
+			//ImGui::StyleColorsLight();
+
+			// Setup Platform/Renderer backends
+			ImGui_ImplSDL2_InitForSDLRenderer(l_window, l_rnd);
+			ImGui_ImplSDLRenderer_Init(l_rnd);
+
 			// main window object to handle all logic and drawing
 			Main_window main_window(l_rnd);
 
@@ -57,13 +79,16 @@ int main(int argc, char* args[]) {
 				mw_used = false;
 				SDL_PumpEvents();
 
-				if (SDL_PollEvent(&e) != 0)
+				if (SDL_PollEvent(&e) != 0) {
+					ImGui_ImplSDL2_ProcessEvent(&e);
+
 					if (e.type == SDL_QUIT)
 						l_exit = true;
 					else if (e.type == SDL_MOUSEWHEEL) {
 						mw_used = true;
 						mouse_wheel_y = e.wheel.y;
 					}
+				}
 
 				if (delta != 0) {
 					uint32_t realDelta = std::min(delta, 5u);

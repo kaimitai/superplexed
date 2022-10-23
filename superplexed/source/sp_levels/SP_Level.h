@@ -30,6 +30,7 @@ public:
 
 	byte get_tile_no(int p_x, int p_y) const;
 	std::pair<byte, byte> get_start_pos(void) const;
+	const std::string& get_title(void) const;
 };
 
 #endif
