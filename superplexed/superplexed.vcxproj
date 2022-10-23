@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="source\common\klib\klib_file.h" />
+    <ClInclude Include="source\common\klib\klib_gfx.h" />
     <ClInclude Include="source\sp_gfx\SP_Gfx.h" />
     <ClInclude Include="source\sp_gfx\SP_Image.h" />
     <ClInclude Include="source\sp_gfx\SP_Palette.h" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\common\klib\klib_file.cpp" />
+    <ClCompile Include="source\common\klib\klib_gfx.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\sp_gfx\SP_Gfx.cpp" />
     <ClCompile Include="source\sp_gfx\SP_Image.cpp" />

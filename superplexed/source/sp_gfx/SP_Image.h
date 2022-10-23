@@ -8,6 +8,7 @@ using byte = unsigned char;
 class SP_Image {
 
 	std::vector<std::vector<byte>> m_pixels;
+	int get_bit(int, int) const;
 
 public:
 	SP_Image(const std::vector<byte>& p_bytes, int p_w, int p_h);

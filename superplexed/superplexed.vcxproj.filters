@@ -54,6 +54,9 @@
     <ClInclude Include="source\sp_gfx\SP_Gfx.h">
       <Filter>Header Files\sp_gfx</Filter>
     </ClInclude>
+    <ClInclude Include="source\common\klib\klib_gfx.h">
+      <Filter>Header Files\common\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -73,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="source\sp_gfx\SP_Gfx.cpp">
       <Filter>Source Files\sp_gfx</Filter>
+    </ClCompile>
+    <ClCompile Include="source\common\klib\klib_gfx.cpp">
+      <Filter>Source Files\common\klib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

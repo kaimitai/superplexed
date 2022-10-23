@@ -2,37 +2,23 @@
 #include <vector>
 #include "./sp_levels/SP_Level.h"
 #include "./sp_gfx/SP_Image.h"
+#include "./sp_gfx/SP_Palette.h"
+#include "./sp_gfx/SP_Gfx.h"
 #include "./common/klib/klib_file.h"
 
-int main() {
-	auto l_file_bytes = klib::file::read_file_as_bytes("./gamedata/GFX.DAT");
-	SP_Image gfx = SP_Image(l_file_bytes, 320, 200);
+using byte = unsigned char;
 
-	std::vector<byte> out_file;
+int main(int argc, char* args[]) {
+	auto l_file_bytes = klib::file::read_file_as_bytes("./gamedata/FIXED.DAT");
+	auto l_pal_bytes = klib::file::read_file_as_bytes("./gamedata/PALETTES.DAT");
 
-	for (int y{ 0 }; y < gfx.get_h(); ++y) {
-		for (int x{ 0 }; x < gfx.get_w(); ++x) {
-			out_file.push_back(gfx.get_palette_index(x, y) + 'a');
-			out_file.push_back(gfx.get_palette_index(x, y) + 'a');
-		}
-		out_file.push_back(13);
-		out_file.push_back(10);
-	}
+	//l_file_bytes.erase(begin(l_file_bytes));
+	int l_pal_no = l_file_bytes.back();
 
-	klib::file::write_bytes_to_file(out_file, "./gamedata/MENU.DAZ");
+	SP_Image gfx = SP_Image(l_file_bytes, 640, 16);
+	SP_Palette palette(std::vector<byte>(begin(l_pal_bytes) + 3 * 16 * 4, begin(l_pal_bytes) + 4 * 16 * 4));
+
+	spgfx::save_bmp(gfx, palette, "out.bmp");
+
+	return 0;
 }
-/*
-auto l_file_bytes = klib::file::read_file_as_bytes("./gamedata/LEVELS.DAT");
-std::vector<SP_Level> levels;
-
-for (auto iter = begin(l_file_bytes); iter != end(l_file_bytes); iter += 1536)
-	levels.push_back(SP_Level(std::vector<byte>(iter, iter + 1536)));
-
-std::vector<byte> level_bytes;
-for (const auto& level : levels) {
-	auto l_lvl_bytes = level.get_bytes();
-	level_bytes.insert(end(level_bytes), begin(l_lvl_bytes), end(l_lvl_bytes));
-}
-
-klib::file::write_bytes_to_file(level_bytes, "./gamedata/LEVELZ.DAT");
-*/
