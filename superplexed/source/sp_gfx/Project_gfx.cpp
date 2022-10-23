@@ -21,7 +21,7 @@ Project_gfx::~Project_gfx(void) {
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {
 	// read palette data
 	std::vector<byte> l_bytes = klib::file::read_file_as_bytes("./gamedata/PALETTES.DAT");
-	for (int i{ 0 }; i < 4; ++i)
+	for (std::size_t i{ 0 }; i < 4; ++i)
 		m_palettes.push_back(SP_Palette(std::vector<byte>(begin(l_bytes) + i * 4 * 16,
 			begin(l_bytes) + (i + 1) * 4 * 16)));
 

@@ -6,11 +6,12 @@
 #include "./../sp_levels/SP_Level.h"
 #include "./../sp_gfx/Project_gfx.h"
 #include "./../common/klib/User_input.h"
+#include "Level_window.h"
 
 class Main_window {
 	Project_gfx m_gfx;
-	std::vector<SP_Level> m_levels;
-	std::size_t m_current_level;
+	std::size_t m_current_window;
+	Level_window m_lvl_win;
 
 public:
 	Main_window(SDL_Renderer* p_rnd);

@@ -99,6 +99,9 @@
     <ClInclude Include="source\common\imgui\imstb_truetype.h">
       <Filter>Header Files\common\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="source\sp_wins\Level_window.h">
+      <Filter>Header Files\sp_wins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -148,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="source\common\imgui\imgui_widgets.cpp">
       <Filter>Source Files\common\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_wins\Level_window.cpp">
+      <Filter>Source Files\sp_wins</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

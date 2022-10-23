@@ -8,6 +8,21 @@ void klib::gfx::blit(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p
 	SDL_RenderCopy(p_rnd, p_texture, nullptr, &t_rect);
 }
 
+void klib::gfx::blit_full_spec(SDL_Renderer* p_rnd, SDL_Texture* txt, int target_x, int target_y, int target_w, int target_h, int src_x, int src_y, int src_w, int src_h) {
+	SDL_Rect src_rect, target_rect;
+	target_rect.x = target_x;
+	target_rect.y = target_y;
+	target_rect.w = target_w;
+	target_rect.h = target_h;
+
+	src_rect.x = src_x;
+	src_rect.y = src_y;
+	src_rect.w = src_w;
+	src_rect.h = src_h;
+
+	SDL_RenderCopy(p_rnd, txt, &src_rect, &target_rect);
+}
+
 std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surface* full_surface, int p_w, int p_h, bool p_destroy_surface) {
 	std::vector<SDL_Texture*> result;
 
