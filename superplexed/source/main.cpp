@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
+#include "./common/klib/User_input.h"
 #include "./sp_gfx/Project_gfx.h"
+#include "./sp_wins/Main_window.h"
 
 using byte = unsigned char;
 
@@ -30,14 +32,11 @@ int main(int argc, char* args[]) {
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
 			}
 
-			// load resources
-			Project_gfx p_gfx(l_rnd);
-
 			// main window object to handle all logic and drawing
-			//kkit::Main_window main_window(l_rnd, !project.is_klab_v_1() && !project.is_walken());
+			Main_window main_window(l_rnd);
 
 			// input handler
-			//klib::User_input input;
+			klib::User_input input;
 			int mouse_wheel_y{ 0 };
 			bool mw_used{ false };
 
@@ -69,17 +68,15 @@ int main(int argc, char* args[]) {
 				if (delta != 0) {
 					uint32_t realDelta = std::min(delta, 5u);
 
-					//input.move(realDelta, mw_used ? mouse_wheel_y : 0, l_scale, l_scale);
-					//main_window.move(l_rnd, input, realDelta, project, p_gfx);
+					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
+					main_window.move(realDelta, input);
 
 					last_logic_time = tick_time;
 				}
 
 				if (deltaDraw >= 25) { // capped frame rate of ~40 is ok
-					//mainwindow.draw(input, &texture_manager);
+					main_window.draw(l_rnd, 1024, 768);
 					last_draw_time = SDL_GetTicks();
-
-					//main_window.draw(l_rnd, input, project, p_gfx);
 
 					//Update screen
 					SDL_RenderPresent(l_rnd);

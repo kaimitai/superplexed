@@ -104,3 +104,11 @@ std::vector<byte> SP_Level::Gravity_port::get_bytes(void) const {
 
 	return result;
 }
+
+byte SP_Level::get_tile_no(int p_x, int p_y) const {
+	return m_tiles.at(p_y).at(p_x);
+}
+
+std::pair<byte, byte> SP_Level::get_start_pos(void) const {
+	return std::make_pair(m_player_x, m_player_y);
+}

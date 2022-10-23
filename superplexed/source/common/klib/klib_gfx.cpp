@@ -1,5 +1,15 @@
 #include "klib_gfx.h"
 
+// blitting
+void klib::gfx::blit(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y) {
+	SDL_Rect t_rect;
+	t_rect.x = p_x;
+	t_rect.y = p_y;
+	SDL_QueryTexture(p_texture, nullptr, nullptr, &t_rect.w, &t_rect.h);
+
+	SDL_RenderCopy(p_rnd, p_texture, nullptr, &t_rect);
+}
+
 std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surface* full_surface, int p_w, int p_h, bool p_destroy_surface) {
 	std::vector<SDL_Texture*> result;
 

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <utility>
 
 using byte = unsigned char;
 
@@ -26,6 +27,9 @@ class SP_Level {
 public:
 	SP_Level(const std::vector<byte>& p_bytes);
 	std::vector<byte> get_bytes(void) const;
+
+	byte get_tile_no(int p_x, int p_y) const;
+	std::pair<byte, byte> get_start_pos(void) const;
 };
 
 #endif
