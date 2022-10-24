@@ -105,13 +105,14 @@ void Level_window::save_xml(std::size_t p_level_no) const {
 		n_gp.attribute(XML_ATTR_UNKNOWN).set_value(static_cast<int>(l_lvl.get_gp_unknown(i)));
 	}
 
-	if (!doc.save_file("./gamedata/LEVEL.xml"))
+	std::filesystem::create_directory("xml");
+	if (!doc.save_file(get_level_xml_filename(p_level_no).c_str()))
 		throw std::exception("Could not save XML");
 }
 
 SP_Level Level_window::load_xml(std::size_t p_level_no) const {
 	pugi::xml_document doc;
-	if (!doc.load_file("./gamedata/LEVEL.xml"))
+	if (!doc.load_file(get_level_xml_filename(p_level_no).c_str()))
 		throw std::exception("Could not load xml");
 
 	pugi::xml_node n_meta = doc.child(XML_TAG_META);
@@ -152,4 +153,12 @@ SP_Level Level_window::load_xml(std::size_t p_level_no) const {
 	}
 
 	return l_lvl;
+}
+
+std::string Level_window::get_level_xml_filename(std::size_t p_level_no) const {
+	std::string result{ "./xml/LEVELS-" };
+	std::string suffix{ std::to_string(p_level_no + 1) };
+	while (suffix.size() < 3)
+		suffix.insert(begin(suffix), '0');
+	return (result + suffix + ".xml");
 }

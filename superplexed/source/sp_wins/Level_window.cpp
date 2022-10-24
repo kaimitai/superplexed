@@ -8,7 +8,8 @@
 
 Level_window::Level_window(SDL_Renderer* p_rnd) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
-	m_ui_show_grid{ false }, m_ui_animate{ true }
+	m_ui_show_grid{ false }, m_ui_animate{ true },
+	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
 	auto l_bytes = klib::file::read_file_as_bytes("./gamedata/LEVELS.DAT");
@@ -17,11 +18,43 @@ Level_window::Level_window(SDL_Renderer* p_rnd) :
 		m_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + 1536)));
 }
 
-void Level_window::move(int p_delta_ms, const klib::User_input& p_input) {
+void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
+	auto l_rect = this->get_selection_rectangle();
 
-	if (p_input.mw_down()) {
+	// handle keyboard
+	if (p_input.is_pressed(SDL_SCANCODE_DELETE)) {
+		for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j)
+			for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
+				m_levels.at(get_current_level_idx()).set_tile_value(i, j, 0);
+	}
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
+		copy_to_clipboard();
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V))
+		paste_from_clipboard();
+
+	// handle mouse if no imgui windows are in focus
+	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+		return;
+
+	if (p_input.mouse_held()) {
+		int l_tpw = get_tile_pixel_w(p_h);
+
+		int l_tx = m_cam_x + p_input.mx() / l_tpw;
+		int l_ty = p_input.my() / l_tpw;
+
+		if (l_shift) {
+			m_sel_x2 = std::min(l_tx, 59);
+			m_sel_y2 = l_ty;
+		}
+		else {
+			clear_selection();
+			m_sel_x = std::min(l_tx, 59);
+			m_sel_y = l_ty;
+		}
+	}
+	else if (p_input.mw_down()) {
 		if (l_shift && get_current_level_idx() > 0)
 			--m_current_level;
 		else if (!l_shift && m_cam_x > 0)
@@ -61,6 +94,10 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 
 	auto l_spos = m_levels.at(get_current_level_idx()).get_start_pos();
 	klib::gfx::blit(p_rnd, p_gfx.get_static(3), 16 * l_spos.first, 16 * l_spos.second);
+
+	auto l_rect = this->get_selection_rectangle();
+	klib::gfx::draw_rect(p_rnd, 16 * l_rect.x, 16 * l_rect.y, 16 * (l_rect.w + 1), 16 * (l_rect.h + 1),
+		SDL_Color{ 200, 200, 50 }, 3);
 
 	SDL_SetRenderTarget(p_rnd, nullptr);
 }
@@ -166,7 +203,8 @@ void Level_window::draw_ui(void) {
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save XML")) {
-		save_xml(get_current_level_idx());
+		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
+			save_xml(i);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save BMP")) {
@@ -179,8 +217,16 @@ void Level_window::draw_ui(void) {
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load XML")) {
-		auto l_lvl = load_xml(get_current_level_idx());
-		m_levels.at(get_current_level_idx()) = l_lvl;
+
+		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
+			try {
+				auto l_lvl = load_xml(i);
+				m_levels.at(i) = l_lvl;
+			}
+			catch (const std::exception&) {
+
+			}
+		}
 	}
 
 	// UI settings
@@ -199,4 +245,46 @@ int Level_window::get_tile_pixel_w(int p_screen_pixel_h) const {
 
 std::size_t Level_window::get_current_level_idx(void) const {
 	return static_cast<std::size_t>(m_current_level) - 1;
+}
+
+// selections
+bool Level_window::has_selection(void) const {
+	return (m_sel_x2 != -1);
+}
+
+void Level_window::clear_selection(void) {
+	m_sel_x2 = -1;
+}
+
+SDL_Rect Level_window::get_selection_rectangle(void) const {
+	if (has_selection()) {
+		int l_x = std::min(m_sel_x, m_sel_x2);
+		int l_y = std::min(m_sel_y, m_sel_y2);
+		int l_w = std::max(m_sel_x2, m_sel_x) - l_x;
+		int l_h = std::max(m_sel_y2, m_sel_y) - l_y;
+
+		return SDL_Rect{ l_x, l_y, l_w, l_h };
+	}
+	else
+		return SDL_Rect{ m_sel_x, m_sel_y, 0, 0 };
+}
+
+void Level_window::copy_to_clipboard(void) {
+	auto l_rect = get_selection_rectangle();
+	m_clipboard.clear();
+
+	for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j) {
+		std::vector<byte> l_row;
+		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
+			l_row.push_back(m_levels.at(get_current_level_idx()).get_tile_no(i, j));
+		m_clipboard.push_back(l_row);
+	}
+
+}
+
+void Level_window::paste_from_clipboard(void) {
+	for (int j{ 0 }; j < m_clipboard.size(); ++j)
+		for (int i{ 0 }; i < m_clipboard.at(j).size(); ++i)
+			m_levels.at(get_current_level_idx()).set_tile_value(
+				m_sel_x + i, m_sel_y + j, m_clipboard[j][i]);
 }

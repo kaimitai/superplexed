@@ -12,10 +12,10 @@ Main_window::Main_window(SDL_Renderer* p_rnd) :
 	m_lvl_win{ p_rnd }
 { }
 
-void Main_window::Main_window::move(int p_delta_ms, const klib::User_input& p_input) {
+void Main_window::Main_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h) {
 	switch (m_current_window) {
 	case 1:
-		m_lvl_win.move(p_delta_ms, p_input);
+		m_lvl_win.move(p_delta_ms, p_input, p_w, p_h);
 		break;
 	default:
 		break;

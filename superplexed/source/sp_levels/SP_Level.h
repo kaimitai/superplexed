@@ -57,6 +57,7 @@ public:
 	bool get_gp_freeze_enemies(int p_gp_no) const;
 
 	// setters
+	void set_tile_value(int p_x, int p_y, byte p_value);
 	void set_title(const std::string& p_title);
 	void set_solve_it_count(int p_count);
 	void set_gravity(bool p_param);

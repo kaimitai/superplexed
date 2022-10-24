@@ -15,6 +15,25 @@ void klib::gfx::blit_full_spec(SDL_Renderer* p_rnd, SDL_Texture* txt, int target
 	SDL_RenderCopy(p_rnd, txt, &src_rect, &target_rect);
 }
 
+// drawing
+void klib::gfx::draw_rect(SDL_Renderer* p_rnd, int p_x, int p_y, int p_w, int p_h, SDL_Color p_color, int p_thickness) {
+	SDL_SetRenderDrawColor(p_rnd, p_color.r, p_color.g, p_color.b, p_color.a);
+
+	for (int i = 0; i <= p_thickness; ++i) {
+		SDL_Rect r;
+		r.x = p_x + i;
+		r.y = p_y + i;
+		r.w = p_w - 2 * i;
+		r.h = p_h - 2 * i;
+		if (p_thickness == 0) {
+			SDL_RenderFillRect(p_rnd, &r);
+			return;
+		}
+		else
+			SDL_RenderDrawRect(p_rnd, &r);
+	}
+}
+
 std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surface* full_surface, int p_w, int p_h, bool p_destroy_surface) {
 	std::vector<SDL_Texture*> result;
 

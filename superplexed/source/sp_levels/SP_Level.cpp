@@ -197,6 +197,10 @@ bool SP_Level::get_gp_freeze_enemies(int p_gp_no) const {
 
 
 // setters
+void SP_Level::set_tile_value(int p_x, int p_y, byte p_value) {
+	m_tiles.at(p_y).at(p_x) = p_value;
+}
+
 void SP_Level::set_title(const std::string& p_title) {
 	m_title = p_title;
 

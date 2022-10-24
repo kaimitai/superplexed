@@ -63,6 +63,8 @@ int main(int argc, char* args[]) {
 			uint32_t delta = 1;
 			uint32_t deltaDraw = 17;
 
+			int l_w{ 1024 }, l_h{ 768 };
+
 			while (!l_exit) {
 
 				uint32_t tick_time = SDL_GetTicks();	// current time
@@ -87,17 +89,15 @@ int main(int argc, char* args[]) {
 
 				if (delta != 0) {
 					uint32_t realDelta = std::min(delta, 5u);
+					SDL_GetWindowSize(l_window, &l_w, &l_h);
 
 					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
-					main_window.move(realDelta, input);
+					main_window.move(realDelta, input, l_w, l_h);
 
 					last_logic_time = tick_time;
 				}
 
 				if (deltaDraw >= 25) { // capped frame rate of ~40 is ok
-					int l_w, l_h;
-					SDL_GetWindowSize(l_window, &l_w, &l_h);
-
 					main_window.draw(l_rnd, l_w, l_h);
 					last_draw_time = SDL_GetTicks();
 
