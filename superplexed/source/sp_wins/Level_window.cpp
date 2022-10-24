@@ -183,13 +183,34 @@ void Level_window::draw_ui(void) {
 		if (ImGui::Checkbox(l_gp_fe_id.c_str(), &l_gp_fe))
 			m_levels.at(get_current_level_idx()).set_gp_freeze_enemies(m_current_gp - 1, l_gp_fe);
 
-		if (ImGui::Button("Delete Gravity Port")) {
+		if (ImGui::Button("Delete Port")) {
 			m_levels.at(get_current_level_idx()).delete_gravity_port(m_current_gp - 1);
 		}
 	}
 
-	ImGui::Separator();
+	if (l_gp_count < 10) {
+		if (l_gp_count > 0)
+			ImGui::SameLine();
+		if (ImGui::Button("Add Port")) {
+			m_levels.at(get_current_level_idx()).add_gravity_port(m_sel_x, m_sel_y,
+				false, false, false);
+		}
+	}
 
+	ImGui::Separator();
+	if (ImGui::Button("Copy Level")) {
+		m_levels.insert(begin(m_levels) + get_current_level_idx(),
+			m_levels.at(get_current_level_idx()));
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Delete Level")) {
+		if (m_levels.size() > 1) {
+			m_levels.erase(begin(m_levels) + get_current_level_idx());
+			m_current_level = std::min<int>(static_cast<int>(m_levels.size()), m_current_level);
+		}
+	}
+	ImGui::Separator();
+	ImGui::Text("File Operations");
 	// save to disk
 	if (ImGui::Button("Save DAT")) {
 		std::vector<byte> l_file_bytes;

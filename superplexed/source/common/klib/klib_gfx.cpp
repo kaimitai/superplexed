@@ -20,11 +20,11 @@ void klib::gfx::draw_rect(SDL_Renderer* p_rnd, int p_x, int p_y, int p_w, int p_
 	SDL_SetRenderDrawColor(p_rnd, p_color.r, p_color.g, p_color.b, p_color.a);
 
 	for (int i = 0; i <= p_thickness; ++i) {
-		SDL_Rect r;
-		r.x = p_x + i;
-		r.y = p_y + i;
-		r.w = p_w - 2 * i;
-		r.h = p_h - 2 * i;
+		SDL_Rect r{
+		p_x + i,
+		p_y + i,
+		p_w - 2 * i,
+		p_h - 2 * i };
 		if (p_thickness == 0) {
 			SDL_RenderFillRect(p_rnd, &r);
 			return;
