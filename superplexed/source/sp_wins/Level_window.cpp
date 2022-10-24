@@ -9,7 +9,8 @@
 Level_window::Level_window(SDL_Renderer* p_rnd) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true },
-	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 }
+	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
+	m_timer{ klib::Timer(6, 250) }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
 	auto l_bytes = klib::file::read_file_as_bytes("./gamedata/LEVELS.DAT");
@@ -22,6 +23,7 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
 	auto l_rect = this->get_selection_rectangle();
+	m_timer.move(p_delta_ms);
 
 	// handle keyboard
 	if (p_input.is_pressed(SDL_SCANCODE_DELETE)) {
@@ -89,11 +91,19 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	SDL_RenderClear(p_rnd);
 
 	for (int i = 0; i < 60; ++i)
-		for (int j = 0; j < 24; ++j)
-			klib::gfx::blit(p_rnd, p_gfx.get_static(m_levels.at(get_current_level_idx()).get_tile_no(i, j)), i * 16, j * 16);
+		for (int j = 0; j < 24; ++j) {
+			byte l_tile_no = m_levels.at(get_current_level_idx()).get_tile_no(i, j);
+			klib::gfx::blit(p_rnd,
+				m_ui_animate ? p_gfx.get_animated(l_tile_no, m_timer.get_frame()) :
+				p_gfx.get_static(l_tile_no),
+				i * 16, j * 16);
+		}
 
 	auto l_spos = m_levels.at(get_current_level_idx()).get_start_pos();
-	klib::gfx::blit(p_rnd, p_gfx.get_static(3), 16 * l_spos.first, 16 * l_spos.second);
+	klib::gfx::blit(p_rnd,
+		m_ui_animate ? p_gfx.get_animated(3, m_timer.get_frame()) :
+		p_gfx.get_static(3),
+		16 * l_spos.first, 16 * l_spos.second);
 
 	auto l_rect = this->get_selection_rectangle();
 	klib::gfx::draw_rect(p_rnd, 16 * l_rect.x, 16 * l_rect.y, 16 * (l_rect.w + 1), 16 * (l_rect.h + 1),

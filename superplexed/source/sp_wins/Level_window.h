@@ -6,6 +6,7 @@
 #include "./../sp_levels/SP_Level.h"
 #include "./../sp_gfx/Project_gfx.h"
 #include "./../common/klib/User_input.h"
+#include "./../common/klib/Timer.h"
 
 class Level_window {
 
@@ -13,6 +14,7 @@ class Level_window {
 	int m_cam_x, m_current_level, m_current_gp;
 	SDL_Texture* m_texture;
 	bool m_ui_show_grid, m_ui_animate;
+	klib::Timer m_timer;
 
 	// selection
 	int m_sel_x, m_sel_y,

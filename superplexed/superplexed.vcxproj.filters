@@ -108,6 +108,9 @@
     <ClInclude Include="source\common\klib\klib_util.h">
       <Filter>Header Files\common\klib</Filter>
     </ClInclude>
+    <ClInclude Include="source\common\klib\Timer.h">
+      <Filter>Header Files\common\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="source\common\pugixml\pugixml.cpp">
       <Filter>Source Files\common\pugixml</Filter>
+    </ClCompile>
+    <ClCompile Include="source\common\klib\Timer.cpp">
+      <Filter>Source Files\common\klib</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

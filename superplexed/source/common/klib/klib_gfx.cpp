@@ -55,6 +55,21 @@ std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surfac
 	return(result);
 }
 
+// extracts textures from a given surface
+// all textures to extract are specified in the vector of SDL_Rects
+std::vector<SDL_Texture*> klib::gfx::split_surface_specified(SDL_Renderer* p_rnd, SDL_Surface* srf,
+	const std::vector<SDL_Rect>& p_rects, bool p_destroy_surface) {
+	std::vector<SDL_Texture*> result;
+
+	for (const auto& rect : p_rects) {
+		SDL_Surface* tmp = SDL_CreateRGBSurface(0, rect.w, rect.h, 24, 0, 0, 0, 0);
+		SDL_BlitSurface(srf, &rect, tmp, nullptr);
+		result.push_back(surface_to_texture(p_rnd, tmp, p_destroy_surface));
+	}
+
+	return result;
+}
+
 SDL_Texture* klib::gfx::surface_to_texture(SDL_Renderer* p_rnd, SDL_Surface* p_srf, bool p_destroy_surface) {
 	SDL_Texture* result = SDL_CreateTextureFromSurface(p_rnd, p_srf);
 	if (p_destroy_surface)

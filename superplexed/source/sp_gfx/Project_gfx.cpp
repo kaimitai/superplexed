@@ -9,15 +9,21 @@ SDL_Texture* Project_gfx::get_static(std::size_t p_texture_no) const {
 	return m_static.at(p_texture_no);
 }
 
+SDL_Texture* Project_gfx::get_animated(std::size_t p_texture_no, std::size_t p_frame_no) const {
+	if (m_animations.find(p_texture_no) != end(m_animations))
+		return m_moving[m_animations.at(p_texture_no).at(p_frame_no)];
+	else
+		return get_static(p_texture_no);
+}
+
 Project_gfx::~Project_gfx(void) {
 	for (auto texture : m_static)
 		if (texture != nullptr)
 			SDL_DestroyTexture(texture);
 
-	for (const auto& anim : m_animations)
-		for (auto texture : anim)
-			if (texture != nullptr)
-				SDL_DestroyTexture(texture);
+	for (auto texture : m_moving)
+		if (texture != nullptr)
+			SDL_DestroyTexture(texture);
 }
 
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {
@@ -39,6 +45,17 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {
 	m_static = klib::gfx::split_surface(p_rnd,
 		sp_image_to_sdl_surface(m_image_files.at("FIXED"), m_palettes.at(1)),
 		16, 16);
+
+	auto l_moving_srf = sp_image_to_sdl_surface(m_image_files.at("MOVING"), m_palettes.at(1));
+	std::vector<SDL_Rect> l_moving_rects{
+		{304, 64, 16, 16 }, { 304, 100, 16, 16 }, { 256, 196, 16, 16 }, { 272, 196, 16, 16 }, { 288, 196, 16, 16 }, { 304, 196, 16, 16 },
+		{176, 446, 16, 16}, {176 + 16, 446, 16, 16},{176 + 32, 446, 16, 16},{176 + 48, 446, 16, 16},{176 + 64, 446, 16, 16} //,{176 + 80, 446, 16, 16}
+	};
+
+	m_moving = klib::gfx::split_surface_specified(p_rnd, l_moving_srf, l_moving_rects);
+
+	m_animations[3] = { 6, 7,8,9,10,9 }; // player
+	m_animations[25] = { 0, 1,2,3,4,5 }; // "bug" enemy
 }
 
 bool Project_gfx::save_bmp(const std::string& p_filename) const {
