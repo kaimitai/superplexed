@@ -105,3 +105,7 @@ void Level_window::save_xml(std::size_t p_level_no) const {
 	if (!doc.save_file("./gamedata/LEVEL.xml"))
 		throw std::exception("Could not save XML");
 }
+
+SP_Level Level_window::load_xml(std::size_t p_level_no) const {
+	throw std::exception("Not implemented");
+}

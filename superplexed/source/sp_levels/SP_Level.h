@@ -12,7 +12,9 @@ class SP_Level {
 	struct Gravity_port {
 		byte m_x, m_y, m_unknown;
 		bool m_gravity, m_freeze_zonks, m_freeze_enemies;
+
 		Gravity_port(const std::vector<byte>& p_bytes);
+		Gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown = 0);
 		std::vector<byte> get_bytes(void) const;
 	};
 
@@ -26,6 +28,11 @@ class SP_Level {
 
 public:
 	SP_Level(const std::vector<byte>& p_bytes);
+	SP_Level(const std::string& p_title,
+		const std::vector<std::vector<byte>>& p_tile_data,
+		unsigned int p_px, unsigned int p_py, int p_solve_it_count, bool p_grav, bool p_fz,
+		byte p_sf_version, const std::vector<byte>& p_sf_demo_bytes,
+		const std::vector<byte>& p_unknown_bytes);
 	std::vector<byte> get_bytes(void) const;
 
 	// getters
@@ -62,7 +69,7 @@ public:
 	void set_gp_freeze_zonks(int p_gp_no, bool p_param);
 	void set_gp_freeze_enemies(int p_gp_no, bool p_param);
 	void delete_gravity_port(int p_gp_no);
-	void add_gravity_port(void);
+	void add_gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown = 0);
 };
 
 #endif

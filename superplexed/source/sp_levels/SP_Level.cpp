@@ -51,6 +51,17 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 	}
 }
 
+SP_Level::SP_Level(const std::string& p_title,
+	const std::vector<std::vector<byte>>& p_tile_data,
+	unsigned int p_px, unsigned int p_py, int p_solve_it_count, bool p_grav, bool p_fz,
+	byte p_sf_version, const std::vector<byte>& p_sf_demo_bytes,
+	const std::vector<byte>& p_unknown_bytes) :
+	m_title{ p_title }, m_tiles{ p_tile_data },
+	m_player_x{ p_px }, m_player_y{ p_py }, m_gravity{ p_grav }, m_freeze_zonks{ p_fz },
+	m_sf_version{ p_sf_version }, m_sf_demo_bytes{ p_sf_demo_bytes },
+	m_unused_bytes{ p_unknown_bytes }
+{ }
+
 std::vector<byte> SP_Level::get_bytes(void) const {
 	std::vector<byte> result;
 	// add tile data
@@ -93,6 +104,12 @@ SP_Level::Gravity_port::Gravity_port(const std::vector<byte>& p_bytes) {
 	m_freeze_enemies = (p_bytes.at(4) == 1);
 	m_unknown = p_bytes.at(5);
 }
+
+SP_Level::Gravity_port::Gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown) :
+	m_x{ static_cast<byte>(p_x) }, m_y{ static_cast<byte>(p_y) },
+	m_gravity{ p_grav }, m_freeze_zonks{ p_fz }, m_freeze_enemies{ p_fe },
+	m_unknown{ p_unknown }
+{ }
 
 std::vector<byte> SP_Level::Gravity_port::get_bytes(void) const {
 	std::vector<byte> result;
@@ -225,6 +242,6 @@ void SP_Level::delete_gravity_port(int p_gp_no) {
 	m_gravity_ports.erase(begin(m_gravity_ports) + p_gp_no);
 }
 
-void SP_Level::add_gravity_port(void) {
-	throw std::exception("Not implemented");
+void SP_Level::add_gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown) {
+	m_gravity_ports.push_back(Gravity_port(p_x, p_y, p_grav, p_fz, p_fe, p_unknown));
 }
