@@ -35,11 +35,16 @@ public:
 	int get_solve_it_count(void) const;
 	bool get_gravity(void) const;
 	bool get_freeze_zonks(void) const;
+	const std::vector<std::vector<byte>>& get_tile_data(void) const;
+	const std::vector<byte>& get_sf_demo_bytes(void) const;
+	const std::vector<byte>& get_unused_bytes(void) const;
+	byte get_speedfix_version(void) const;
 
 	// gravity port getters
 	int get_gravity_port_count(void) const;
 	int get_gp_x(int p_gp_no) const;
 	int get_gp_y(int p_gp_no) const;
+	byte get_gp_unknown(int p_gp_no) const;
 	bool get_gp_gravity(int p_gp_no) const;
 	bool get_gp_freeze_zonks(int p_gp_no) const;
 	bool get_gp_freeze_enemies(int p_gp_no) const;

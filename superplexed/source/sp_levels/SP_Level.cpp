@@ -132,6 +132,22 @@ bool SP_Level::SP_Level::get_freeze_zonks(void) const {
 	return m_freeze_zonks;
 }
 
+const std::vector<std::vector<byte>>& SP_Level::get_tile_data(void) const {
+	return m_tiles;
+}
+
+const std::vector<byte>& SP_Level::get_sf_demo_bytes(void) const {
+	return m_sf_demo_bytes;
+}
+
+const std::vector<byte>& SP_Level::get_unused_bytes(void) const {
+	return m_unused_bytes;
+}
+
+byte SP_Level::get_speedfix_version(void) const {
+	return m_sf_version;
+}
+
 // gravity port getters
 int SP_Level::get_gravity_port_count(void) const {
 	return static_cast<int>(m_gravity_ports.size());
@@ -143,6 +159,10 @@ int SP_Level::get_gp_x(int p_gp_no) const {
 
 int SP_Level::get_gp_y(int p_gp_no) const {
 	return static_cast<int>(m_gravity_ports.at(p_gp_no).m_y);
+}
+
+byte SP_Level::get_gp_unknown(int p_gp_no) const {
+	return m_gravity_ports.at(p_gp_no).m_unknown;
 }
 
 bool SP_Level::get_gp_gravity(int p_gp_no) const {
