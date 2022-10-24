@@ -7,7 +7,8 @@
 #include <algorithm>
 
 Level_window::Level_window(SDL_Renderer* p_rnd) :
-	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 }
+	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
+	m_ui_show_grid{ false }, m_ui_animate{ true }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
 	auto l_bytes = klib::file::read_file_as_bytes("./gamedata/LEVELS.DAT");
@@ -73,6 +74,9 @@ void Level_window::draw_ui(void) {
 
 	// curren level number
 	ImGui::SliderInt("Level", &m_current_level, 1, static_cast<int>(m_levels.size()));
+
+	ImGui::Separator();
+	ImGui::Text("Level Metadata");
 
 	// title
 	std::string l_title_id{ "Title###title" + l_clvl };
@@ -146,6 +150,44 @@ void Level_window::draw_ui(void) {
 			m_levels.at(get_current_level_idx()).delete_gravity_port(m_current_gp - 1);
 		}
 	}
+
+	ImGui::Separator();
+
+	// save to disk
+	if (ImGui::Button("Save DAT")) {
+		std::vector<byte> l_file_bytes;
+		for (const auto& lvl : m_levels) {
+			auto l_lvl_bytes = lvl.get_bytes();
+			l_file_bytes.insert(end(l_file_bytes),
+				begin(l_lvl_bytes), end(l_lvl_bytes));
+			klib::file::write_bytes_to_file(l_file_bytes,
+				"./gamedata/LEVELS.DAT");
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Save XML")) {
+
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Save BMP")) {
+
+	}
+
+	// load from disk
+	if (ImGui::Button("Load DAT")) {
+
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load XML")) {
+
+	}
+
+	// UI settings
+	ImGui::Separator();
+	ImGui::Text("UI Settings");
+	ImGui::Checkbox("Show Grid", &m_ui_show_grid);
+	ImGui::SameLine();
+	ImGui::Checkbox("Animate", &m_ui_animate);
 
 	ImGui::End();
 }

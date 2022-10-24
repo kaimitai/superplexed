@@ -84,8 +84,10 @@ std::vector<byte> SP_Level::get_bytes(void) const {
 
 // gravity port implementation
 SP_Level::Gravity_port::Gravity_port(const std::vector<byte>& p_bytes) {
-	m_x = p_bytes.at(0);
-	m_y = p_bytes.at(1);
+	int l_pos = (p_bytes.at(0) * 256 + p_bytes.at(1)) / 2;
+
+	m_x = static_cast<byte>(l_pos % LEVEL_W);
+	m_y = static_cast<byte>(l_pos / LEVEL_W);
 	m_gravity = (p_bytes.at(2) == 1);
 	m_freeze_zonks = (p_bytes.at(3) == 2);
 	m_freeze_enemies = (p_bytes.at(4) == 1);
@@ -94,9 +96,10 @@ SP_Level::Gravity_port::Gravity_port(const std::vector<byte>& p_bytes) {
 
 std::vector<byte> SP_Level::Gravity_port::get_bytes(void) const {
 	std::vector<byte> result;
+	int l_pos = 2 * (m_x + LEVEL_W * m_y);
 
-	result.push_back(m_x);
-	result.push_back(m_y);
+	result.push_back(static_cast<byte>(l_pos / 256));
+	result.push_back(static_cast<byte>(l_pos % 256));
 	result.push_back(m_gravity ? 1 : 0);
 	result.push_back(m_freeze_zonks ? 2 : 0);
 	result.push_back(m_freeze_enemies ? 1 : 0);

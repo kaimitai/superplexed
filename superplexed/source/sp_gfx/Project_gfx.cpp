@@ -11,11 +11,13 @@ SDL_Texture* Project_gfx::get_static(std::size_t p_texture_no) const {
 
 Project_gfx::~Project_gfx(void) {
 	for (auto texture : m_static)
-		SDL_DestroyTexture(texture);
+		if (texture != nullptr)
+			SDL_DestroyTexture(texture);
 
 	for (const auto& anim : m_animations)
 		for (auto texture : anim)
-			SDL_DestroyTexture(texture);
+			if (texture != nullptr)
+				SDL_DestroyTexture(texture);
 }
 
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {

@@ -12,6 +12,7 @@ class Level_window {
 	std::vector<SP_Level> m_levels;
 	int m_cam_x, m_current_level, m_current_gp;
 	SDL_Texture* m_texture;
+	bool m_ui_show_grid, m_ui_animate;
 
 	int get_tile_pixel_w(int p_screen_pixel_h) const;
 	void regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx);
