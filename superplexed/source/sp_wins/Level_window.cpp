@@ -179,7 +179,8 @@ void Level_window::draw_ui(void) {
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Load XML")) {
-
+		auto l_lvl = load_xml(get_current_level_idx());
+		m_levels.at(get_current_level_idx()) = l_lvl;
 	}
 
 	// UI settings

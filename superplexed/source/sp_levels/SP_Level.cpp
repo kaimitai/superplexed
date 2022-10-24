@@ -57,7 +57,8 @@ SP_Level::SP_Level(const std::string& p_title,
 	byte p_sf_version, const std::vector<byte>& p_sf_demo_bytes,
 	const std::vector<byte>& p_unknown_bytes) :
 	m_title{ p_title }, m_tiles{ p_tile_data },
-	m_player_x{ p_px }, m_player_y{ p_py }, m_gravity{ p_grav }, m_freeze_zonks{ p_fz },
+	m_player_x{ p_px }, m_player_y{ p_py }, m_solve_it_count{ static_cast<byte>(p_solve_it_count) },
+	m_gravity{ p_grav }, m_freeze_zonks{ p_fz },
 	m_sf_version{ p_sf_version }, m_sf_demo_bytes{ p_sf_demo_bytes },
 	m_unused_bytes{ p_unknown_bytes }
 { }

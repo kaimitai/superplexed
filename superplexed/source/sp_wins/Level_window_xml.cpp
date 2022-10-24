@@ -15,6 +15,7 @@ constexpr char XML_TAG_GP[]{ "gravity_port" };
 constexpr char XML_ATTR_TITLE[]{ "title" };
 constexpr char XML_ATTR_PLAYER_X[]{ "player_x" };
 constexpr char XML_ATTR_PLAYER_Y[]{ "player_y" };
+constexpr char XML_ATTR_INFOTRONS[]{ "infotrons_needed" };
 constexpr char XML_ATTR_GRAV[]{ "gravity" };
 constexpr char XML_ATTR_FZ[]{ "freeze_zonks" };
 constexpr char XML_ATTR_NO[]{ "no" };
@@ -44,6 +45,7 @@ void Level_window::save_xml(std::size_t p_level_no) const {
 	n_level.append_attribute(XML_ATTR_TITLE);
 	n_level.append_attribute(XML_ATTR_PLAYER_X);
 	n_level.append_attribute(XML_ATTR_PLAYER_Y);
+	n_level.append_attribute(XML_ATTR_INFOTRONS);
 	n_level.append_attribute(XML_ATTR_GRAV);
 	n_level.append_attribute(XML_ATTR_FZ);
 	n_level.append_attribute(XML_ATTR_SF_V);
@@ -53,6 +55,7 @@ void Level_window::save_xml(std::size_t p_level_no) const {
 	n_level.attribute(XML_ATTR_TITLE).set_value(l_lvl.get_title().c_str());
 	n_level.attribute(XML_ATTR_PLAYER_X).set_value(l_lvl.get_start_pos().first);
 	n_level.attribute(XML_ATTR_PLAYER_Y).set_value(l_lvl.get_start_pos().second);
+	n_level.attribute(XML_ATTR_INFOTRONS).set_value(l_lvl.get_solve_it_count());
 	n_level.attribute(XML_ATTR_GRAV).set_value(l_lvl.get_gravity() ? XML_VAL_TRUE : XML_VAL_FALSE);
 	n_level.attribute(XML_ATTR_FZ).set_value(l_lvl.get_freeze_zonks() ? XML_VAL_TRUE : XML_VAL_FALSE);
 
@@ -107,5 +110,46 @@ void Level_window::save_xml(std::size_t p_level_no) const {
 }
 
 SP_Level Level_window::load_xml(std::size_t p_level_no) const {
-	throw std::exception("Not implemented");
+	pugi::xml_document doc;
+	if (!doc.load_file("./gamedata/LEVEL.xml"))
+		throw std::exception("Could not load xml");
+
+	pugi::xml_node n_meta = doc.child(XML_TAG_META);
+	auto n_level = n_meta.child(XML_TAG_LEVEL);
+
+	std::string l_title{ n_level.attribute(XML_ATTR_TITLE).as_string() };
+	int l_px{ n_level.attribute(XML_ATTR_PLAYER_X).as_int() };
+	int l_py{ n_level.attribute(XML_ATTR_PLAYER_Y).as_int() };
+	int l_it{ n_level.attribute(XML_ATTR_INFOTRONS).as_int() };
+	bool l_grav{ n_level.attribute(XML_ATTR_GRAV).as_bool() };
+	bool l_fz{ n_level.attribute(XML_ATTR_FZ).as_bool() };
+	int l_sf_v{ n_level.attribute(XML_ATTR_SF_V).as_int() };
+	std::vector<byte> l_sf_db{ klib::util::string_split<byte>(
+		n_level.attribute(XML_ATTR_SF_DB).as_string(), ',') };
+	std::vector<byte> l_unknown{ klib::util::string_split<byte>(
+	n_level.attribute(XML_ATTR_UNKNOWN).as_string(), ',') };
+
+	auto n_trows = n_level.child(XML_TAG_TILE_ROWS);
+
+	std::vector<std::vector<byte>> l_tile_data;
+	for (auto n_trow = n_trows.child(XML_TAG_TILE_ROW);
+		n_trow; n_trow = n_trow.next_sibling(XML_TAG_TILE_ROW))
+		l_tile_data.push_back(klib::util::string_split<byte>(n_trow.attribute(XML_ATTR_VALUE).as_string(), ','));
+
+	auto l_lvl = SP_Level(l_title, l_tile_data, l_px, l_py, l_it, l_grav, l_fz,
+		static_cast<byte>(l_sf_v), l_sf_db, l_unknown);
+
+	auto n_gps = n_level.child(XML_TAG_GPS);
+	for (auto n_gp = n_gps.child(XML_TAG_GP); n_gp; n_gp = n_gp.next_sibling(XML_TAG_GP)) {
+		int l_gp_x = n_gp.attribute(XML_ATTR_POS_X).as_int();
+		int l_gp_y = n_gp.attribute(XML_ATTR_POS_Y).as_int();
+		bool l_gp_grav = n_gp.attribute(XML_ATTR_GRAV).as_bool();
+		bool l_gp_fz = n_gp.attribute(XML_ATTR_FZ).as_bool();
+		bool l_gp_fe = n_gp.attribute(XML_ATTR_FE).as_bool();
+		byte l_gp_unk = static_cast<byte>(n_gp.attribute(XML_ATTR_UNKNOWN).as_int());
+
+		l_lvl.add_gravity_port(l_gp_x, l_gp_y, l_gp_grav, l_gp_fz, l_gp_fe, l_gp_unk);
+	}
+
+	return l_lvl;
 }
