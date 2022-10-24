@@ -49,6 +49,9 @@
     <Filter Include="Source Files\common\imgui">
       <UniqueIdentifier>{6e216fb7-652d-479c-a3aa-7a191593ec37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\pugixml">
+      <UniqueIdentifier>{40e2bd26-f535-4367-8aea-7892d39e7010}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\sp_levels\SP_Level.h">
@@ -102,6 +105,9 @@
     <ClInclude Include="source\sp_wins\Level_window.h">
       <Filter>Header Files\sp_wins</Filter>
     </ClInclude>
+    <ClInclude Include="source\common\klib\klib_util.h">
+      <Filter>Header Files\common\klib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -154,6 +160,12 @@
     </ClCompile>
     <ClCompile Include="source\sp_wins\Level_window.cpp">
       <Filter>Source Files\sp_wins</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_wins\Level_window_xml.cpp">
+      <Filter>Source Files\sp_wins</Filter>
+    </ClCompile>
+    <ClCompile Include="source\common\pugixml\pugixml.cpp">
+      <Filter>Source Files\common\pugixml</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

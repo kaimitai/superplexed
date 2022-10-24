@@ -18,6 +18,8 @@ class Level_window {
 	void regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx);
 	std::size_t get_current_level_idx(void) const;
 
+	void save_xml(std::size_t p_level_no) const;
+
 public:
 	Level_window(SDL_Renderer* p_rnd);
 	void move(int p_delta_ms, const klib::User_input& p_input);

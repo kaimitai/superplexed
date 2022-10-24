@@ -166,7 +166,7 @@ void Level_window::draw_ui(void) {
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save XML")) {
-
+		save_xml(get_current_level_idx());
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save BMP")) {
