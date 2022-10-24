@@ -22,19 +22,26 @@ Level_window::Level_window(SDL_Renderer* p_rnd) :
 void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
-	auto l_rect = this->get_selection_rectangle();
 	m_timer.move(p_delta_ms);
 
 	// handle keyboard
-	if (p_input.is_pressed(SDL_SCANCODE_DELETE)) {
-		for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j)
-			for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
-				m_levels.at(get_current_level_idx()).set_tile_value(i, j, 0);
-	}
+	if (p_input.is_pressed(SDL_SCANCODE_DELETE))
+		delete_selection();
 	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
 		copy_to_clipboard();
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V))
-		paste_from_clipboard();
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
+		if (selection_fits())
+			paste_from_clipboard();
+	}
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
+		cut_selection();
+	else if (p_input.is_pressed(SDL_SCANCODE_F))
+		flip_selection(l_shift);
+	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_A))
+		select_all();
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V)) {
+		show_clipboard_destination();
+	}
 
 	// handle mouse if no imgui windows are in focus
 	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
@@ -300,6 +307,60 @@ SDL_Rect Level_window::get_selection_rectangle(void) const {
 		return SDL_Rect{ m_sel_x, m_sel_y, 0, 0 };
 }
 
+bool Level_window::is_selection_empty(void) const {
+	auto l_rect = get_selection_rectangle();
+
+	for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j)
+		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
+			if (m_levels.at(get_current_level_idx()).get_tile_no(i, j) != 0)
+				return false;
+
+	return true;
+}
+
+void Level_window::flip_selection(bool p_vertical) {
+	auto l_rect = get_selection_rectangle();
+
+	// vertical flip
+	if (p_vertical) {
+		for (int j{ 0 }; j <= l_rect.w; ++j)
+			for (int i{ 0 }; i <= l_rect.h / 2; ++i) {
+				byte l_tmp = m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + j, l_rect.y + i);
+				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + j, l_rect.y + i,
+					m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + j, l_rect.y + l_rect.h - i));
+				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + j, l_rect.y + l_rect.h - i, l_tmp);
+			}
+	}
+	// horizontal flip
+	else {
+		for (int j{ 0 }; j <= l_rect.w / 2; ++j)
+			for (int i{ 0 }; i <= l_rect.h; ++i) {
+				byte l_tmp = m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + j, l_rect.y + i);
+				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + j, l_rect.y + i,
+					m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + l_rect.w - j, l_rect.y + i));
+				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + l_rect.w - j, l_rect.y + i, l_tmp);
+			}
+	}
+}
+
+void Level_window::select_all(void) {
+	m_sel_x = 0;
+	m_sel_y = 0;
+	m_sel_x2 = 59;
+	m_sel_y2 = 23;
+}
+
+void Level_window::show_clipboard_destination(void) {
+	if (!m_clipboard.empty() && selection_fits()) {
+		m_sel_x2 = m_sel_x + static_cast<int>(m_clipboard[0].size()) - 1;
+		m_sel_y2 = m_sel_y + static_cast<int>(m_clipboard.size()) - 1;
+	}
+}
+
+bool Level_window::selection_fits(void) const {
+	return (m_sel_y + m_clipboard.size() <= 24) && (m_clipboard.size() == 0 || (m_sel_x + m_clipboard[0].size() <= 60));
+}
+
 void Level_window::copy_to_clipboard(void) {
 	auto l_rect = get_selection_rectangle();
 	m_clipboard.clear();
@@ -318,4 +379,19 @@ void Level_window::paste_from_clipboard(void) {
 		for (int i{ 0 }; i < m_clipboard.at(j).size(); ++i)
 			m_levels.at(get_current_level_idx()).set_tile_value(
 				m_sel_x + i, m_sel_y + j, m_clipboard[j][i]);
+}
+
+void Level_window::delete_selection(void) {
+	auto l_rect = get_selection_rectangle();
+
+	for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j)
+		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
+			m_levels.at(get_current_level_idx()).set_tile_value(i, j, 0);
+}
+
+void Level_window::cut_selection(void) {
+	if (!is_selection_empty()) {
+		copy_to_clipboard();
+		delete_selection();
+	}
 }

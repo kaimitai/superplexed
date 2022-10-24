@@ -30,7 +30,14 @@ class Level_window {
 	void clear_selection(void);
 	void copy_to_clipboard(void);
 	void paste_from_clipboard(void);
+	void delete_selection(void);
+	void cut_selection(void);
 	SDL_Rect get_selection_rectangle(void) const;
+	bool is_selection_empty(void) const;
+	void flip_selection(bool p_vertical);
+	void select_all(void);
+	void show_clipboard_destination(void);
+	bool selection_fits(void) const;
 
 	// xml read/write
 	void save_xml(std::size_t p_level_no) const;
