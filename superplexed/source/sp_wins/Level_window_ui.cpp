@@ -10,7 +10,25 @@ void Level_window::draw_ui(const Project_gfx& p_gfx) {
 }
 
 void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
-	//ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(3), { 32,32 });
+
+	std::string l_sel_tile{ "Tiles - Cursor @ (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")###tiles" };
+	ImGui::Begin(l_sel_tile.c_str());
+
+	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) };
+	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(m_sel_tile), { 32,32 });
+	ImGui::Text(l_sel_tile_no.c_str());
+	ImGui::Separator();
+
+	for (int i{ 0 }; i < 4; ++i) {
+		for (int j{ 0 }; j < 10; ++j) {
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(i * 10 + j), { 16,16 }))
+				m_sel_tile = i * 10 + j;
+			ImGui::SameLine();
+		}
+		ImGui::NewLine();
+	}
+
+	ImGui::End();
 }
 
 void Level_window::draw_ui_gp_win(void) {

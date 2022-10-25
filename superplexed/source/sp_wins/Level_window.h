@@ -11,7 +11,7 @@
 class Level_window {
 
 	std::vector<SP_Level> m_levels;
-	int m_cam_x, m_current_level, m_current_gp;
+	int m_cam_x, m_current_level, m_current_gp, m_sel_tile;
 	SDL_Texture* m_texture;
 	bool m_ui_show_grid, m_ui_animate;
 	klib::Timer m_timer;
@@ -39,6 +39,7 @@ class Level_window {
 	void show_clipboard_destination(void);
 	bool selection_fits(void) const;
 	void rotate_selection(bool p_clockwise);
+	std::pair<int, int> mouse_coords_to_tile(int p_mouse_x, int p_mouse_y, int p_screen_h) const;
 
 	// xml read/write
 	void save_xml(std::size_t p_level_no) const;

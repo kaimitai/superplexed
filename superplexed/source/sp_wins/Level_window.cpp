@@ -11,6 +11,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
+	m_sel_tile{ 0 },
 	m_timer{ klib::Timer(6, 250) }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
@@ -50,20 +51,27 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w
 		rotate_selection(l_shift);
 
 	if (p_input.mouse_held()) {
-		int l_tpw = get_tile_pixel_w(p_h);
+		auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
 
-		int l_tx = m_cam_x + p_input.mx() / l_tpw;
-		int l_ty = p_input.my() / l_tpw;
-
-		if (l_shift) {
-			m_sel_x2 = klib::util::validate(l_tx, 0, 59);
-			m_sel_y2 = klib::util::validate(l_ty, 0, 23);
+		if (l_ctrl) {
+			m_sel_tile = m_levels.at(get_current_level_idx()).get_tile_no(tcoords.first, tcoords.second);
+		}
+		if (!l_ctrl && l_shift) {
+			m_sel_x2 = tcoords.first;
+			m_sel_y2 = tcoords.second;
 		}
 		else {
 			clear_selection();
-			m_sel_x = klib::util::validate(l_tx, 0, 59);
-			m_sel_y = klib::util::validate(l_ty, 0, 23);
+			m_sel_x = tcoords.first;
+			m_sel_y = tcoords.second;
 		}
+	}
+	else if (p_input.mouse_held(false)) {
+		auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
+		if (m_sel_tile == 3)
+			m_levels.at(get_current_level_idx()).set_player_start(tcoords.first, tcoords.second);
+		else
+			m_levels.at(get_current_level_idx()).set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
 	}
 	else if (p_input.mw_down()) {
 		if (l_shift && get_current_level_idx() > 0)
@@ -266,4 +274,16 @@ void Level_window::rotate_selection(bool p_clockwise) {
 	}
 
 	m_clipboard = result;
+}
+
+std::pair<int, int> Level_window::mouse_coords_to_tile(int p_mouse_x, int p_mouse_y, int p_screen_h) const {
+	int l_tpw = get_tile_pixel_w(p_screen_h);
+
+	int l_tx = m_cam_x + p_mouse_x / l_tpw;
+	int l_ty = p_mouse_y / l_tpw;
+
+	return std::make_pair(
+		klib::util::validate(l_tx, 0, 59),
+		klib::util::validate(l_ty, 0, 23)
+	);
 }

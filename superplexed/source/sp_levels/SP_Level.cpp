@@ -222,6 +222,11 @@ void SP_Level::set_freeze_zonks(bool p_param) {
 	m_freeze_zonks = p_param;
 }
 
+void SP_Level::set_player_start(int p_x, int p_y) {
+	m_player_x = p_x;
+	m_player_y = p_y;
+}
+
 // gravity port setters
 void SP_Level::set_gp_x(int p_gp_no, int p_x) {
 	m_gravity_ports.at(p_gp_no).m_x = static_cast<byte>(p_x);

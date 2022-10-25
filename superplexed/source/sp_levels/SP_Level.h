@@ -62,6 +62,7 @@ public:
 	void set_solve_it_count(int p_count);
 	void set_gravity(bool p_param);
 	void set_freeze_zonks(bool p_param);
+	void set_player_start(int p_x, int p_y);
 
 	// gravity port setters
 	void set_gp_x(int p_gp_no, int p_x);
