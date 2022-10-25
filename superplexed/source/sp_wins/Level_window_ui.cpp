@@ -7,6 +7,22 @@ void Level_window::draw_ui(const Project_gfx& p_gfx) {
 	draw_ui_level_win();
 	draw_ui_tile_win(p_gfx);
 	draw_ui_gp_win();
+
+	ImGui::Begin("Gameboard", nullptr, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
+
+	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
+	ImVec2 l_wmax = ImGui::GetWindowContentRegionMax();
+
+	float l_win_height = l_wmax.y - l_wmin.y;
+	float l_win_width = l_wmax.x - l_wmin.x;
+
+	int l_tpw = std::max(get_tile_pixel_w(static_cast<int>(l_win_height)), 1);
+	float l_imgpw = static_cast<float>(l_tpw * 60.0f);
+
+	ImGui::Image((void*)(intptr_t)m_texture,
+		ImVec2(l_imgpw, l_win_height));
+
+	ImGui::End();
 }
 
 void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
@@ -19,11 +35,28 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(m_sel_tile), { 32,32 });
 	ImGui::Text(l_sel_tile_no.c_str());
 	ImGui::Separator();
+	int l_cursor_tile_no = m_levels.at(get_current_level_idx()).get_tile_no(m_sel_x, m_sel_y);
+	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(l_cursor_tile_no), { 32,32 });
+	std::string l_cursor_tile_str{ "  Cursor Tile: #" + std::to_string(l_cursor_tile_no) + " (" + SP_Level::get_description(l_cursor_tile_no) + ")" };
+	ImGui::Text(l_cursor_tile_str.c_str());
+	ImGui::Separator();
+	ImGui::Text("Tile Picker");
+	ImGui::Separator();
 
-	for (int i{ 0 }; i < 4; ++i) {
-		for (int j{ 0 }; j < 10; ++j) {
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(i * 10 + j), { 16,16 }))
-				m_sel_tile = i * 10 + j;
+	for (const auto& kv : m_tile_picker) {
+		ImGui::Text(kv.first.c_str());
+		for (int n : kv.second) {
+			bool l_is_selected{ m_sel_tile == n };
+
+			if (l_is_selected)
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 1.0f, 1.0f, 0.0f, 1.0f });
+			ImGui::PushID(n);
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(n), { 16,16 }))
+				m_sel_tile = n;
+			ImGui::PopID();
+			if (l_is_selected)
+				ImGui::PopStyleColor();
+
 			ImGui::SameLine();
 		}
 		ImGui::NewLine();

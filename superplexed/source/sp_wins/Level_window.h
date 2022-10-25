@@ -2,6 +2,8 @@
 #define SP_LEVEL_WINDOW_H
 
 #include <SDL.h>
+#include <string>
+#include <utility>
 #include <vector>
 #include "./../sp_levels/SP_Level.h"
 #include "./../sp_gfx/Project_gfx.h"
@@ -15,6 +17,7 @@ class Level_window {
 	SDL_Texture* m_texture;
 	bool m_ui_show_grid, m_ui_animate;
 	klib::Timer m_timer;
+	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 
 	// selection
 	int m_sel_x, m_sel_y,
