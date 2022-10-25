@@ -38,6 +38,7 @@ class Level_window {
 	void select_all(void);
 	void show_clipboard_destination(void);
 	bool selection_fits(void) const;
+	void rotate_selection(bool p_clockwise);
 
 	// xml read/write
 	void save_xml(std::size_t p_level_no) const;
@@ -48,7 +49,10 @@ public:
 	Level_window(SDL_Renderer* p_rnd);
 	void move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h);
 	void draw(SDL_Renderer* p_rnd, const Project_gfx& p_gfx, int p_w, int p_h);
-	void draw_ui(void);
+	void draw_ui(const Project_gfx& p_gfx);
+	void draw_ui_level_win(void);
+	void draw_ui_gp_win(void);
+	void draw_ui_tile_win(const Project_gfx& p_gfx);
 };
 
 #endif

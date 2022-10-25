@@ -173,5 +173,8 @@
     <ClCompile Include="source\common\klib\Timer.cpp">
       <Filter>Source Files\common\klib</Filter>
     </ClCompile>
+    <ClCompile Include="source\sp_wins\Level_window_ui.cpp">
+      <Filter>Source Files\sp_wins</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

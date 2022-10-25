@@ -43,7 +43,7 @@ void Main_window::draw_ui(void) {
 
 	switch (m_current_window) {
 	case 1:
-		m_lvl_win.draw_ui();
+		m_lvl_win.draw_ui(m_gfx);
 		break;
 	default:
 		break;
