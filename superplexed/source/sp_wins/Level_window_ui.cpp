@@ -14,7 +14,8 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 	std::string l_sel_tile{ "Tiles - Cursor @ (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")###tiles" };
 	ImGui::Begin(l_sel_tile.c_str());
 
-	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) };
+	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) +
+		" (" + SP_Level::get_description(m_sel_tile) + ")" };
 	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(m_sel_tile), { 32,32 });
 	ImGui::Text(l_sel_tile_no.c_str());
 	ImGui::Separator();
@@ -58,6 +59,7 @@ void Level_window::draw_ui_gp_win(void) {
 		bool l_gp_grav{ m_levels.at(get_current_level_idx()).get_gp_gravity(m_current_gp - 1) };
 		bool l_gp_fz{ m_levels.at(get_current_level_idx()).get_gp_freeze_zonks(m_current_gp - 1) };
 		bool l_gp_fe{ m_levels.at(get_current_level_idx()).get_gp_freeze_enemies(m_current_gp - 1) };
+		bool l_gp_status{ m_levels.at(get_current_level_idx()).get_gp_status(m_current_gp - 1) };
 
 		std::string l_gp_grav_id{ "Gravity###gpg" + l_clvl };
 		std::string l_gp_fz_id{ "Freeze Zonks###gpfz" + l_clvl };
@@ -72,9 +74,13 @@ void Level_window::draw_ui_gp_win(void) {
 		if (ImGui::Checkbox(l_gp_fe_id.c_str(), &l_gp_fe))
 			m_levels.at(get_current_level_idx()).set_gp_freeze_enemies(m_current_gp - 1, l_gp_fe);
 
+		if (!l_gp_status)
+			ImGui::Text("Warning: No Gravity Port tile at this position");
+
 		if (ImGui::Button("Delete Port")) {
 			m_levels.at(get_current_level_idx()).delete_gravity_port(m_current_gp - 1);
 		}
+
 	}
 
 	if (l_gp_count < 10) {

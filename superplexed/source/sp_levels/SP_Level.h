@@ -18,6 +18,7 @@ class SP_Level {
 		std::vector<byte> get_bytes(void) const;
 	};
 
+	static std::vector<std::string> sm_descriptions;
 	std::string m_title;
 	std::vector<std::vector<byte>> m_tiles;
 	std::vector<Gravity_port> m_gravity_ports;
@@ -55,6 +56,7 @@ public:
 	bool get_gp_gravity(int p_gp_no) const;
 	bool get_gp_freeze_zonks(int p_gp_no) const;
 	bool get_gp_freeze_enemies(int p_gp_no) const;
+	bool get_gp_status(int p_gp_no) const;
 
 	// setters
 	void set_tile_value(int p_x, int p_y, byte p_value);
@@ -72,6 +74,9 @@ public:
 	void set_gp_freeze_enemies(int p_gp_no, bool p_param);
 	void delete_gravity_port(int p_gp_no);
 	void add_gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown = 0);
+
+	// static functions
+	static std::string& get_description(int p_tile_no);
 };
 
 #endif

@@ -49,6 +49,12 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w
 		show_clipboard_destination();
 	else if (p_input.is_pressed(SDL_SCANCODE_R))
 		rotate_selection(l_shift);
+	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_G)) {
+		if (m_levels.at(get_current_level_idx()).get_gravity_port_count() >= m_current_gp) {
+			m_sel_x = m_levels.at(get_current_level_idx()).get_gp_x(m_current_gp - 1);
+			m_sel_y = m_levels.at(get_current_level_idx()).get_gp_y(m_current_gp - 1);
+		}
+	}
 
 	if (p_input.mouse_held()) {
 		auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);

@@ -255,3 +255,57 @@ void SP_Level::delete_gravity_port(int p_gp_no) {
 void SP_Level::add_gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown) {
 	m_gravity_ports.push_back(Gravity_port(p_x, p_y, p_grav, p_fz, p_fe, p_unknown));
 }
+
+// check if a gravity port psoition is using a gravity port tile (#13-#16)
+bool SP_Level::get_gp_status(int p_gp_no) const {
+	byte l_tile_no = get_tile_no(get_gp_x(p_gp_no), get_gp_y(p_gp_no));
+	return l_tile_no >= 13 && l_tile_no <= 16;
+}
+
+// static members
+std::vector<std::string> SP_Level::sm_descriptions = {
+  "Empty Space",
+  "Zonk",
+  "Base",
+  "Player Start",
+  "Infotron",
+  "RAM Chip - Chip",
+  "Wall",
+  "Exit",
+  "Floppy - Orange",
+  "Port - Right",
+  "Port - Down",
+  "Port - Left",
+  "Port - Up",
+  "Gravity Port - Right",
+  "Gravity Port - Down",
+  "Gravity Port - Left",
+  "Gravity Port - Up",
+  "Snik Snak",
+  "Floppy - Yellow",
+  "Terminal",
+  "Floppy - Red",
+  "Port - Two-Way Vertical",
+  "Port - Two-Way Horizontal",
+  "Port - Four-Way",
+  "Electron",
+  "Bug",
+  "RAM Chip - Left",
+  "RAM Chip - Right",
+  "Hardware 01",
+  "Hardware 02",
+  "Hardware 03",
+  "Hardware 04",
+  "Hardware 05",
+  "Hardware 06",
+  "Hardware 07",
+  "Hardware 08",
+  "Hardware 09",
+  "Hardware 10",
+  "RAM Chip - Top",
+  "RAM Chip - Bottom"
+};
+
+std::string& SP_Level::get_description(int p_tile_no) {
+	return sm_descriptions.at(p_tile_no);
+}
