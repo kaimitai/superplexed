@@ -1,6 +1,30 @@
 #include "SP_Image.h"
 
-SP_Image::SP_Image(const std::vector<byte>& p_bytes, int p_w) {
+SP_Image::SP_Image(const std::vector<byte>& p_bytes, int p_w, bool p_binary) : m_binary{ p_binary } {
+
+	if (p_binary) {
+		parse_binary_image(p_bytes, p_w);
+	}
+	else {
+		parse_planar_image(p_bytes, p_w);
+	}
+}
+
+void SP_Image::parse_binary_image(const std::vector<byte>& p_bytes, int p_w) {
+
+	int p_h = static_cast<int>(p_bytes.size()) * 8 / p_w;
+
+	for (int j = 0; j < p_h; ++j) {
+		std::vector<byte> l_row;
+		for (int i = 0; i < p_w / 8; i++)
+			for (int b = 0; b < 8; ++b)
+				l_row.push_back((p_bytes.at(j * p_w / 8 + i) >> (7 - b)) & 1);
+		m_pixels.push_back(l_row);
+	}
+
+}
+
+void SP_Image::parse_planar_image(const std::vector<byte>& p_bytes, int p_w) {
 	int p_h = 2 * static_cast<int>(p_bytes.size()) / p_w;
 
 	m_pixels = std::vector<std::vector<byte>>(p_h, std::vector<byte>(p_w, 0));
@@ -27,6 +51,8 @@ SP_Image::SP_Image(const std::vector<byte>& p_bytes, int p_w) {
 		}
 	}
 
+	// only one byte really, and only for some image files
+	m_unknown_data = std::vector<byte>(begin(p_bytes) + p_w * p_h / 2, end(p_bytes));
 }
 
 byte SP_Image::get_palette_index(int p_x, int p_y) const {
@@ -39,8 +65,4 @@ int SP_Image::get_w(void) const {
 
 int SP_Image::get_h(void) const {
 	return static_cast<int>(m_pixels.size());
-}
-
-int SP_Image::get_bit(int n, int bit_offset) const {
-	return (n >> bit_offset) & 1;
 }
