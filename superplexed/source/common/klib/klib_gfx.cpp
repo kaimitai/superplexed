@@ -34,7 +34,7 @@ void klib::gfx::draw_rect(SDL_Renderer* p_rnd, int p_x, int p_y, int p_w, int p_
 	}
 }
 
-std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surface* full_surface, int p_w, int p_h, bool p_destroy_surface) {
+std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surface* full_surface, int p_w, int p_h, bool p_destroy_surface, bool p_transparent, SDL_Color p_transp_col) {
 	std::vector<SDL_Texture*> result;
 
 	SDL_Rect tmpRectangle{ 0, 0, p_w, p_h };
@@ -45,7 +45,9 @@ std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surfac
 			tmpRectangle.y = j;
 
 			SDL_Surface* tmp = SDL_CreateRGBSurface(0, p_w, p_h, 24, 0, 0, 0, 0);
-			//SDL_SetColorKey(tmp, true, SDL_MapRGB(tmp->format, p_trans_col.r, p_trans_col.g, p_trans_col.b));
+
+			if(p_transparent)
+			SDL_SetColorKey(tmp, true, SDL_MapRGB(tmp->format, p_transp_col.r, p_transp_col.g, p_transp_col.b));
 
 			SDL_BlitSurface(full_surface, &tmpRectangle, tmp, nullptr);
 

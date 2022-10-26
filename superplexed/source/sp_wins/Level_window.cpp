@@ -156,7 +156,8 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 
 		klib::gfx::draw_rect(p_rnd, 16 * l_gp_x, 16 * l_gp_y, 16, 16,
 			klib::gfx::pulse_color(SDL_Color{ 0, 50, 150 }, SDL_Color{ 20,100,255 }, m_ptimer.get_frame() / 255.0f), //SDL_Color{ 20, 100, 250 },
-			3);
+			1);
+		p_gfx.blit_font(p_rnd, 5, 16 * l_gp_x, 16 * l_gp_y, SDL_Color{ 255, 255, 0 });
 	}
 
 	auto l_rect = this->get_selection_rectangle();

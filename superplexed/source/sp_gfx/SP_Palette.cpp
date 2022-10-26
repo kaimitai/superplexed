@@ -15,3 +15,16 @@ const std::tuple<byte, byte, byte, byte>& SP_Palette::get_color(int p_color_no) 
 std::size_t SP_Palette::get_size(void) const {
 	return m_palette.size();
 }
+
+std::vector<byte> SP_Palette::to_bytes(void) const {
+	std::vector<byte> result;
+
+	for (const auto& col : m_palette) {
+		result.push_back(std::get<0>(col) / 16);
+		result.push_back(std::get<1>(col) / 16);
+		result.push_back(std::get<2>(col) / 16);
+		result.push_back(std::get<3>(col) / 16);
+	}
+
+	return result;
+}

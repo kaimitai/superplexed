@@ -66,3 +66,35 @@ int SP_Image::get_w(void) const {
 int SP_Image::get_h(void) const {
 	return static_cast<int>(m_pixels.size());
 }
+
+std::vector<byte> SP_Image::to_bytes(void) const {
+	if (m_binary)
+		return to_binary_bytes();
+	else
+		return to_planar_bytes();
+}
+
+std::vector<byte> SP_Image::to_binary_bytes(void) const {
+	std::vector<byte> result;
+
+	// assume the image width is divisible by 8
+	for (const auto& row : m_pixels)
+		for (std::size_t i{ 0 }; i < row.size(); i += 8) {
+			byte l_value{ 0 };
+			for (std::size_t j{ 0 }; j < 8; ++j)
+				l_value = 2 * l_value + row[i + j];
+			result.push_back(l_value);
+		}
+
+	return result;
+}
+
+std::vector<byte> SP_Image::to_planar_bytes(void) const {
+	std::vector<byte> result;
+
+	// TODO: Convert image data to a planar bitmap representation
+
+	// add unknown byte
+	result.insert(end(result), begin(m_unknown_data), end(m_unknown_data));
+	return result;
+}
