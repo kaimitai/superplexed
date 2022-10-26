@@ -12,7 +12,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd) :
 	m_ui_show_grid{ false }, m_ui_animate{ true },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
 	m_sel_tile{ 0 },
-	m_timer{ klib::Timer(6, 250) }
+	m_timer{ klib::Timer(6, 250) }, m_ptimer{ klib::Timer(255, 5, true) }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
 	auto l_bytes = klib::file::read_file_as_bytes("./gamedata/LEVELS.DAT");
@@ -35,71 +35,83 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
 	m_timer.move(p_delta_ms);
-
-	// handle mouse/keyboard if no imgui windows are in focus
-	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
-		return;
+	m_ptimer.move(p_delta_ms);
 
 	// handle keyboard
-	if (p_input.is_pressed(SDL_SCANCODE_DELETE))
-		delete_selection();
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
-		copy_to_clipboard();
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
-		if (selection_fits())
-			paste_from_clipboard();
-	}
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
-		cut_selection();
-	else if (p_input.is_pressed(SDL_SCANCODE_F))
-		flip_selection(l_shift);
-	else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_A))
-		select_all();
-	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V))
-		show_clipboard_destination();
-	else if (p_input.is_pressed(SDL_SCANCODE_R))
-		rotate_selection(l_shift);
-	else if (l_shift && p_input.is_pressed(SDL_SCANCODE_G)) {
-		if (m_levels.at(get_current_level_idx()).get_gravity_port_count() >= m_current_gp) {
-			m_sel_x = m_levels.at(get_current_level_idx()).get_gp_x(m_current_gp - 1);
-			m_sel_y = m_levels.at(get_current_level_idx()).get_gp_y(m_current_gp - 1);
+	if (!ImGui::GetIO().WantCaptureKeyboard) {
+		if (p_input.is_pressed(SDL_SCANCODE_DELETE))
+			delete_selection();
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
+			copy_to_clipboard();
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
+			if (selection_fits())
+				paste_from_clipboard();
+		}
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_X))
+			cut_selection();
+		else if (p_input.is_pressed(SDL_SCANCODE_F))
+			flip_selection(l_shift);
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_A))
+			select_all();
+		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V))
+			show_clipboard_destination();
+		else if (p_input.is_pressed(SDL_SCANCODE_R))
+			rotate_selection(l_shift);
+		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_G)) {
+			if (m_levels.at(get_current_level_idx()).get_gravity_port_count() >= m_current_gp) {
+				m_sel_x = m_levels.at(get_current_level_idx()).get_gp_x(m_current_gp - 1);
+				m_sel_y = m_levels.at(get_current_level_idx()).get_gp_y(m_current_gp - 1);
+			}
+		}
+		else if (p_input.is_pressed(SDL_SCANCODE_TAB)) {
+			int l_gp_count = m_levels.at(get_current_level_idx()).get_gravity_port_count();
+			m_current_gp += (l_shift ? -1 : 1);
+			if (m_current_gp <= 0)
+				m_current_gp = l_gp_count;
+			else if (m_current_gp > l_gp_count)
+				m_current_gp = 1;
 		}
 	}
 
-	if (p_input.mouse_held()) {
-		auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
+	// handle mouse
+	if (!ImGui::GetIO().WantCaptureMouse) {
 
-		if (l_ctrl) {
-			m_sel_tile = m_levels.at(get_current_level_idx()).get_tile_no(tcoords.first, tcoords.second);
+		if (p_input.mouse_held()) {
+			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
+
+			if (l_ctrl) {
+				m_sel_tile = m_levels.at(get_current_level_idx()).get_tile_no(tcoords.first, tcoords.second);
+			}
+			if (!l_ctrl && l_shift) {
+				m_sel_x2 = tcoords.first;
+				m_sel_y2 = tcoords.second;
+			}
+			else {
+				clear_selection();
+				m_sel_x = tcoords.first;
+				m_sel_y = tcoords.second;
+			}
 		}
-		if (!l_ctrl && l_shift) {
-			m_sel_x2 = tcoords.first;
-			m_sel_y2 = tcoords.second;
+		else if (p_input.mouse_held(false)) {
+			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
+			if (m_sel_tile == 3)
+				m_levels.at(get_current_level_idx()).set_player_start(tcoords.first, tcoords.second);
+			else
+				m_levels.at(get_current_level_idx()).set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
 		}
-		else {
-			clear_selection();
-			m_sel_x = tcoords.first;
-			m_sel_y = tcoords.second;
+		else if (p_input.mw_down()) {
+			if (l_shift && get_current_level_idx() > 0)
+				--m_current_level;
+			else if (!l_shift && m_cam_x > 0)
+				--m_cam_x;
 		}
-	}
-	else if (p_input.mouse_held(false)) {
-		auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
-		if (m_sel_tile == 3)
-			m_levels.at(get_current_level_idx()).set_player_start(tcoords.first, tcoords.second);
-		else
-			m_levels.at(get_current_level_idx()).set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
-	}
-	else if (p_input.mw_down()) {
-		if (l_shift && get_current_level_idx() > 0)
-			--m_current_level;
-		else if (!l_shift && m_cam_x > 0)
-			--m_cam_x;
-	}
-	else if (p_input.mw_up()) {
-		if (l_shift && get_current_level_idx() < m_levels.size() - 1)
-			++m_current_level;
-		else if (!l_shift && m_cam_x < 40)
-			++m_cam_x;
+		else if (p_input.mw_up()) {
+			if (l_shift && get_current_level_idx() < m_levels.size() - 1)
+				++m_current_level;
+			else if (!l_shift && m_cam_x < 40)
+				++m_cam_x;
+		}
+
 	}
 }
 
@@ -138,9 +150,19 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 		p_gfx.get_static(3),
 		16 * l_spos.first, 16 * l_spos.second);
 
+	if (m_current_gp <= m_levels.at(get_current_level_idx()).get_gravity_port_count()) {
+		int l_gp_x = m_levels.at(get_current_level_idx()).get_gp_x(m_current_gp - 1);
+		int l_gp_y = m_levels.at(get_current_level_idx()).get_gp_y(m_current_gp - 1);
+
+		klib::gfx::draw_rect(p_rnd, 16 * l_gp_x, 16 * l_gp_y, 16, 16,
+			klib::gfx::pulse_color(SDL_Color{ 0, 50, 150 }, SDL_Color{ 20,100,255 }, m_ptimer.get_frame() / 255.0f), //SDL_Color{ 20, 100, 250 },
+			3);
+	}
+
 	auto l_rect = this->get_selection_rectangle();
 	klib::gfx::draw_rect(p_rnd, 16 * l_rect.x, 16 * l_rect.y, 16 * (l_rect.w + 1), 16 * (l_rect.h + 1),
-		SDL_Color{ 200, 200, 50 }, 3);
+		klib::gfx::pulse_color(SDL_Color{ 180, 200, 0 }, SDL_Color{ 255,255,50 }, m_ptimer.get_frame() / 255.0f), //SDL_Color{ 200, 200, 50 },
+		3);
 
 	SDL_SetRenderTarget(p_rnd, nullptr);
 }

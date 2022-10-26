@@ -2,12 +2,14 @@
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
 #include "./../common/klib/klib_file.h"
+#include "./../common/klib/klib_util.h"
 
 void Level_window::draw_ui(const Project_gfx& p_gfx) {
 	draw_ui_level_win();
 	draw_ui_tile_win(p_gfx);
 	draw_ui_gp_win();
-
+	/*
+	// test code for putting the gameboard graphics into a window
 	ImGui::Begin("Gameboard", nullptr, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
 
 	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
@@ -23,6 +25,7 @@ void Level_window::draw_ui(const Project_gfx& p_gfx) {
 		ImVec2(l_imgpw, l_win_height));
 
 	ImGui::End();
+	*/
 }
 
 void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
@@ -30,15 +33,23 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 	std::string l_sel_tile{ "Tiles - Cursor @ (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")###tiles" };
 	ImGui::Begin(l_sel_tile.c_str());
 
+	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
+	ImVec2 l_wmax = ImGui::GetWindowContentRegionMax();
+
+	int l_win_height = static_cast<int>(l_wmax.y - l_wmin.y);
+	float l_icon_w = klib::util::validate<float>(l_win_height / 15.0f, 16.0f, 128.0f);
+
 	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) +
 		" (" + SP_Level::get_description(m_sel_tile) + ")" };
-	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(m_sel_tile), { 32,32 });
+	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(m_sel_tile), { 2.0f * l_icon_w,2.0f * l_icon_w });
 	ImGui::Text(l_sel_tile_no.c_str());
+	/*
 	ImGui::Separator();
 	int l_cursor_tile_no = m_levels.at(get_current_level_idx()).get_tile_no(m_sel_x, m_sel_y);
 	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(l_cursor_tile_no), { 32,32 });
 	std::string l_cursor_tile_str{ "  Cursor Tile: #" + std::to_string(l_cursor_tile_no) + " (" + SP_Level::get_description(l_cursor_tile_no) + ")" };
 	ImGui::Text(l_cursor_tile_str.c_str());
+	*/
 	ImGui::Separator();
 	ImGui::Text("Tile Picker");
 	ImGui::Separator();
@@ -51,7 +62,7 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 			if (l_is_selected)
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 1.0f, 1.0f, 0.0f, 1.0f });
 			ImGui::PushID(n);
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(n), { 16,16 }))
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(n), { l_icon_w,l_icon_w }))
 				m_sel_tile = n;
 			ImGui::PopID();
 			if (l_is_selected)
@@ -69,7 +80,7 @@ void Level_window::draw_ui_gp_win(void) {
 	int l_gp_count = m_levels.at(get_current_level_idx()).get_gravity_port_count();
 	std::string l_clvl{ std::to_string(m_current_level) };
 
-	std::string l_gp_label{ "Gravity Ports (" + std::to_string(l_gp_count) + ")###gp" };
+	std::string l_gp_label{ "Special Ports (" + std::to_string(l_gp_count) + ")###gp" };
 	ImGui::Begin(l_gp_label.c_str());
 
 	if (l_gp_count > 0) {
@@ -107,8 +118,16 @@ void Level_window::draw_ui_gp_win(void) {
 		if (ImGui::Checkbox(l_gp_fe_id.c_str(), &l_gp_fe))
 			m_levels.at(get_current_level_idx()).set_gp_freeze_enemies(m_current_gp - 1, l_gp_fe);
 
+		ImGui::Separator();
 		if (!l_gp_status)
 			ImGui::Text("Warning: No Gravity Port tile at this position");
+		else {
+			std::string l_gp_tile{ "Tile: " + m_levels.at(get_current_level_idx()).get_description(
+			m_levels.at(get_current_level_idx()).get_tile_no(l_gp_x, l_gp_y)
+			) };
+			ImGui::Text(l_gp_tile.c_str());
+		}
+		ImGui::Separator();
 
 		if (ImGui::Button("Delete Port")) {
 			m_levels.at(get_current_level_idx()).delete_gravity_port(m_current_gp - 1);
@@ -148,7 +167,7 @@ void Level_window::draw_ui_level_win(void) {
 		m_levels.at(get_current_level_idx()).set_title(std::string(l_lvl_title));
 
 	// solve infotron count
-	std::string l_solve_it_id{ "Infotrons Required (0=all)###it" + l_clvl };
+	std::string l_solve_it_id{ "#Infotrons###it" + l_clvl };
 	int l_solve_it_cnt = m_levels.at(get_current_level_idx()).get_solve_it_count();
 	if (ImGui::SliderInt(l_solve_it_id.c_str(), &l_solve_it_cnt, 0, 255))
 		m_levels.at(get_current_level_idx()).set_solve_it_count(l_solve_it_cnt);

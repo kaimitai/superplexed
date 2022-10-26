@@ -116,3 +116,11 @@ void klib::gfx::put_pixel(SDL_Surface* srf, int x, int y, Uint32 pixel) {
 
 	SDL_UnlockSurface(srf);
 }
+
+SDL_Color klib::gfx::pulse_color(SDL_Color a, SDL_Color b, float p_progress) {
+	Uint8 cr = static_cast<Uint8>(a.r + (b.r - a.r) * p_progress);
+	Uint8 cg = static_cast<Uint8>(a.g + (b.g - a.g) * p_progress);
+	Uint8 cb = static_cast<Uint8>(a.b + (b.b - a.b) * p_progress);
+	Uint8 ca = static_cast<Uint8>(a.a + (b.a - a.a) * p_progress);
+	return SDL_Color{ cr,cg,cb,ca };
+}
