@@ -36,7 +36,7 @@ public:
 	~Project_gfx(void);
 	SDL_Texture* get_static(std::size_t p_texture_no) const;
 	SDL_Texture* get_animated(std::size_t p_texture_no, std::size_t p_frame_no) const;
-	void blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, SDL_Color p_color) const;
+	void blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, int p_w, int p_h, SDL_Color p_color) const;
 
 	std::vector<byte> get_palette_bytes(void) const;
 

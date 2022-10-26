@@ -8,6 +8,11 @@ void klib::gfx::blit(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p
 	SDL_RenderCopy(p_rnd, p_texture, nullptr, &t_rect);
 }
 
+void klib::gfx::blit_scale(SDL_Renderer* p_rnd, SDL_Texture* p_texture, int p_x, int p_y, int p_w, int p_h) {
+	SDL_Rect t_rect{ p_x, p_y, p_w, p_h };
+	SDL_RenderCopy(p_rnd, p_texture, nullptr, &t_rect);
+}
+
 void klib::gfx::blit_full_spec(SDL_Renderer* p_rnd, SDL_Texture* txt, int target_x, int target_y, int target_w, int target_h, int src_x, int src_y, int src_w, int src_h) {
 	SDL_Rect src_rect{ src_x, src_y, src_w, src_h },
 		target_rect{ target_x, target_y, target_w, target_h };
@@ -45,12 +50,9 @@ std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surfac
 			tmpRectangle.y = j;
 
 			SDL_Surface* tmp = SDL_CreateRGBSurface(0, p_w, p_h, 24, 0, 0, 0, 0);
-
-			if(p_transparent)
-			SDL_SetColorKey(tmp, true, SDL_MapRGB(tmp->format, p_transp_col.r, p_transp_col.g, p_transp_col.b));
-
+			if (p_transparent)
+				SDL_SetColorKey(tmp, true, SDL_MapRGB(tmp->format, p_transp_col.r, p_transp_col.g, p_transp_col.b));
 			SDL_BlitSurface(full_surface, &tmpRectangle, tmp, nullptr);
-
 			result.push_back(surface_to_texture(rnd, tmp, p_destroy_surface));
 		}
 
@@ -60,11 +62,13 @@ std::vector<SDL_Texture*> klib::gfx::split_surface(SDL_Renderer* rnd, SDL_Surfac
 // extracts textures from a given surface
 // all textures to extract are specified in the vector of SDL_Rects
 std::vector<SDL_Texture*> klib::gfx::split_surface_specified(SDL_Renderer* p_rnd, SDL_Surface* srf,
-	const std::vector<SDL_Rect>& p_rects, bool p_destroy_surface) {
+	const std::vector<SDL_Rect>& p_rects, bool p_destroy_surface, bool p_transparent, SDL_Color p_transp_col) {
 	std::vector<SDL_Texture*> result;
 
 	for (const auto& rect : p_rects) {
 		SDL_Surface* tmp = SDL_CreateRGBSurface(0, rect.w, rect.h, 24, 0, 0, 0, 0);
+		if (p_transparent)
+			SDL_SetColorKey(tmp, true, SDL_MapRGB(tmp->format, p_transp_col.r, p_transp_col.g, p_transp_col.b));
 		SDL_BlitSurface(srf, &rect, tmp, nullptr);
 		result.push_back(surface_to_texture(p_rnd, tmp, p_destroy_surface));
 	}

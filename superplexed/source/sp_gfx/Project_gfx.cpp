@@ -30,10 +30,10 @@ Project_gfx::~Project_gfx(void) {
 			SDL_DestroyTexture(texture);
 }
 
-void Project_gfx::blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, SDL_Color p_color) const {
+void Project_gfx::blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, int p_w, int p_h, SDL_Color p_color) const {
 	SDL_Texture* l_letter = m_font.at(p_char_no);
 	SDL_SetTextureColorMod(l_letter, p_color.r, p_color.g, p_color.b);
-	klib::gfx::blit(p_rnd, l_letter, p_x, p_y);
+	klib::gfx::blit_scale(p_rnd, l_letter, p_x, p_y, p_w, p_h);
 }
 
 bool Project_gfx::load_image_data_from_file(const std::string& p_filename) {
@@ -108,10 +108,12 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {
 	load_image_data_from_file("CHARS8");
 
 	// create textures used by the editor
-	m_font = klib::gfx::split_surface(p_rnd,
+	std::vector<SDL_Rect> l_font_rect{ {311,0,8,8},{463,0,8,8},{295,0,8,8},{79,0,8,8} };
+
+	m_font = klib::gfx::split_surface_specified(p_rnd,
 		sp_image_to_sdl_surface(m_image_files.at("CHARS8"),
 			m_palettes.at(m_image_metadata.at("CHARS8").m_palette_no)),
-		8, 8, true, true,
+		l_font_rect, true, true,
 		sp_color_to_sdl(m_palettes.at(m_image_metadata.at("CHARS8").m_palette_no).get_color(0)));
 
 	m_static = klib::gfx::split_surface(p_rnd,

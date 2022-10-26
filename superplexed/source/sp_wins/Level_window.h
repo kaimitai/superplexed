@@ -16,7 +16,7 @@ class Level_window {
 	int m_cam_x, m_current_level, m_current_gp, m_sel_tile;
 	SDL_Texture* m_texture;
 	bool m_ui_show_grid, m_ui_animate;
-	klib::Timer m_timer, m_ptimer;
+	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 
 	// selection
