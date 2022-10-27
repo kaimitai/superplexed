@@ -6,10 +6,10 @@
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
 
-Main_window::Main_window(SDL_Renderer* p_rnd) :
+Main_window::Main_window(SDL_Renderer* p_rnd, const SP_Config& p_config) :
 	m_gfx{ p_rnd },
 	m_current_window{ 1 },
-	m_lvl_win{ p_rnd }
+	m_lvl_win{ p_rnd, p_config }
 { }
 
 void Main_window::Main_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h) {

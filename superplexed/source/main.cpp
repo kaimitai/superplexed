@@ -4,8 +4,8 @@
 #include "./common/imgui/imgui_impl_sdl.h"
 #include "./common/imgui/imgui_impl_sdlrenderer.h"
 #include "./common/klib/User_input.h"
-#include "./sp_gfx/Project_gfx.h"
 #include "./sp_wins/Main_window.h"
+#include "./SP_Config.h"
 
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -50,7 +50,8 @@ int main(int argc, char* args[]) {
 			ImGui_ImplSDLRenderer_Init(l_rnd);
 
 			// main window object to handle all logic and drawing
-			Main_window main_window(l_rnd);
+			SP_Config config;
+			Main_window main_window(l_rnd, config);
 
 			// input handler
 			klib::User_input input;

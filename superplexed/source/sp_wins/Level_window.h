@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "./../SP_Config.h"
 #include "./../sp_levels/SP_Level.h"
 #include "./../sp_gfx/Project_gfx.h"
 #include "./../common/klib/User_input.h"
@@ -58,7 +59,7 @@ class Level_window {
 	SP_Level load_sp(std::size_t p_level_no) const;
 
 public:
-	Level_window(SDL_Renderer* p_rnd);
+	Level_window(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	void move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h);
 	void draw(SDL_Renderer* p_rnd, const Project_gfx& p_gfx, int p_w, int p_h);
 	void draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input);

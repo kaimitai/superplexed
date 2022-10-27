@@ -8,14 +8,14 @@
 #include <algorithm>
 #include <filesystem>
 
-Level_window::Level_window(SDL_Renderer* p_rnd) :
+Level_window::Level_window(SDL_Renderer* p_rnd, const SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
 	m_sel_tile{ 0 }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
-	auto l_bytes = klib::file::read_file_as_bytes("./gamedata/LEVELS.DAT");
+	auto l_bytes = klib::file::read_file_as_bytes(p_config.get_levels_dat_full_path());
 
 	for (std::size_t i{ 0 }; i < l_bytes.size(); i += 1536)
 		m_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + 1536)));
@@ -331,7 +331,7 @@ void Level_window::rotate_selection(bool p_cclockwise) {
 		add_output("Clipboard is empty, no rotation possible");
 		return;
 	}
-	
+
 	std::vector<std::vector<byte>> result;
 
 	if (p_cclockwise) {
