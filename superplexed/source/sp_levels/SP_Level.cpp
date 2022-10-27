@@ -8,20 +8,26 @@ OFFSET_SF_VERSION{ 1445 },
 OFFSET_TITLE{ 1446 }, OFFSET_FREEZE_ZONKS{ 1469 }, OFFSET_IT_COUNT{ 1470 },
 OFFSET_GP_COUNT{ 1471 }, OFFSET_GP{ 1472 }, OFFSET_SF_DEMO_BYTES{ 1532 },
 LENGTH_TITLE{ 23 }, LENGTH_GP{ 6 }, LENGTH_SF_DEMO_BYTES{ 4 },
-LENGTH_UNUSED_BYTES{ 4 };
+LENGTH_UNUSED_BYTES{ 4 },
+OFFSET_SF_SOLUTION{ 1536 };
 
 SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 	m_player_x{ 0 }, m_player_y{ 0 } {
+
+	// it is possible to have more than one player start
+	// only the first found will be used, the rest will turn into "decorative" murphys
+	bool l_player_found{ false };
 
 	// initialize level map and player start
 	for (std::size_t y{ 0 }; y < LEVEL_H; ++y) {
 		std::vector<byte> l_row;
 		for (std::size_t x{ 0 }; x < LEVEL_W; ++x) {
 			byte l_value = p_bytes.at(OFFSET_TILES + LEVEL_W * y + x);
-			if (l_value == 3) {
+			if (l_value == 3 && !l_player_found) {
 				m_player_x = static_cast<byte>(x);
 				m_player_y = static_cast<byte>(y);
 				l_row.push_back(0);
+				l_player_found = true;
 			}
 			else
 				l_row.push_back(l_value);
@@ -49,21 +55,29 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 		m_gravity_ports.push_back(std::vector<byte>(begin(p_bytes) + l_offset,
 			begin(p_bytes) + l_offset + LENGTH_GP));
 	}
+
+	// if a solution is appended, store it
+	// only possible for individual SP-files
+	m_sf_solution_bytes = std::vector<byte>(
+		begin(p_bytes) + OFFSET_SF_SOLUTION,
+		end(p_bytes)
+		);
 }
 
 SP_Level::SP_Level(const std::string& p_title,
 	const std::vector<std::vector<byte>>& p_tile_data,
 	unsigned int p_px, unsigned int p_py, int p_solve_it_count, bool p_grav, bool p_fz,
 	byte p_sf_version, const std::vector<byte>& p_sf_demo_bytes,
-	const std::vector<byte>& p_unknown_bytes) :
+	const std::vector<byte>& p_unknown_bytes,
+	const std::vector<byte>& p_solution_bytes) :
 	m_title{ p_title }, m_tiles{ p_tile_data },
 	m_player_x{ p_px }, m_player_y{ p_py }, m_solve_it_count{ static_cast<byte>(p_solve_it_count) },
 	m_gravity{ p_grav }, m_freeze_zonks{ p_fz },
 	m_sf_version{ p_sf_version }, m_sf_demo_bytes{ p_sf_demo_bytes },
-	m_unused_bytes{ p_unknown_bytes }
+	m_unused_bytes{ p_unknown_bytes }, m_sf_solution_bytes{ p_solution_bytes }
 { }
 
-std::vector<byte> SP_Level::get_bytes(void) const {
+std::vector<byte> SP_Level::get_bytes(bool p_include_demo) const {
 	std::vector<byte> result;
 	// add tile data
 	for (int i{ 0 }; i < LEVEL_H; ++i)
@@ -90,6 +104,12 @@ std::vector<byte> SP_Level::get_bytes(void) const {
 			result.push_back(0);
 
 	result.insert(end(result), begin(m_sf_demo_bytes), end(m_sf_demo_bytes));
+
+	// add a solution demo, should only be done when creating SP-files
+	if (p_include_demo)
+		result.insert(end(result),
+			begin(m_sf_solution_bytes),
+			end(m_sf_solution_bytes));
 
 	return result;
 }
@@ -162,8 +182,23 @@ const std::vector<byte>& SP_Level::get_unused_bytes(void) const {
 	return m_unused_bytes;
 }
 
+const std::vector<byte>& SP_Level::get_solution_bytes(void) const {
+	return m_sf_solution_bytes;
+}
+
 byte SP_Level::get_speedfix_version(void) const {
 	return m_sf_version;
+}
+
+// statistics - count each tile type
+std::map<byte, int> SP_Level::get_tile_counts(void) const {
+	std::map<byte, int> result;
+
+	for (const auto& row : m_tiles)
+		for (byte v : row)
+			++result[v];
+
+	return result;
 }
 
 // gravity port getters
@@ -254,6 +289,14 @@ void SP_Level::delete_gravity_port(int p_gp_no) {
 
 void SP_Level::add_gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown) {
 	m_gravity_ports.push_back(Gravity_port(p_x, p_y, p_grav, p_fz, p_fe, p_unknown));
+}
+
+// returns index of gravity port at the given position, -1 if there is none
+int SP_Level::has_gp_at_pos(int p_x, int p_y) {
+	for (std::size_t i{ 0 }; i < m_gravity_ports.size(); ++i)
+		if (m_gravity_ports[i].m_x == p_x && m_gravity_ports[i].m_y == p_y)
+			return static_cast<int>(i);
+	return -1;
 }
 
 // check if a gravity port psoition is using a gravity port tile (#13-#16)

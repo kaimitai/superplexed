@@ -11,6 +11,7 @@ constexpr char XML_TAG_TILE_ROWS[]{ "tile_rows" };
 constexpr char XML_TAG_TILE_ROW[]{ "tile_row" };
 constexpr char XML_TAG_GPS[]{ "gravity_ports" };
 constexpr char XML_TAG_GP[]{ "gravity_port" };
+constexpr char XML_TAG_SOLUTION[]{ "speedfix_solution" };
 
 constexpr char XML_ATTR_TITLE[]{ "title" };
 constexpr char XML_ATTR_PLAYER_X[]{ "player_x" };
@@ -105,6 +106,16 @@ void Level_window::save_xml(std::size_t p_level_no) const {
 		n_gp.attribute(XML_ATTR_UNKNOWN).set_value(static_cast<int>(l_lvl.get_gp_unknown(i)));
 	}
 
+	const auto& l_sol_bytes = l_lvl.get_solution_bytes();
+
+	if (!l_sol_bytes.empty()) {
+		auto n_solution = n_level.append_child(XML_TAG_SOLUTION);
+		n_solution.append_attribute(XML_ATTR_VALUE);
+
+		n_solution.attribute(XML_ATTR_VALUE).set_value(klib::util::string_join<byte>(
+			l_sol_bytes, ',').c_str());
+	}
+
 	std::filesystem::create_directory("xml");
 	if (!doc.save_file(get_level_xml_filename(p_level_no).c_str()))
 		throw std::exception("Could not save XML");
@@ -137,8 +148,13 @@ SP_Level Level_window::load_xml(std::size_t p_level_no) const {
 		n_trow; n_trow = n_trow.next_sibling(XML_TAG_TILE_ROW))
 		l_tile_data.push_back(klib::util::string_split<byte>(n_trow.attribute(XML_ATTR_VALUE).as_string(), ','));
 
+	std::vector<byte> l_solution_data;
+	auto n_solution = n_level.child(XML_TAG_SOLUTION);
+	if (n_solution)
+		l_solution_data = klib::util::string_split<byte>(n_solution.attribute(XML_ATTR_VALUE).as_string(), ',');
+
 	auto l_lvl = SP_Level(l_title, l_tile_data, l_px, l_py, l_it, l_grav, l_fz,
-		static_cast<byte>(l_sf_v), l_sf_db, l_unknown);
+		static_cast<byte>(l_sf_v), l_sf_db, l_unknown, l_solution_data);
 
 	auto n_gps = n_level.child(XML_TAG_GPS);
 	for (auto n_gp = n_gps.child(XML_TAG_GP); n_gp; n_gp = n_gp.next_sibling(XML_TAG_GP)) {

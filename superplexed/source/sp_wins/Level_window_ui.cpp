@@ -219,6 +219,11 @@ void Level_window::draw_ui_level_win(void) {
 			save_xml(i);
 	}
 	ImGui::SameLine();
+	if (ImGui::Button("Save SP")) {
+		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
+			save_sp(i);
+	}
+	ImGui::SameLine();
 	if (ImGui::Button("Save BMP")) {
 
 	}
@@ -233,6 +238,19 @@ void Level_window::draw_ui_level_win(void) {
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
 			try {
 				auto l_lvl = load_xml(i);
+				m_levels.at(i) = l_lvl;
+			}
+			catch (const std::exception&) {
+
+			}
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load SP")) {
+
+		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
+			try {
+				auto l_lvl = load_sp(i);
 				m_levels.at(i) = l_lvl;
 			}
 			catch (const std::exception&) {

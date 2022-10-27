@@ -1,9 +1,10 @@
 #ifndef SP_LEVEL_H
 #define SP_LEVEL_H
 
+#include <map>
 #include <string>
-#include <vector>
 #include <utility>
+#include <vector>
 
 using byte = unsigned char;
 
@@ -22,7 +23,7 @@ class SP_Level {
 	std::string m_title;
 	std::vector<std::vector<byte>> m_tiles;
 	std::vector<Gravity_port> m_gravity_ports;
-	std::vector<byte> m_unused_bytes, m_sf_demo_bytes;
+	std::vector<byte> m_unused_bytes, m_sf_demo_bytes, m_sf_solution_bytes;
 	bool m_gravity, m_freeze_zonks;
 	unsigned int m_player_x, m_player_y;
 	byte m_solve_it_count, m_sf_version;
@@ -33,8 +34,9 @@ public:
 		const std::vector<std::vector<byte>>& p_tile_data,
 		unsigned int p_px, unsigned int p_py, int p_solve_it_count, bool p_grav, bool p_fz,
 		byte p_sf_version, const std::vector<byte>& p_sf_demo_bytes,
-		const std::vector<byte>& p_unknown_bytes);
-	std::vector<byte> get_bytes(void) const;
+		const std::vector<byte>& p_unknown_bytes,
+		const std::vector<byte>& p_solution_bytes);
+	std::vector<byte> get_bytes(bool p_include_demo = false) const;
 
 	// getters
 	byte get_tile_no(int p_x, int p_y) const;
@@ -46,7 +48,9 @@ public:
 	const std::vector<std::vector<byte>>& get_tile_data(void) const;
 	const std::vector<byte>& get_sf_demo_bytes(void) const;
 	const std::vector<byte>& get_unused_bytes(void) const;
+	const std::vector<byte>& get_solution_bytes(void) const;
 	byte get_speedfix_version(void) const;
+	std::map<byte, int> get_tile_counts(void) const;
 
 	// gravity port getters
 	int get_gravity_port_count(void) const;
@@ -57,6 +61,7 @@ public:
 	bool get_gp_freeze_zonks(int p_gp_no) const;
 	bool get_gp_freeze_enemies(int p_gp_no) const;
 	bool get_gp_status(int p_gp_no) const;
+	int has_gp_at_pos(int p_x, int p_y);
 
 	// setters
 	void set_tile_value(int p_x, int p_y, byte p_value);

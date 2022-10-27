@@ -6,6 +6,7 @@
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
 #include <algorithm>
+#include <filesystem>
 
 Level_window::Level_window(SDL_Renderer* p_rnd) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
@@ -353,4 +354,23 @@ std::pair<int, int> Level_window::mouse_coords_to_tile(int p_mouse_x, int p_mous
 		klib::util::validate(l_tx, 0, 59),
 		klib::util::validate(l_ty, 0, 23)
 	);
+}
+
+// SP load/save
+SP_Level Level_window::load_sp(std::size_t p_level_no) const {
+	return SP_Level(klib::file::read_file_as_bytes(get_level_sp_filename(p_level_no)));
+}
+
+void Level_window::save_sp(std::size_t p_level_no) const {
+	std::filesystem::create_directory("sp");
+	klib::file::write_bytes_to_file(m_levels.at(p_level_no).get_bytes(true),
+		get_level_sp_filename(p_level_no));
+}
+
+std::string Level_window::get_level_sp_filename(std::size_t p_level_no) const {
+	std::string result{ "./sp/LEVELS-" };
+	std::string suffix{ std::to_string(p_level_no + 1) };
+	while (suffix.size() < 3)
+		suffix.insert(begin(suffix), '0');
+	return (result + suffix + ".SP");
 }
