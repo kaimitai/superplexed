@@ -36,10 +36,10 @@ void Project_gfx::blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x,
 	klib::gfx::blit_scale(p_rnd, l_letter, p_x, p_y, p_w, p_h);
 }
 
-bool Project_gfx::load_image_data_from_file(const std::string& p_filename) {
+bool Project_gfx::load_image_data_from_file(const std::string& p_filename, const SP_Config& p_config) {
 	try {
 		m_image_files.insert(std::make_pair(p_filename,
-			SP_Image(klib::file::read_file_as_bytes("./gamedata/" + p_filename + ".DAT"),
+			SP_Image(klib::file::read_file_as_bytes(p_config.get_dat_full_path(p_filename)),
 				m_image_metadata.at(p_filename).m_width,
 				m_image_metadata.at(p_filename).m_binary)));
 	}
@@ -50,7 +50,7 @@ bool Project_gfx::load_image_data_from_file(const std::string& p_filename) {
 	return true;
 }
 
-Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {
+Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	// initialize image metadata
 	m_image_metadata.insert(std::make_pair("BACK", Gfx_metadata(320, 0)));
 	m_image_metadata.insert(std::make_pair("CONTROLS", Gfx_metadata(320, 1)));
@@ -70,7 +70,7 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {
 	// palette 1: game objects and screens (apart from the title-screens and fonts)
 	// palette 2: ???
 	// palette 3: ???
-	std::vector<byte> l_bytes = klib::file::read_file_as_bytes("./gamedata/PALETTES.DAT");
+	std::vector<byte> l_bytes = klib::file::read_file_as_bytes(p_config.get_dat_full_path("PALETTES"));
 	for (std::size_t i{ 0 }; i < 4; ++i)
 		m_palettes.push_back(SP_Palette(std::vector<byte>(begin(l_bytes) + i * 4 * 16,
 			begin(l_bytes) + (i + 1) * 4 * 16)));
@@ -103,9 +103,9 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd) {
 		}));
 
 	// read required image data for the program
-	load_image_data_from_file("FIXED");
-	load_image_data_from_file("MOVING");
-	load_image_data_from_file("CHARS8");
+	load_image_data_from_file("FIXED", p_config);
+	load_image_data_from_file("MOVING", p_config);
+	load_image_data_from_file("CHARS8", p_config);
 
 	// create textures used by the editor
 	std::vector<SDL_Rect> l_font_rect{ {311,0,8,8},{463,0,8,8},{295,0,8,8},{79,0,8,8} };

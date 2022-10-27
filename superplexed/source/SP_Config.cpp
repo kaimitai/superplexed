@@ -24,5 +24,9 @@ SP_Config::SP_Config(void) {
 }
 
 std::string SP_Config::get_levels_dat_full_path(void) const {
-	return m_project_folder + "/" + m_levels_filename + ".DAT";
+	return get_dat_full_path(m_levels_filename);
+}
+
+std::string SP_Config::get_dat_full_path(const std::string& p_filename) const {
+	return m_project_folder + "/" + p_filename + ".DAT";
 }

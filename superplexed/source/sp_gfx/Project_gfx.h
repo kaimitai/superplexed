@@ -7,6 +7,7 @@
 #include <vector>
 #include "SP_Palette.h"
 #include "SP_Image.h"
+#include "./../SP_Config.h"
 
 class Project_gfx {
 
@@ -32,7 +33,7 @@ class Project_gfx {
 	bool save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const;
 
 public:
-	Project_gfx(SDL_Renderer* p_rnd);
+	Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	~Project_gfx(void);
 	SDL_Texture* get_static(std::size_t p_texture_no) const;
 	SDL_Texture* get_animated(std::size_t p_texture_no, std::size_t p_frame_no) const;
@@ -40,7 +41,7 @@ public:
 
 	std::vector<byte> get_palette_bytes(void) const;
 
-	bool load_image_data_from_file(const std::string& p_filename);
+	bool load_image_data_from_file(const std::string& p_filename, const SP_Config& p_config);
 	bool save_bmp(const std::string& p_filename) const;
 };
 

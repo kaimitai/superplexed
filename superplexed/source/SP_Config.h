@@ -11,6 +11,7 @@ public:
 	SP_Config(void);
 
 	std::string get_levels_dat_full_path(void) const;
+	std::string get_dat_full_path(const std::string& p_filename) const;
 };
 
 #endif
