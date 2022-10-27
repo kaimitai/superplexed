@@ -16,6 +16,9 @@ class SP_Image {
 	std::vector<byte> to_binary_bytes(void) const;
 	std::vector<byte> to_planar_bytes(void) const;
 
+	void set_bit(byte&, int, byte) const;
+	bool get_bit(byte, int) const;
+
 public:
 	SP_Image(const std::vector<byte>& p_bytes, int p_w, bool p_binary = false);
 	byte get_palette_index(int p_x, int p_y) const;

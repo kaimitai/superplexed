@@ -90,11 +90,34 @@ std::vector<byte> SP_Image::to_binary_bytes(void) const {
 }
 
 std::vector<byte> SP_Image::to_planar_bytes(void) const {
-	std::vector<byte> result;
 
-	// TODO: Convert image data to a planar bitmap representation
+	int img_area = get_w() * get_h();
+	int bit_count = img_area * 4;
+	int byte_count = img_area / 2;
+	int plane_offset = byte_count / 4;
+	std::vector<byte> result(byte_count, 0);
+
+	for (std::size_t j = 0; j < get_h(); ++j)
+		for (std::size_t i = 0; i < get_w(); ++i) {
+			byte p1 = m_pixels.at(j).at(i);
+			int byte_offset = (j * get_w() + i) / 8;
+			int bit_offset = 7 - ((j * get_w() + i)) % 8;
+
+			set_bit(result.at(byte_offset), bit_offset, get_bit(p1, 0));
+			set_bit(result.at(byte_offset + plane_offset), bit_offset, get_bit(p1, 1));
+			set_bit(result.at(byte_offset + 2 * plane_offset), bit_offset, get_bit(p1, 2));
+			set_bit(result.at(byte_offset + 3 * plane_offset), bit_offset, get_bit(p1, 3));
+		}
 
 	// add unknown byte
 	result.insert(end(result), begin(m_unknown_data), end(m_unknown_data));
 	return result;
+}
+
+void SP_Image::set_bit(byte& b, int e, byte val) const {
+	b |= (val << e);
+}
+
+bool SP_Image::get_bit(byte b, int e) const {
+	return (b >> e) & 1;
 }
