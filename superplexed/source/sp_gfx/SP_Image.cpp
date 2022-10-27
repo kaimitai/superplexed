@@ -90,23 +90,38 @@ std::vector<byte> SP_Image::to_binary_bytes(void) const {
 }
 
 std::vector<byte> SP_Image::to_planar_bytes(void) const {
+	// TODO: Improve this procedure
+	// currently we are making a ttf-type planar bitmap and converting it later
+	// can do everything in one pass
 
+	std::vector<byte> result;
 	int img_area = get_w() * get_h();
 	int bit_count = img_area * 4;
 	int byte_count = img_area / 2;
 	int plane_offset = byte_count / 4;
-	std::vector<byte> result(byte_count, 0);
+	std::vector<byte> planar_image(byte_count, 0);
 
 	for (std::size_t j = 0; j < get_h(); ++j)
 		for (std::size_t i = 0; i < get_w(); ++i) {
 			byte p1 = m_pixels.at(j).at(i);
-			int byte_offset = (j * get_w() + i) / 8;
-			int bit_offset = 7 - ((j * get_w() + i)) % 8;
+			int byte_offset = (static_cast<int>(j) * get_w() + static_cast<int>(i)) / 8;
+			int bit_offset = 7 - ((static_cast<int>(j) * get_w() + static_cast<int>(i))) % 8;
 
-			set_bit(result.at(byte_offset), bit_offset, get_bit(p1, 0));
-			set_bit(result.at(byte_offset + plane_offset), bit_offset, get_bit(p1, 1));
-			set_bit(result.at(byte_offset + 2 * plane_offset), bit_offset, get_bit(p1, 2));
-			set_bit(result.at(byte_offset + 3 * plane_offset), bit_offset, get_bit(p1, 3));
+			set_bit(planar_image.at(byte_offset), bit_offset, get_bit(p1, 0));
+			set_bit(planar_image.at(byte_offset + plane_offset), bit_offset, get_bit(p1, 1));
+			set_bit(planar_image.at(byte_offset + 2 * plane_offset), bit_offset, get_bit(p1, 2));
+			set_bit(planar_image.at(byte_offset + 3 * plane_offset), bit_offset, get_bit(p1, 3));
+		}
+
+	int l_row_size = get_w() / 8;
+
+	for (int i{ 0 }; i < get_h(); ++i)
+		for (int j{ 0 }; j < 4; ++j) {
+
+			int l_row = i * l_row_size + j * plane_offset;
+			result.insert(end(result),
+				begin(planar_image) + l_row,
+				begin(planar_image) + l_row + l_row_size);
 		}
 
 	// add unknown byte

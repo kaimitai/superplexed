@@ -22,7 +22,7 @@ void Main_window::Main_window::move(int p_delta_ms, const klib::User_input& p_in
 	}
 }
 
-void Main_window::draw(SDL_Renderer* p_rnd, int p_w, int p_h) {
+void Main_window::draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_w, int p_h) {
 	SDL_SetRenderDrawColor(p_rnd, 126, 126, 255, 0);
 	SDL_RenderClear(p_rnd);
 	switch (m_current_window) {
@@ -33,17 +33,17 @@ void Main_window::draw(SDL_Renderer* p_rnd, int p_w, int p_h) {
 		break;
 	}
 
-	draw_ui();
+	draw_ui(p_input);
 }
 
-void Main_window::draw_ui(void) {
+void Main_window::draw_ui(const klib::User_input& p_input) {
 	ImGui_ImplSDLRenderer_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
 	switch (m_current_window) {
 	case 1:
-		m_lvl_win.draw_ui(m_gfx);
+		m_lvl_win.draw_ui(m_gfx, p_input);
 		break;
 	default:
 		break;

@@ -37,6 +37,10 @@ Level_window::Level_window(SDL_Renderer* p_rnd) :
 		klib::Timer(8, 100, true),		// pulsating letter size and index
 		klib::Timer(3, 1750, false)
 	};
+
+	// initialize output
+	add_output("Read the documentation for the best experience!");
+	add_output("Welcome to Superplexed by Kai E. Froeland");
 }
 
 void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h) {
@@ -205,6 +209,12 @@ std::size_t Level_window::get_current_level_idx(void) const {
 	return static_cast<std::size_t>(m_current_level) - 1;
 }
 
+void Level_window::add_output(const std::string& p_msg) {
+	m_output.push_front(p_msg);
+	if (m_output.size() > 25)
+		m_output.pop_back();
+}
+
 // selections
 bool Level_window::has_selection(void) const {
 	return (m_sel_x2 != -1);
@@ -316,13 +326,15 @@ void Level_window::cut_selection(void) {
 	}
 }
 
-void Level_window::rotate_selection(bool p_clockwise) {
-	if (m_clipboard.empty())
+void Level_window::rotate_selection(bool p_cclockwise) {
+	if (m_clipboard.empty()) {
+		add_output("Clipboard is empty, no rotation possible");
 		return;
-
+	}
+	
 	std::vector<std::vector<byte>> result;
 
-	if (p_clockwise) {
+	if (p_cclockwise) {
 		for (int j{ static_cast<int>(m_clipboard[0].size()) - 1 }; j >= 0; --j) {
 			std::vector<byte> l_row;
 			for (int i{ 0 }; i < m_clipboard.size(); ++i) {
@@ -330,6 +342,7 @@ void Level_window::rotate_selection(bool p_clockwise) {
 			}
 			result.push_back(l_row);
 		}
+		add_output("Clipboard rotated counter-clockwise");
 	}
 	else {
 		for (int j{ 0 }; j < static_cast<int>(m_clipboard[0].size()); ++j) {
@@ -339,6 +352,7 @@ void Level_window::rotate_selection(bool p_clockwise) {
 			}
 			result.push_back(l_row);
 		}
+		add_output("Clipboard rotated clockwise");
 	}
 
 	m_clipboard = result;
