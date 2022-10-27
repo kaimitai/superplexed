@@ -204,14 +204,27 @@ void Level_window::draw_ui_level_win(void) {
 	ImGui::Text("File Operations");
 	// save to disk
 	if (ImGui::Button("Save DAT")) {
+		// generate LEVELS.DAT and LEVEL.LST
 		std::vector<byte> l_file_bytes;
-		for (const auto& lvl : m_levels) {
-			auto l_lvl_bytes = lvl.get_bytes();
+		std::vector<byte> l_list_file_bytes;
+
+		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
+			auto l_lvl_bytes = m_levels[i].get_bytes();
 			l_file_bytes.insert(end(l_file_bytes),
 				begin(l_lvl_bytes), end(l_lvl_bytes));
-			klib::file::write_bytes_to_file(l_file_bytes,
-				"./gamedata/LEVELS.DAT");
+
+			std::string l_line = klib::util::stringnum(i + 1) + ' ' + m_levels[i].get_title();
+
+			l_list_file_bytes.insert(end(l_list_file_bytes),
+				begin(l_line), end(l_line));
+			l_list_file_bytes.push_back(13);
+			l_list_file_bytes.push_back(10);
 		}
+
+		klib::file::write_bytes_to_file(l_file_bytes,
+			"./gamedata/LEVELS.DAT");
+		klib::file::write_bytes_to_file(l_list_file_bytes,
+			"./gamedata/LEVEL.LST");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save XML")) {

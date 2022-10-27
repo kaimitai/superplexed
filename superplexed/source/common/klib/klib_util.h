@@ -41,7 +41,7 @@ namespace klib {
 			return result;
 		}
 
-		template<class T>
+		template <class T>
 		void rot_sq_matrix_ccw(std::vector<std::vector<T>>& p_input) {
 
 			auto cyclic_roll = [](T& a, T& b, T& c, T& d) {
@@ -67,6 +67,16 @@ namespace klib {
 				return p_max_val;
 			else
 				return p_input;
+		}
+
+		template<class T>
+		std::string stringnum(T p_num, std::size_t p_length = 3) {
+			std::string result{ std::to_string(p_num) };
+
+			while (result.size() < p_length)
+				result.insert(begin(result), '0');
+
+			return result;
 		}
 
 	}
