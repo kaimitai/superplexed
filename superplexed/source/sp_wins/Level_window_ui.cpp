@@ -3,6 +3,7 @@
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
 #include "./../common/klib/klib_file.h"
 #include "./../common/klib/klib_util.h"
+#include "./../SP_Constants.h"
 
 void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input, SP_Config& p_config) {
 	draw_ui_level_win(p_input, p_config);
@@ -33,11 +34,7 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 	std::string l_sel_tile{ "Tiles - Cursor @ (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")###tiles" };
 	ImGui::Begin(l_sel_tile.c_str());
 
-	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
-	ImVec2 l_wmax = ImGui::GetWindowContentRegionMax();
-
-	int l_win_height = static_cast<int>(l_wmax.y - l_wmin.y);
-	float l_icon_w = klib::util::validate<float>(l_win_height / 15.0f, 16.0f, 128.0f);
+	float l_icon_w = m_tile_picker_scale * static_cast<float>(c::TILE_W);
 
 	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) +
 		" (" + SP_Level::get_description(m_sel_tile) + ")" };
@@ -276,12 +273,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, SP_Config&
 	ImGui::Checkbox("Show Grid", &m_ui_show_grid);
 	ImGui::SameLine();
 	ImGui::Checkbox("Animate", &m_ui_animate);
-
-	ImGui::Separator();
-	ImGui::Text("Output Messages");
-	ImGui::Separator();
-	for (const auto& msg : p_config.get_messages())
-		ImGui::Text(msg.c_str());
+	ImGui::SliderFloat("Icon Scale", &m_tile_picker_scale, 0.5f, 4.0f);
 
 	ImGui::End();
 }

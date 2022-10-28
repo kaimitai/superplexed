@@ -31,18 +31,23 @@ class Project_gfx {
 	SDL_Surface* sp_image_to_sdl_surface(const SP_Image& p_image, const SP_Palette& p_palette, int p_transp_idx = -1) const;
 	SDL_Color sp_color_to_sdl(const std::tuple<byte, byte, byte, byte>& p_col) const;
 	bool save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const;
+	void regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_filename);
 
 public:
 	Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	~Project_gfx(void);
 	SDL_Texture* get_static(std::size_t p_texture_no) const;
 	SDL_Texture* get_animated(std::size_t p_texture_no, std::size_t p_frame_no) const;
+	SDL_Texture* get_image_texture(const std::string& p_filename) const;
 	void blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, int p_w, int p_h, SDL_Color p_color) const;
 
 	std::vector<byte> get_palette_bytes(void) const;
 
-	bool load_image_data_from_file(const std::string& p_filename, const SP_Config& p_config);
-	bool save_bmp(const std::string& p_filename) const;
+	bool load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config);
+	bool save_bmp(const std::string& p_filename, SP_Config& p_config) const;
+	void save_dat(const std::string& p_filename, SP_Config& p_config) const;
+
+	const std::map<std::string, Project_gfx::Gfx_metadata>& get_meta(void) const;
 };
 
 #endif

@@ -20,6 +20,7 @@ class Level_window {
 	bool m_ui_show_grid, m_ui_animate;
 	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
+	float m_tile_picker_scale;
 
 	// selection
 	int m_sel_x, m_sel_y,

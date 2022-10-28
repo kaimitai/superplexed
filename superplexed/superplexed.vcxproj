@@ -158,6 +158,7 @@
     <ClInclude Include="source\sp_gfx\SP_Image.h" />
     <ClInclude Include="source\sp_gfx\SP_Palette.h" />
     <ClInclude Include="source\sp_levels\SP_Level.h" />
+    <ClInclude Include="source\sp_wins\Graphics_window.h" />
     <ClInclude Include="source\sp_wins\Level_window.h" />
     <ClInclude Include="source\sp_wins\Main_window.h" />
   </ItemGroup>
@@ -180,6 +181,7 @@
     <ClCompile Include="source\sp_gfx\SP_Image.cpp" />
     <ClCompile Include="source\sp_gfx\SP_Palette.cpp" />
     <ClCompile Include="source\sp_levels\SP_Level.cpp" />
+    <ClCompile Include="source\sp_wins\Graphics_window.cpp" />
     <ClCompile Include="source\sp_wins\Level_window.cpp" />
     <ClCompile Include="source\sp_wins\Level_window_ui.cpp" />
     <ClCompile Include="source\sp_wins\Level_window_xml.cpp" />

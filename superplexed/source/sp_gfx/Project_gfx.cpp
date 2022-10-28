@@ -1,6 +1,7 @@
 #include "Project_gfx.h"
 #include "./../common/klib/klib_gfx.h"
 #include "./../common/klib/klib_file.h"
+#include <filesystem>
 #include <tuple>
 
 using byte = unsigned char;
@@ -14,6 +15,14 @@ SDL_Texture* Project_gfx::get_animated(std::size_t p_texture_no, std::size_t p_f
 		return m_moving[m_animations.at(p_texture_no).at(p_frame_no)];
 	else
 		return get_static(p_texture_no);
+}
+
+SDL_Texture* Project_gfx::get_image_texture(const std::string& p_filename) const {
+	auto iter = m_image_textures.find(p_filename);
+	if (iter == end(m_image_textures))
+		return nullptr;
+	else
+		return iter->second;
 }
 
 Project_gfx::~Project_gfx(void) {
@@ -36,12 +45,26 @@ void Project_gfx::blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x,
 	klib::gfx::blit_scale(p_rnd, l_letter, p_x, p_y, p_w, p_h);
 }
 
-bool Project_gfx::load_image_data_from_file(const std::string& p_filename, const SP_Config& p_config) {
+void Project_gfx::regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_filename) {
+	if (get_image_texture(p_filename) != nullptr) {
+		SDL_DestroyTexture(get_image_texture(p_filename));
+		m_image_textures.erase(p_filename);
+	}
+
+	SDL_Surface* l_srf = sp_image_to_sdl_surface(m_image_files.at(p_filename),
+		m_palettes.at(m_image_metadata.at(p_filename).m_palette_no));
+	m_image_textures.insert(
+		std::make_pair(p_filename, klib::gfx::surface_to_texture(p_rnd, l_srf))
+	);
+}
+
+bool Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config) {
 	try {
 		m_image_files.insert(std::make_pair(p_filename,
 			SP_Image(klib::file::read_file_as_bytes(p_config.get_dat_full_path(p_filename)),
 				m_image_metadata.at(p_filename).m_width,
 				m_image_metadata.at(p_filename).m_binary)));
+		regenerate_texture(p_rnd, p_filename);
 	}
 	catch (const std::exception&) {
 		return false;
@@ -103,9 +126,9 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 		}));
 
 	// read required image data for the program
-	load_image_data_from_file("FIXED", p_config);
-	load_image_data_from_file("MOVING", p_config);
-	load_image_data_from_file("CHARS8", p_config);
+	load_image_data_from_file(p_rnd, "FIXED", p_config);
+	load_image_data_from_file(p_rnd, "MOVING", p_config);
+	load_image_data_from_file(p_rnd, "CHARS8", p_config);
 
 	// create textures used by the editor
 	std::vector<SDL_Rect> l_font_rect{ {311,0,8,8},{463,0,8,8},{295,0,8,8},{79,0,8,8} };
@@ -132,10 +155,20 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	m_animations[25] = { 0, 1,2,3,4,5 }; // "bug" enemy
 }
 
-bool Project_gfx::save_bmp(const std::string& p_filename) const {
+void Project_gfx::save_dat(const std::string& p_filename, SP_Config& p_config) const {
+	klib::file::write_bytes_to_file(m_image_files.at(p_filename).to_bytes(),
+		p_config.get_dat_full_path(p_filename));
+}
+
+bool Project_gfx::save_bmp(const std::string& p_filename, SP_Config& p_config) const {
+	if (m_image_files.find(p_filename) == end(m_image_files))
+		return false;
+
+	std::filesystem::create_directory(p_config.get_bmp_folder());
+
 	return save_bmp(m_image_files.at(p_filename),
 		m_palettes.at(m_image_metadata.at(p_filename).m_palette_no),
-		p_filename + ".bmp");
+		p_config.get_bmp_full_path(p_filename));
 }
 
 bool Project_gfx::save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const {
@@ -192,4 +225,8 @@ std::vector<byte> Project_gfx::get_palette_bytes(void) const {
 	}
 
 	return result;
+}
+
+const std::map<std::string, Project_gfx::Gfx_metadata>& Project_gfx::get_meta(void) const {
+	return m_image_metadata;
 }

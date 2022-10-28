@@ -117,6 +117,9 @@
     <ClInclude Include="source\SP_Constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\sp_wins\Graphics_window.h">
+      <Filter>Header Files\sp_wins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="source\SP_Config.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_wins\Graphics_window.cpp">
+      <Filter>Source Files\sp_wins</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

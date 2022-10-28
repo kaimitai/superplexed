@@ -13,7 +13,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
-	m_sel_tile{ 0 }
+	m_sel_tile{ 0 }, m_tile_picker_scale{ 1.0f }
 {
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
 	auto l_bytes = klib::file::read_file_as_bytes(p_config.get_levels_dat_full_path());
@@ -38,10 +38,6 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 		klib::Timer(8, 100, true),		// pulsating letter size and index
 		klib::Timer(3, 1750, false)
 	};
-
-	// initialize output
-	p_config.add_message("Read the documentation for the best experience!");
-	p_config.add_message("Welcome to Superplexed by Kai E. Froeland");
 }
 
 void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h) {
