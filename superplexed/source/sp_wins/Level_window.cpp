@@ -5,6 +5,7 @@
 #include "./../common/imgui/imgui.h"
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
+#include "./../SP_Constants.h"
 #include <algorithm>
 #include <filesystem>
 
@@ -14,11 +15,11 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
 	m_sel_tile{ 0 }
 {
-	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 60 * 16, 24 * 16);
+	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
 	auto l_bytes = klib::file::read_file_as_bytes(p_config.get_levels_dat_full_path());
 
-	for (std::size_t i{ 0 }; i < l_bytes.size(); i += 1536)
-		m_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + 1536)));
+	for (std::size_t i{ 0 }; i < l_bytes.size(); i += c::LVL_DATA_BYTE_SIZE)
+		m_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + c::LVL_DATA_BYTE_SIZE)));
 
 	// initialize the tile picker
 	m_tile_picker = {
@@ -140,7 +141,7 @@ void Level_window::draw(SDL_Renderer* p_rnd, const Project_gfx& p_gfx, int p_w, 
 
 	klib::gfx::blit_full_spec(p_rnd, m_texture,
 		0, 0, l_stw_tc * l_tpw, p_h,
-		16 * static_cast<int>(m_cam_x), 0, 16 * l_stw_tc, 16 * 24);
+		c::TILE_W * static_cast<int>(m_cam_x), 0, c::TILE_W * l_stw_tc, c::TILE_W * c::LEVEL_H);
 }
 
 void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx) {
@@ -157,25 +158,25 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 			klib::gfx::blit(p_rnd,
 				m_ui_animate ? p_gfx.get_animated(l_tile_no, l_atime) :
 				p_gfx.get_static(l_tile_no),
-				i * 16, j * 16);
+				i * c::TILE_W, j * c::TILE_W);
 		}
 
 	auto l_spos = m_levels.at(get_current_level_idx()).get_start_pos();
 	klib::gfx::blit(p_rnd,
 		m_ui_animate ? p_gfx.get_animated(3, l_atime) :
 		p_gfx.get_static(3),
-		16 * l_spos.first, 16 * l_spos.second);
+		c::TILE_W * l_spos.first, c::TILE_W * l_spos.second);
 
 	int l_letter_w = m_timers[2].get_frame();
 	int l_letter_ind = m_timers[3].get_frame();
 
 	for (int i{ 0 }; i < m_levels.at(get_current_level_idx()).get_gravity_port_count(); ++i) {
-		int l_x = 16 * m_levels.at(get_current_level_idx()).get_gp_x(i);
-		int l_y = 16 * m_levels.at(get_current_level_idx()).get_gp_y(i);
+		int l_x = c::TILE_W * m_levels.at(get_current_level_idx()).get_gp_x(i);
+		int l_y = c::TILE_W * m_levels.at(get_current_level_idx()).get_gp_y(i);
 		bool l_port_ok = m_levels.at(get_current_level_idx()).get_gp_status(i);
 
 		if (i == m_current_gp - 1)
-			klib::gfx::draw_rect(p_rnd, l_x, l_y, 16, 16,
+			klib::gfx::draw_rect(p_rnd, l_x, l_y, c::TILE_W, c::TILE_W,
 				klib::gfx::pulse_color(SDL_Color{ 180, 180, 255 }, SDL_Color{ 255,255,255 }, l_ptime / 255.0f),
 				1);
 
@@ -194,7 +195,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	}
 
 	auto l_rect = this->get_selection_rectangle();
-	klib::gfx::draw_rect(p_rnd, 16 * l_rect.x, 16 * l_rect.y, 16 * (l_rect.w + 1), 16 * (l_rect.h + 1),
+	klib::gfx::draw_rect(p_rnd, c::TILE_W * l_rect.x, c::TILE_W * l_rect.y, c::TILE_W * (l_rect.w + 1), c::TILE_W * (l_rect.h + 1),
 		klib::gfx::pulse_color(SDL_Color{ 180, 200, 0 }, SDL_Color{ 255,255,50 }, l_ptime / 255.0f), //SDL_Color{ 200, 200, 50 },
 		3);
 

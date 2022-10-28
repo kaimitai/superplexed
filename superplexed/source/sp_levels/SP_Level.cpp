@@ -1,15 +1,7 @@
 #include "SP_Level.h"
+#include "./../SP_Constants.h"
 
 using byte = unsigned char;
-
-constexpr unsigned int LEVEL_W{ 60 }, LEVEL_H{ 24 },
-OFFSET_TILES{ 0 }, OFFSET_GRAVITY{ 1444 }, OFFSET_UNUSED_BYTES{ 1440 },
-OFFSET_SF_VERSION{ 1445 },
-OFFSET_TITLE{ 1446 }, OFFSET_FREEZE_ZONKS{ 1469 }, OFFSET_IT_COUNT{ 1470 },
-OFFSET_GP_COUNT{ 1471 }, OFFSET_GP{ 1472 }, OFFSET_SF_DEMO_BYTES{ 1532 },
-LENGTH_TITLE{ 23 }, LENGTH_GP{ 6 }, LENGTH_SF_DEMO_BYTES{ 4 },
-LENGTH_UNUSED_BYTES{ 4 },
-OFFSET_SF_SOLUTION{ 1536 };
 
 SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 	m_player_x{ 0 }, m_player_y{ 0 } {
@@ -19,10 +11,10 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 	bool l_player_found{ false };
 
 	// initialize level map and player start
-	for (std::size_t y{ 0 }; y < LEVEL_H; ++y) {
+	for (std::size_t y{ 0 }; y < c::LEVEL_H; ++y) {
 		std::vector<byte> l_row;
-		for (std::size_t x{ 0 }; x < LEVEL_W; ++x) {
-			byte l_value = p_bytes.at(OFFSET_TILES + LEVEL_W * y + x);
+		for (std::size_t x{ 0 }; x < c::LEVEL_W; ++x) {
+			byte l_value = p_bytes.at(c::OFFSET_TILES + c::LEVEL_W * y + x);
 			if (l_value == 3 && !l_player_found) {
 				m_player_x = static_cast<byte>(x);
 				m_player_y = static_cast<byte>(y);
@@ -36,30 +28,30 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 	}
 
 	// initialize other metadata
-	m_gravity = (p_bytes.at(OFFSET_GRAVITY) == 1);
-	m_sf_version = p_bytes.at(OFFSET_SF_VERSION);
-	m_title = std::string(begin(p_bytes) + OFFSET_TITLE,
-		begin(p_bytes) + OFFSET_TITLE + LENGTH_TITLE);
-	m_freeze_zonks = (p_bytes.at(OFFSET_FREEZE_ZONKS) == 2);
-	m_solve_it_count = p_bytes.at(OFFSET_IT_COUNT);
+	m_gravity = (p_bytes.at(c::OFFSET_GRAVITY) == 1);
+	m_sf_version = p_bytes.at(c::OFFSET_SF_VERSION);
+	m_title = std::string(begin(p_bytes) + c::OFFSET_TITLE,
+		begin(p_bytes) + c::OFFSET_TITLE + c::LENGTH_TITLE);
+	m_freeze_zonks = (p_bytes.at(c::OFFSET_FREEZE_ZONKS) == 2);
+	m_solve_it_count = p_bytes.at(c::OFFSET_IT_COUNT);
 
-	m_unused_bytes = std::vector<byte>(begin(p_bytes) + OFFSET_UNUSED_BYTES,
-		begin(p_bytes) + OFFSET_UNUSED_BYTES + LENGTH_UNUSED_BYTES);
-	m_sf_demo_bytes = std::vector<byte>(begin(p_bytes) + OFFSET_SF_DEMO_BYTES,
-		begin(p_bytes) + OFFSET_SF_DEMO_BYTES + LENGTH_SF_DEMO_BYTES);
+	m_unused_bytes = std::vector<byte>(begin(p_bytes) + c::OFFSET_UNUSED_BYTES,
+		begin(p_bytes) + c::OFFSET_UNUSED_BYTES + c::LENGTH_UNUSED_BYTES);
+	m_sf_demo_bytes = std::vector<byte>(begin(p_bytes) + c::OFFSET_SF_DEMO_BYTES,
+		begin(p_bytes) + c::OFFSET_SF_DEMO_BYTES + c::LENGTH_SF_DEMO_BYTES);
 
 	// initialize gravity ports
-	byte l_gp_count = p_bytes.at(OFFSET_GP_COUNT);
+	byte l_gp_count = p_bytes.at(c::OFFSET_GP_COUNT);
 	for (std::size_t i{ 0 }; i < l_gp_count; ++i) {
-		std::size_t l_offset = OFFSET_GP + LENGTH_GP * i;
+		std::size_t l_offset = c::OFFSET_GP + c::LENGTH_GP * i;
 		m_gravity_ports.push_back(std::vector<byte>(begin(p_bytes) + l_offset,
-			begin(p_bytes) + l_offset + LENGTH_GP));
+			begin(p_bytes) + l_offset + c::LENGTH_GP));
 	}
 
 	// if a solution is appended, store it
 	// only possible for individual SP-files
 	m_sf_solution_bytes = std::vector<byte>(
-		begin(p_bytes) + OFFSET_SF_SOLUTION,
+		begin(p_bytes) + c::LVL_DATA_BYTE_SIZE,
 		end(p_bytes)
 		);
 }
@@ -80,10 +72,10 @@ SP_Level::SP_Level(const std::string& p_title,
 std::vector<byte> SP_Level::get_bytes(bool p_include_demo) const {
 	std::vector<byte> result;
 	// add tile data
-	for (int i{ 0 }; i < LEVEL_H; ++i)
+	for (int i{ 0 }; i < c::LEVEL_H; ++i)
 		result.insert(end(result), begin(m_tiles.at(i)), end(m_tiles.at(i)));
 	// update tile data with player start
-	result.at(static_cast<std::size_t>(m_player_y * LEVEL_W + m_player_x)) = 3;
+	result.at(static_cast<std::size_t>(m_player_y * c::LEVEL_W + m_player_x)) = 3;
 
 	result.insert(end(result), begin(m_unused_bytes), end(m_unused_bytes));
 	result.push_back(m_gravity ? 1 : 0);
@@ -100,7 +92,7 @@ std::vector<byte> SP_Level::get_bytes(bool p_include_demo) const {
 	}
 
 	for (std::size_t i{ 10 }; i > m_gravity_ports.size(); --i)
-		for (int j{ 0 }; j < LENGTH_GP; ++j)
+		for (int j{ 0 }; j < c::LENGTH_GP; ++j)
 			result.push_back(0);
 
 	result.insert(end(result), begin(m_sf_demo_bytes), end(m_sf_demo_bytes));
@@ -118,8 +110,8 @@ std::vector<byte> SP_Level::get_bytes(bool p_include_demo) const {
 SP_Level::Gravity_port::Gravity_port(const std::vector<byte>& p_bytes) {
 	int l_pos = (p_bytes.at(0) * 256 + p_bytes.at(1)) / 2;
 
-	m_x = static_cast<byte>(l_pos % LEVEL_W);
-	m_y = static_cast<byte>(l_pos / LEVEL_W);
+	m_x = static_cast<byte>(l_pos % c::LEVEL_W);
+	m_y = static_cast<byte>(l_pos / c::LEVEL_W);
 	m_gravity = (p_bytes.at(2) == 1);
 	m_freeze_zonks = (p_bytes.at(3) == 2);
 	m_freeze_enemies = (p_bytes.at(4) == 1);
@@ -134,7 +126,7 @@ SP_Level::Gravity_port::Gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, b
 
 std::vector<byte> SP_Level::Gravity_port::get_bytes(void) const {
 	std::vector<byte> result;
-	int l_pos = 2 * (m_x + LEVEL_W * m_y);
+	int l_pos = 2 * (m_x + c::LEVEL_W * m_y);
 
 	result.push_back(static_cast<byte>(l_pos / 256));
 	result.push_back(static_cast<byte>(l_pos % 256));
@@ -239,9 +231,9 @@ void SP_Level::set_tile_value(int p_x, int p_y, byte p_value) {
 void SP_Level::set_title(const std::string& p_title) {
 	m_title = p_title;
 
-	while (m_title.size() < LENGTH_TITLE)
+	while (m_title.size() < c::LENGTH_TITLE)
 		m_title.push_back(' ');
-	while (m_title.size() > LENGTH_TITLE)
+	while (m_title.size() > c::LENGTH_TITLE)
 		m_title.pop_back();
 }
 

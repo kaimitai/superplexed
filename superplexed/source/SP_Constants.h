@@ -50,6 +50,19 @@ namespace c {
 
 	constexpr char XML_VAL_TRUE[]{ "true" };
 	constexpr char XML_VAL_FALSE[]{ "false" };
+
+	// gfx constants
+	constexpr unsigned int TILE_W{ 16 };
+
+	// level file constants
+	constexpr unsigned int LEVEL_W{ 60 }, LEVEL_H{ 24 },
+		OFFSET_TILES{ 0 }, OFFSET_GRAVITY{ 1444 }, OFFSET_UNUSED_BYTES{ 1440 },
+		OFFSET_SF_VERSION{ 1445 },
+		OFFSET_TITLE{ 1446 }, OFFSET_FREEZE_ZONKS{ 1469 }, OFFSET_IT_COUNT{ 1470 },
+		OFFSET_GP_COUNT{ 1471 }, OFFSET_GP{ 1472 }, OFFSET_SF_DEMO_BYTES{ 1532 },
+		LENGTH_TITLE{ 23 }, LENGTH_GP{ 6 }, LENGTH_SF_DEMO_BYTES{ 4 },
+		LENGTH_UNUSED_BYTES{ 4 },
+		LVL_DATA_BYTE_SIZE{ 1536 };
 }
 
 #endif
