@@ -47,14 +47,12 @@ class Level_window {
 	std::pair<int, int> mouse_coords_to_tile(int p_mouse_x, int p_mouse_y, int p_screen_h) const;
 
 	// xml read/write
-	std::string get_level_xml_filename(std::size_t p_level_no) const;
-	void save_xml(std::size_t p_level_no) const;
-	SP_Level load_xml(std::size_t p_level_no) const;
+	void save_xml(std::size_t p_level_no, const SP_Config& p_config) const;
+	SP_Level load_xml(std::size_t p_level_no, const SP_Config& p_config) const;
 
 	// sp read/write
-	std::string get_level_sp_filename(std::size_t p_level_no) const;
-	void save_sp(std::size_t p_level_no) const;
-	SP_Level load_sp(std::size_t p_level_no) const;
+	void save_sp(std::size_t p_level_no, const SP_Config& p_config) const;
+	SP_Level load_sp(std::size_t p_level_no, const SP_Config& p_config) const;
 
 public:
 	Level_window(SDL_Renderer* p_rnd, SP_Config& p_config);

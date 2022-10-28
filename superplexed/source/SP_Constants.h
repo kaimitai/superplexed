@@ -5,12 +5,21 @@ namespace c {
 	// application constants
 	constexpr char APP_TITLE[]{ "Superplexed v0.1" };
 	constexpr char APP_VERSION[]{ "0.1" };
+	constexpr int APP_WIN_W_INITIAL{ 1024 };
+	constexpr int APP_WIN_H_INITIAL{ 768 };
 
 	// filenames
 	constexpr char SPCONFIG_XML_FILENAME[]{ "spconfig.xml" };
 	constexpr char DEFAULT_LVL_FILE[]{ "LEVELS" };
 	constexpr char DEFAULT_LVL_LIST_FILE[]{ "LEVEL" };
 	constexpr char DEFAULT_PROJECT_FOLDER[]{ "." };
+
+	// folders and file extensions
+	constexpr char SUFFIX_DAT[]{ "DAT" };
+	constexpr char SUFFIX_BMP[]{"bmp"};
+	constexpr char SUFFIX_LST[]{ "LST" };
+	constexpr char SUFFIX_SP[]{ "SP" };
+	constexpr char SUFFIX_XML[]{ "xml" };
 
 	// output messages
 	constexpr unsigned int MESSAGES_MAX_SIZE{ 25 };

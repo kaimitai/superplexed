@@ -366,20 +366,12 @@ std::pair<int, int> Level_window::mouse_coords_to_tile(int p_mouse_x, int p_mous
 }
 
 // SP load/save
-SP_Level Level_window::load_sp(std::size_t p_level_no) const {
-	return SP_Level(klib::file::read_file_as_bytes(get_level_sp_filename(p_level_no)));
+SP_Level Level_window::load_sp(std::size_t p_level_no, const SP_Config& p_config) const {
+	return SP_Level(klib::file::read_file_as_bytes(p_config.get_SP_full_path(p_level_no)));
 }
 
-void Level_window::save_sp(std::size_t p_level_no) const {
-	std::filesystem::create_directory("sp");
+void Level_window::save_sp(std::size_t p_level_no, const SP_Config& p_config) const {
+	std::filesystem::create_directory(p_config.get_SP_folder());
 	klib::file::write_bytes_to_file(m_levels.at(p_level_no).get_bytes(true),
-		get_level_sp_filename(p_level_no));
-}
-
-std::string Level_window::get_level_sp_filename(std::size_t p_level_no) const {
-	std::string result{ "./sp/LEVELS-" };
-	std::string suffix{ std::to_string(p_level_no + 1) };
-	while (suffix.size() < 3)
-		suffix.insert(begin(suffix), '0');
-	return (result + suffix + ".SP");
+		p_config.get_SP_full_path(p_level_no));
 }

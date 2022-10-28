@@ -220,19 +220,19 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, SP_Config&
 		}
 
 		klib::file::write_bytes_to_file(l_file_bytes,
-			"./gamedata/LEVELS.DAT");
+			p_config.get_levels_dat_full_path());
 		klib::file::write_bytes_to_file(l_list_file_bytes,
-			"./gamedata/LEVEL.LST");
+			p_config.get_level_lst_full_path());
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save XML")) {
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
-			save_xml(i);
+			save_xml(i, p_config);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save SP")) {
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
-			save_sp(i);
+			save_sp(i, p_config);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save BMP")) {
@@ -248,7 +248,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, SP_Config&
 
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
 			try {
-				auto l_lvl = load_xml(i);
+				auto l_lvl = load_xml(i, p_config);
 				m_levels.at(i) = l_lvl;
 			}
 			catch (const std::exception&) {
@@ -261,7 +261,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, SP_Config&
 
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
 			try {
-				auto l_lvl = load_sp(i);
+				auto l_lvl = load_sp(i, p_config);
 				m_levels.at(i) = l_lvl;
 			}
 			catch (const std::exception&) {

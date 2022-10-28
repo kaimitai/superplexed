@@ -6,6 +6,7 @@
 #include "./common/klib/User_input.h"
 #include "./sp_wins/Main_window.h"
 #include "./SP_Config.h"
+#include "./SP_Constants.h"
 
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
@@ -24,7 +25,7 @@ int main(int argc, char* args[]) {
 		// Event handler
 		SDL_Event e;
 
-		l_window = SDL_CreateWindow("Superplexed", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1024, 768, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+		l_window = SDL_CreateWindow(c::APP_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, c::APP_WIN_W_INITIAL, c::APP_WIN_H_INITIAL, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		if (l_window == nullptr)
 			std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError();
 		else {
@@ -64,7 +65,7 @@ int main(int argc, char* args[]) {
 			uint32_t delta = 1;
 			uint32_t deltaDraw = 17;
 
-			int l_w{ 1024 }, l_h{ 768 };
+			int l_w{ c::APP_WIN_W_INITIAL }, l_h{ c::APP_WIN_H_INITIAL };
 
 			while (!l_exit) {
 
