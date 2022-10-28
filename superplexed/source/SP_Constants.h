@@ -13,7 +13,7 @@ namespace c {
 	constexpr char DEFAULT_PROJECT_FOLDER[]{ "." };
 
 	// output messages
-
+	constexpr unsigned int MESSAGES_MAX_SIZE{ 25 };
 
 	// xml tags, attributes and values
 	// configuration XML

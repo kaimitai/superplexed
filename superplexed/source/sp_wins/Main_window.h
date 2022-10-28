@@ -15,10 +15,10 @@ class Main_window {
 	Level_window m_lvl_win;
 
 public:
-	Main_window(SDL_Renderer* p_rnd, const SP_Config& p_config);
-	void move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h);
-	void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, int p_w, int p_h);
-	void draw_ui(const klib::User_input& p_input);
+	Main_window(SDL_Renderer* p_rnd, SP_Config& p_config);
+	void move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h);
+	void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h);
+	void draw_ui(const klib::User_input& p_input, SP_Config& p_config);
 };
 
 #endif

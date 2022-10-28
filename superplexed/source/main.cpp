@@ -93,13 +93,13 @@ int main(int argc, char* args[]) {
 					SDL_GetWindowSize(l_window, &l_w, &l_h);
 
 					input.move(realDelta, mw_used ? mouse_wheel_y : 0);
-					main_window.move(realDelta, input, l_w, l_h);
+					main_window.move(realDelta, input, config, l_w, l_h);
 
 					last_logic_time = tick_time;
 				}
 
 				if (deltaDraw >= 25) { // capped frame rate of ~40 is ok
-					main_window.draw(l_rnd, input, l_w, l_h);
+					main_window.draw(l_rnd, input, config, l_w, l_h);
 					last_draw_time = SDL_GetTicks();
 
 					//Update screen

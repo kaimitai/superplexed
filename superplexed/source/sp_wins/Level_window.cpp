@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <filesystem>
 
-Level_window::Level_window(SDL_Renderer* p_rnd, const SP_Config& p_config) :
+Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
@@ -27,7 +27,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd, const SP_Config& p_config) :
 		{"Ports", {9, 10, 11, 12, 21, 22, 23}},
 		{"RAM Chips", {5,26, 27, 38, 39}},
 		{"Decoration", {28, 29, 30, 31, 32, 33, 34, 35, 36, 37}},
-		{"Gravity Ports", {13, 14, 15, 16}}
+		{"Special Ports", {13, 14, 15, 16}}
 	};
 
 	// initalize timers
@@ -39,11 +39,11 @@ Level_window::Level_window(SDL_Renderer* p_rnd, const SP_Config& p_config) :
 	};
 
 	// initialize output
-	add_output("Read the documentation for the best experience!");
-	add_output("Welcome to Superplexed by Kai E. Froeland");
+	p_config.add_message("Read the documentation for the best experience!");
+	p_config.add_message("Welcome to Superplexed by Kai E. Froeland");
 }
 
-void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h) {
+void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
 
@@ -69,7 +69,7 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, int p_w
 		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_V))
 			show_clipboard_destination();
 		else if (p_input.is_pressed(SDL_SCANCODE_R))
-			rotate_selection(l_shift);
+			rotate_selection(l_shift, p_config);
 		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_G)) {
 			if (m_levels.at(get_current_level_idx()).get_gravity_port_count() >= m_current_gp) {
 				m_sel_x = m_levels.at(get_current_level_idx()).get_gp_x(m_current_gp - 1);
@@ -209,12 +209,6 @@ std::size_t Level_window::get_current_level_idx(void) const {
 	return static_cast<std::size_t>(m_current_level) - 1;
 }
 
-void Level_window::add_output(const std::string& p_msg) {
-	m_output.push_front(p_msg);
-	if (m_output.size() > 25)
-		m_output.pop_back();
-}
-
 // selections
 bool Level_window::has_selection(void) const {
 	return (m_sel_x2 != -1);
@@ -326,9 +320,9 @@ void Level_window::cut_selection(void) {
 	}
 }
 
-void Level_window::rotate_selection(bool p_cclockwise) {
+void Level_window::rotate_selection(bool p_cclockwise, SP_Config& p_config) {
 	if (m_clipboard.empty()) {
-		add_output("Clipboard is empty, no rotation possible");
+		p_config.add_message("Clipboard is empty, no rotation possible");
 		return;
 	}
 
@@ -342,7 +336,7 @@ void Level_window::rotate_selection(bool p_cclockwise) {
 			}
 			result.push_back(l_row);
 		}
-		add_output("Clipboard rotated counter-clockwise");
+		p_config.add_message("Clipboard rotated counter-clockwise");
 	}
 	else {
 		for (int j{ 0 }; j < static_cast<int>(m_clipboard[0].size()); ++j) {
@@ -352,7 +346,7 @@ void Level_window::rotate_selection(bool p_cclockwise) {
 			}
 			result.push_back(l_row);
 		}
-		add_output("Clipboard rotated clockwise");
+		p_config.add_message("Clipboard rotated clockwise");
 	}
 
 	m_clipboard = result;

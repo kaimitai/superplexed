@@ -20,7 +20,6 @@ class Level_window {
 	bool m_ui_show_grid, m_ui_animate;
 	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
-	std::deque<std::string> m_output;
 
 	// selection
 	int m_sel_x, m_sel_y,
@@ -30,7 +29,6 @@ class Level_window {
 	int get_tile_pixel_w(int p_screen_pixel_h) const;
 	void regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx);
 	std::size_t get_current_level_idx(void) const;
-	void add_output(const std::string& p_msg);
 
 	// selection procedures and functions
 	bool has_selection(void) const;
@@ -45,7 +43,7 @@ class Level_window {
 	void select_all(void);
 	void show_clipboard_destination(void);
 	bool selection_fits(void) const;
-	void rotate_selection(bool p_cclockwise);
+	void rotate_selection(bool p_cclockwise, SP_Config& p_config);
 	std::pair<int, int> mouse_coords_to_tile(int p_mouse_x, int p_mouse_y, int p_screen_h) const;
 
 	// xml read/write
@@ -59,12 +57,12 @@ class Level_window {
 	SP_Level load_sp(std::size_t p_level_no) const;
 
 public:
-	Level_window(SDL_Renderer* p_rnd, const SP_Config& p_config);
-	void move(int p_delta_ms, const klib::User_input& p_input, int p_w, int p_h);
+	Level_window(SDL_Renderer* p_rnd, SP_Config& p_config);
+	void move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h);
 	void draw(SDL_Renderer* p_rnd, const Project_gfx& p_gfx, int p_w, int p_h);
-	void draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input);
-	void draw_ui_level_win(const klib::User_input& p_input);
-	void draw_ui_gp_win(void);
+	void draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input, SP_Config& p_config);
+	void draw_ui_level_win(const klib::User_input& p_input, SP_Config& p_config);
+	void draw_ui_gp_win(SP_Config& p_config);
 	void draw_ui_tile_win(const Project_gfx& p_gfx);
 };
 

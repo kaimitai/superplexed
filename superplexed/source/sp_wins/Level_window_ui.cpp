@@ -4,10 +4,10 @@
 #include "./../common/klib/klib_file.h"
 #include "./../common/klib/klib_util.h"
 
-void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input) {
-	draw_ui_level_win(p_input);
+void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input, SP_Config& p_config) {
+	draw_ui_level_win(p_input, p_config);
 	draw_ui_tile_win(p_gfx);
-	draw_ui_gp_win();
+	draw_ui_gp_win(p_config);
 	/*
 	// test code for putting the gameboard graphics into a window
 	ImGui::Begin("Gameboard", nullptr, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
@@ -70,7 +70,7 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 	ImGui::End();
 }
 
-void Level_window::draw_ui_gp_win(void) {
+void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 	int l_gp_count = m_levels.at(get_current_level_idx()).get_gravity_port_count();
 	std::string l_clvl{ std::to_string(m_current_level) };
 
@@ -125,7 +125,7 @@ void Level_window::draw_ui_gp_win(void) {
 
 		if (ImGui::Button("Delete Port")) {
 			m_levels.at(get_current_level_idx()).delete_gravity_port(m_current_gp - 1);
-			add_output("Deleted special port #" + std::to_string(m_current_gp));
+			p_config.add_message("Deleted special port #" + std::to_string(m_current_gp));
 		}
 
 	}
@@ -136,14 +136,14 @@ void Level_window::draw_ui_gp_win(void) {
 		if (ImGui::Button("Add Port")) {
 			m_levels.at(get_current_level_idx()).add_gravity_port(m_sel_x, m_sel_y,
 				false, false, false);
-			add_output("Added special port at (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")");
+			p_config.add_message("Added special port at (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")");
 		}
 	}
 
 	ImGui::End();
 }
 
-void Level_window::draw_ui_level_win(const klib::User_input& p_input) {
+void Level_window::draw_ui_level_win(const klib::User_input& p_input, SP_Config& p_config) {
 	std::string l_clvl{ std::to_string(m_current_level) };
 
 	std::string m_lvl_label{ "Levels (" + l_clvl + " of " + std::to_string(m_levels.size()) + ")###levels" };
@@ -188,13 +188,13 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input) {
 	if (ImGui::Button("Copy Level")) {
 		m_levels.insert(begin(m_levels) + get_current_level_idx(),
 			m_levels.at(get_current_level_idx()));
-		add_output("Made a copy of level #" + l_clvl);
+		p_config.add_message("Made a copy of level #" + l_clvl);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Delete Level")) {
 		if (m_levels.size() > 1) {
 			m_levels.erase(begin(m_levels) + get_current_level_idx());
-			add_output("Deleted level #" + l_clvl);
+			p_config.add_message("Deleted level #" + l_clvl);
 			m_current_level = std::min<int>(static_cast<int>(m_levels.size()), m_current_level);
 		}
 	}
@@ -280,7 +280,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input) {
 	ImGui::Separator();
 	ImGui::Text("Output Messages");
 	ImGui::Separator();
-	for (const auto& msg : m_output)
+	for (const auto& msg : p_config.get_messages())
 		ImGui::Text(msg.c_str());
 
 	ImGui::End();
