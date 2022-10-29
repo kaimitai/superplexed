@@ -79,6 +79,7 @@ namespace c {
 	constexpr char XML_ATTR_R[]{ "r" };
 	constexpr char XML_ATTR_G[]{ "g" };
 	constexpr char XML_ATTR_B[]{ "b" };
+	constexpr char XML_ATTR_A[]{ "a" };
 
 	// gfx constants
 	constexpr unsigned int TILE_W{ 16 };

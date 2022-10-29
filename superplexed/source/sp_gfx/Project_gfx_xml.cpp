@@ -6,6 +6,42 @@
 #include "./../SP_Config.h"
 #include <filesystem>
 
+void Project_gfx::save_palette_xml(const SP_Config& p_config) const {
+	pugi::xml_document doc;
+	auto n_comments = doc.append_child(pugi::node_comment);
+	n_comments.set_value(c::XML_COMMENTS_PALETTE);
+
+	auto n_metadata = doc.append_child(c::XML_TAG_META);
+	n_metadata.append_attribute(c::XML_ATTR_APP_VERSION);
+	n_metadata.attribute(c::XML_ATTR_APP_VERSION).set_value(c::APP_VERSION);
+
+	auto n_palettes = n_metadata.append_child(c::XML_TAG_PALETTES);
+	for (std::size_t i{ 0 }; i < c::PALETTE_COUNT; ++i) {
+		auto n_palette = n_palettes.append_child(c::XML_TAG_PALETTE);
+
+		for (std::size_t j{ 0 }; j < m_palettes[i].get_size(); ++j) {
+			auto n_col = n_palette.append_child(c::XML_TAG_COLOR);
+			const auto& l_color = m_palettes[i].get_color(static_cast<int>(j));
+
+			n_col.append_attribute(c::XML_ATTR_NO);
+			n_col.attribute(c::XML_ATTR_NO).set_value(j + 1);
+			n_col.append_attribute(c::XML_ATTR_R);
+			n_col.attribute(c::XML_ATTR_R).set_value(std::get<0>(l_color) / 16);
+			n_col.append_attribute(c::XML_ATTR_G);
+			n_col.attribute(c::XML_ATTR_G).set_value(std::get<1>(l_color) / 16);
+			n_col.append_attribute(c::XML_ATTR_B);
+			n_col.attribute(c::XML_ATTR_B).set_value(std::get<2>(l_color) / 16);
+			n_col.append_attribute(c::XML_ATTR_A);
+			n_col.attribute(c::XML_ATTR_A).set_value(std::get<3>(l_color) / 16);
+
+		}
+	}
+
+	std::filesystem::create_directory(p_config.get_xml_folder());
+	if (!doc.save_file(p_config.get_xml_full_path("PALETTES").c_str()))
+		throw std::exception("Could not save XML");
+}
+
 void Project_gfx::save_image_xml(const SP_Config& p_config, const std::string& p_filename) const {
 	if (m_image_files.find(p_filename) == end(m_image_files))
 		throw std::exception("Image not loaded");
@@ -46,6 +82,33 @@ void Project_gfx::save_image_xml(const SP_Config& p_config, const std::string& p
 	std::filesystem::create_directory(p_config.get_xml_folder());
 	if (!doc.save_file(p_config.get_xml_full_path(p_filename).c_str()))
 		throw std::exception("Could not save XML");
+}
+
+void Project_gfx::load_palette_xml(SDL_Renderer* p_rnd, const SP_Config& p_config) {
+	pugi::xml_document doc;
+	if (!doc.load_file(p_config.get_xml_full_path("PALETTES").c_str()))
+		throw std::exception("Could not load xml");
+
+	std::vector<SP_Palette> l_palettes;
+	pugi::xml_node n_meta = doc.child(c::XML_TAG_META);
+	pugi::xml_node n_palettes = n_meta.child(c::XML_TAG_PALETTES);
+
+	for (auto n_palette = n_palettes.child(c::XML_TAG_PALETTE);
+		n_palette; n_palette = n_palette.next_sibling(c::XML_TAG_PALETTE)) {
+		std::vector<byte> l_pal_bytes;
+		for (auto n_color = n_palette.child(c::XML_TAG_COLOR); n_color;
+			n_color = n_color.next_sibling(c::XML_TAG_COLOR)) {
+			l_pal_bytes.push_back(n_color.attribute(c::XML_ATTR_R).as_int());
+			l_pal_bytes.push_back(n_color.attribute(c::XML_ATTR_G).as_int());
+			l_pal_bytes.push_back(n_color.attribute(c::XML_ATTR_B).as_int());
+			l_pal_bytes.push_back(n_color.attribute(c::XML_ATTR_A).as_int());
+		}
+		l_palettes.push_back(SP_Palette(l_pal_bytes));
+	}
+
+	m_palettes = l_palettes;
+	load_fixed_palettes();
+	regenerate_all_textures(p_rnd);
 }
 
 void Project_gfx::load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename) {

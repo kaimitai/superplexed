@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 #include "SP_Palette.h"
 #include "SP_Image.h"
@@ -35,7 +36,11 @@ class Project_gfx {
 	SDL_Surface* sp_image_to_sdl_surface(const SP_Image& p_image, const SP_Palette& p_palette, int p_transp_idx = -1) const;
 	SDL_Color sp_color_to_sdl(const std::tuple<byte, byte, byte, byte>& p_col) const;
 	bool save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const;
+	void regenerate_all_textures(SDL_Renderer* p_rnd);
 	void regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_filename);
+
+	// palette functions
+	void load_fixed_palettes(void);
 
 	// bmp functions
 	byte find_nearest_palette_index(SDL_Color p_color, const SP_Palette& p_palette) const;
@@ -48,7 +53,7 @@ public:
 	SDL_Texture* get_image_texture(const std::string& p_filename) const;
 	void blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, int p_w, int p_h, SDL_Color p_color) const;
 
-	std::vector<byte> get_palette_bytes(void) const;
+	std::pair<int, int> get_image_dimensions(const std::string& p_filename) const;
 
 	bool load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config);
 	bool save_bmp(const std::string& p_filename, SP_Config& p_config) const;
@@ -58,6 +63,7 @@ public:
 
 	// palette functions
 	const std::vector<SP_Palette>& get_palettes(void) const;
+	void load_palettes(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	void set_palettes(SDL_Renderer* p_rnd, const std::vector<SP_Palette>& p_palettes);
 	void save_palettes_dat(const SP_Config& p_config);
 
@@ -66,7 +72,9 @@ public:
 
 	// xml functions
 	void load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
+	void load_palette_xml(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	void save_image_xml(const SP_Config& p_config, const std::string& p_filename) const;
+	void save_palette_xml(const SP_Config& p_config) const;
 };
 
 #endif

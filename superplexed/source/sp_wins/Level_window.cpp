@@ -129,7 +129,7 @@ void Level_window::draw(SDL_Renderer* p_rnd, const Project_gfx& p_gfx, int p_w, 
 	regenerate_texture(p_rnd, p_gfx);
 
 	// get tile pixel width
-	int l_tpw = get_tile_pixel_w(p_h);
+	int l_tpw = std::max(1, get_tile_pixel_w(p_h));
 	// get screen tile widht
 	int l_stw = p_w / l_tpw + 1;
 	// get rest tile count

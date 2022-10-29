@@ -130,7 +130,18 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
 		ImVec2 l_wmax = ImGui::GetWindowContentRegionMax();
 
-		ImGui::Image(l_txt, { l_wmax.x - l_wmin.x, l_wmax.y - l_wmin.y });
+		auto l_img_dims{ p_gfx.get_image_dimensions(m_selected_file) };
+		float l_ow{ static_cast<float>(l_img_dims.first) };
+		float l_oh{ static_cast<float>(l_img_dims.second) };
+		float l_iw = (l_wmax.x - l_wmin.x);
+		float l_ih = (l_wmax.y - l_wmin.y);
+
+		float l_scale_w = l_iw / l_ow;
+		float l_scale_h = l_ih / l_oh;
+		float scale = std::min(l_scale_w, l_scale_h);
+
+
+		ImGui::Image(l_txt, { l_ow * scale, l_oh * scale });
 	}
 
 	ImGui::End();
@@ -152,17 +163,55 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		ImGui::NewLine();
 	}
 
-	if (ImGui::Button("Save DAT")) {
-		std::string l_out_file = p_config.get_dat_full_path("PALETTES");
+	ImGui::Separator();
+	ImGui::Text("File Operations");
+	ImGui::Separator();
 
+	if (ImGui::Button("Load DAT")) {
 		try {
-			p_gfx.save_palettes_dat(p_config);
-			p_config.add_message("Saved palettes to " + l_out_file);
+			p_gfx.load_palettes(p_rnd, p_config);
+			p_config.add_message("Loaded " + p_config.get_dat_full_path("PALETTES"));
 		}
 		catch (const std::exception& ex) {
-			p_config.add_message("Could not save " + l_out_file);
+			p_config.add_message(std::string(ex.what()));
 		}
-	} if (ImGui::Button("Apply Palettes")) {
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load xml")) {
+		try {
+			p_gfx.load_palette_xml(p_rnd, p_config);
+			p_config.add_message("Loaded " + p_config.get_xml_full_path("PALETTES"));
+		}
+		catch (const std::exception& ex) {
+			p_config.add_message(std::string(ex.what()));
+		}
+	}
+
+	if (ImGui::Button("Save DAT")) {
+		try {
+			set_project_gfx_palette(p_rnd, p_gfx);
+			p_gfx.save_palettes_dat(p_config);
+			set_palette_cache(p_gfx);
+			p_config.add_message("Applied palettes and saved " + p_config.get_dat_full_path("PALETTES"));
+		}
+		catch (const std::exception& ex) {
+			p_config.add_message(std::string(ex.what()));
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Save xml")) {
+		try {
+			p_gfx.save_palette_xml(p_config);
+			p_config.add_message("Saved " + p_config.get_xml_full_path("PALETTES"));
+		}
+		catch (const std::exception& ex) {
+			p_config.add_message(std::string(ex.what()));
+		}
+	}
+
+	ImGui::Separator();
+
+	if (ImGui::Button("Apply Palettes")) {
 		set_project_gfx_palette(p_rnd, p_gfx);
 		set_palette_cache(p_gfx);
 		p_config.add_message("Applied palettes");
