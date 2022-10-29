@@ -16,7 +16,7 @@ class Graphics_window {
 	std::vector<std::vector<std::array<float, 4>>> m_palette_cache;
 	int m_selected_palette;
 
-	void set_project_gfx_palette(Project_gfx& p_gfx);
+	void set_project_gfx_palette(SDL_Renderer* p_rnd, Project_gfx& p_gfx);
 
 public:
 	Graphics_window(void);

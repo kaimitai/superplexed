@@ -58,7 +58,7 @@ public:
 
 	// palette functions
 	const std::vector<SP_Palette>& get_palettes(void) const;
-	void set_palettes(const std::vector<SP_Palette>& p_palettes);
+	void set_palettes(SDL_Renderer* p_rnd, const std::vector<SP_Palette>& p_palettes);
 	void save_palettes_dat(const SP_Config& p_config);
 
 	// bmp functions

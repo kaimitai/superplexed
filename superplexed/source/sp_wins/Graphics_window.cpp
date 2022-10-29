@@ -1,22 +1,25 @@
 #include <SDL.h>
+#include <algorithm>
 #include <tuple>
 #include "Graphics_window.h"
 #include "./../SP_Constants.h"
 
-void Graphics_window::set_project_gfx_palette(Project_gfx& p_gfx) {
+void Graphics_window::set_project_gfx_palette(SDL_Renderer* p_rnd, Project_gfx& p_gfx) {
 	std::vector<SP_Palette> l_palettes;
 
 	for (std::size_t i{ 0 }; i < c::PALETTE_COUNT; ++i) {
 		std::vector<byte> l_palette;
 
 		for (const auto& fcol : m_palette_cache.at(i)) {
-			for (int j{ 0 }; j < 4; ++j)
-				l_palette.push_back(static_cast<byte>(fcol[j] * 16.0f));
+			for (int j{ 0 }; j < 4; ++j) {
+				byte l_col_component{ std::min<byte>(15, static_cast<byte>(fcol.at(j) * 16.0f)) };
+				l_palette.push_back(l_col_component);
+			}
 		}
 		l_palettes.push_back(SP_Palette(l_palette));
 	}
 
-	p_gfx.set_palettes(l_palettes);
+	p_gfx.set_palettes(p_rnd, l_palettes);
 }
 
 Graphics_window::Graphics_window(void) : m_selected_palette{ 1 }
@@ -141,7 +144,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 			p_config.add_message("Could not save " + l_out_file);
 		}
 	} if (ImGui::Button("Apply Palettes")) {
-		set_project_gfx_palette(p_gfx);
+		set_project_gfx_palette(p_rnd, p_gfx);
 		set_palette_cache(p_gfx);
 		p_config.add_message("Applied palettes");
 	}

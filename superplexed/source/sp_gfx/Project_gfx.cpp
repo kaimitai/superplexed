@@ -61,6 +61,8 @@ void Project_gfx::regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_f
 
 bool Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config) {
 	try {
+		m_image_files.erase(p_filename);
+
 		m_image_files.insert(std::make_pair(p_filename,
 			SP_Image(klib::file::read_file_as_bytes(p_config.get_dat_full_path(p_filename)),
 				m_image_metadata.at(p_filename).m_width,
@@ -237,8 +239,16 @@ const std::vector<SP_Palette>& Project_gfx::get_palettes(void) const {
 	return m_palettes;
 }
 
-void Project_gfx::set_palettes(const std::vector<SP_Palette>& p_palettes) {
-	m_palettes = p_palettes;
+void Project_gfx::set_palettes(SDL_Renderer* p_rnd,
+	const std::vector<SP_Palette>& p_palettes) {
+	for (std::size_t i{ 0 }; i < c::PALETTE_COUNT; ++i)
+		m_palettes.at(i) = p_palettes.at(i);
+
+	for (const auto& kv : m_image_metadata) {
+		if (m_image_files.find(kv.first) != end(m_image_files) &&
+			kv.second.m_palette_no < c::PALETTE_COUNT)
+			regenerate_texture(p_rnd, kv.first);
+	}
 }
 
 void Project_gfx::save_palettes_dat(const SP_Config& p_config) {
