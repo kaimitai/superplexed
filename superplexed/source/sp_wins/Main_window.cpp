@@ -17,6 +17,7 @@ Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	// initialize first filename in the gfx window for combobox aesthetics :)
 	// cannot do that in the constructor of Graphics_window without refactoring
 	m_gfx_win.set_selected_file(m_gfx.get_meta().begin()->first);
+	m_gfx_win.set_palette_cache(m_gfx);
 
 	// initialize output
 	p_config.add_message("Read the documentation for the best experience!");

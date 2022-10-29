@@ -1,6 +1,7 @@
 #include "Project_gfx.h"
 #include "./../common/klib/klib_gfx.h"
 #include "./../common/klib/klib_file.h"
+#include "./../SP_Constants.h"
 #include <filesystem>
 #include <tuple>
 
@@ -75,18 +76,18 @@ bool Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::stri
 
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	// initialize image metadata
-	m_image_metadata.insert(std::make_pair("BACK", Gfx_metadata(320, 0)));
-	m_image_metadata.insert(std::make_pair("CONTROLS", Gfx_metadata(320, 1)));
-	m_image_metadata.insert(std::make_pair("CHARS6", Gfx_metadata(512, 4, true)));
-	m_image_metadata.insert(std::make_pair("CHARS8", Gfx_metadata(512, 4, true)));
-	m_image_metadata.insert(std::make_pair("FIXED", Gfx_metadata(640, 1)));
-	m_image_metadata.insert(std::make_pair("GFX", Gfx_metadata(320, 1)));
-	m_image_metadata.insert(std::make_pair("MENU", Gfx_metadata(320, 1)));
-	m_image_metadata.insert(std::make_pair("MOVING", Gfx_metadata(320, 1)));
-	m_image_metadata.insert(std::make_pair("PANEL", Gfx_metadata(320, 1)));
-	m_image_metadata.insert(std::make_pair("TITLE", Gfx_metadata(320, 5)));
-	m_image_metadata.insert(std::make_pair("TITLE1", Gfx_metadata(320, 6)));
-	m_image_metadata.insert(std::make_pair("TITLE2", Gfx_metadata(320, 7)));
+	m_image_metadata.insert(std::make_pair("BACK", Gfx_metadata(320, 200, 0)));
+	m_image_metadata.insert(std::make_pair("CONTROLS", Gfx_metadata(320, 200, 1, true)));
+	m_image_metadata.insert(std::make_pair("CHARS6", Gfx_metadata(512, 8, 4, false, true)));
+	m_image_metadata.insert(std::make_pair("CHARS8", Gfx_metadata(512, 8, 4, false, true)));
+	m_image_metadata.insert(std::make_pair("FIXED", Gfx_metadata(640, 16, 1)));
+	m_image_metadata.insert(std::make_pair("GFX", Gfx_metadata(320, 200, 1, true)));
+	m_image_metadata.insert(std::make_pair("MENU", Gfx_metadata(320, 200, 1)));
+	m_image_metadata.insert(std::make_pair("MOVING", Gfx_metadata(320, 462, 1)));
+	m_image_metadata.insert(std::make_pair("PANEL", Gfx_metadata(320, 24, 1)));
+	m_image_metadata.insert(std::make_pair("TITLE", Gfx_metadata(320, 200, 5, true)));
+	m_image_metadata.insert(std::make_pair("TITLE1", Gfx_metadata(320, 200, 6)));
+	m_image_metadata.insert(std::make_pair("TITLE2", Gfx_metadata(320, 200, 7)));
 
 	// ***** read palette data *****
 	// palette 0: bluescale (BLUE.DAT)
@@ -210,9 +211,10 @@ SDL_Surface* Project_gfx::sp_image_to_sdl_surface(const SP_Image& p_image, const
 }
 
 // image metadata
-Project_gfx::Gfx_metadata::Gfx_metadata(int p_w, int p_pal_no, bool p_binary)
-	: m_width{ p_w }, m_palette_no{ p_pal_no }, m_binary{ p_binary }
-{}
+Project_gfx::Gfx_metadata::Gfx_metadata(int p_w, int p_h, int p_pal_no, bool p_extra, bool p_binary)
+	: m_width{ p_w }, m_height{ p_h }, m_palette_no{ p_pal_no },
+	m_extra{ p_extra }, m_binary{ p_binary }
+{ }
 
 // palettes
 std::vector<byte> Project_gfx::get_palette_bytes(void) const {
@@ -229,4 +231,23 @@ std::vector<byte> Project_gfx::get_palette_bytes(void) const {
 
 const std::map<std::string, Project_gfx::Gfx_metadata>& Project_gfx::get_meta(void) const {
 	return m_image_metadata;
+}
+
+const std::vector<SP_Palette>& Project_gfx::get_palettes(void) const {
+	return m_palettes;
+}
+
+void Project_gfx::set_palettes(const std::vector<SP_Palette>& p_palettes) {
+	m_palettes = p_palettes;
+}
+
+void Project_gfx::save_palettes_dat(const SP_Config& p_config) {
+	std::vector<byte> l_out_bytes;
+	for (std::size_t i{ 0 }; i < c::PALETTE_COUNT; ++i) {
+		auto l_pal_bytes = m_palettes[i].to_bytes();
+		l_out_bytes.insert(end(l_out_bytes), begin(l_pal_bytes), end(l_pal_bytes));
+	}
+
+	klib::file::write_bytes_to_file(l_out_bytes,
+		p_config.get_dat_full_path("PALETTES"));
 }

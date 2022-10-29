@@ -9,13 +9,17 @@
 #include "SP_Image.h"
 #include "./../SP_Config.h"
 
+using byte = unsigned char;
+
 class Project_gfx {
 
 	struct Gfx_metadata {
-		int m_width, m_palette_no;
+		int m_width, m_height, m_palette_no;
 		bool m_binary;
+		bool m_extra;
 
-		Gfx_metadata(int p_w, int p_pal_no, bool p_binary = false);
+		Gfx_metadata(int p_w, int p_h, int p_pal_no,
+			bool p_xtra = false, bool p_binary = false);
 	};
 
 	std::vector<SDL_Texture*> m_static;
@@ -48,6 +52,11 @@ public:
 	void save_dat(const std::string& p_filename, SP_Config& p_config) const;
 
 	const std::map<std::string, Project_gfx::Gfx_metadata>& get_meta(void) const;
+
+	// palette functions
+	const std::vector<SP_Palette>& get_palettes(void) const;
+	void set_palettes(const std::vector<SP_Palette>& p_palettes);
+	void save_palettes_dat(const SP_Config& p_config);
 };
 
 #endif

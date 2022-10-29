@@ -62,6 +62,7 @@ namespace c {
 
 	// gfx constants
 	constexpr unsigned int TILE_W{ 16 };
+	constexpr unsigned int PALETTE_COUNT{ 4 };
 
 	// level file constants
 	constexpr unsigned int LEVEL_W{ 60 }, LEVEL_H{ 24 },
