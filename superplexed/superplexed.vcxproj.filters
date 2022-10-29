@@ -194,5 +194,8 @@
     <ClCompile Include="source\sp_gfx\Project_gfx_bmp.cpp">
       <Filter>Source Files\sp_gfx</Filter>
     </ClCompile>
+    <ClCompile Include="source\sp_gfx\Project_gfx_xml.cpp">
+      <Filter>Source Files\sp_gfx</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,5 +1,12 @@
 #include "SP_Image.h"
 
+SP_Image::SP_Image(const std::vector<std::vector<byte>>& p_pixels,
+	const std::vector<byte>& p_extra, bool p_binary) :
+	m_pixels{ p_pixels },
+	m_unknown_data{ p_extra },
+	m_binary{ p_binary }
+{ }
+
 SP_Image::SP_Image(const std::vector<std::vector<byte>>& p_pixels, bool p_extra, bool p_binary)
 	:
 	m_pixels{ p_pixels }, m_binary{ p_binary }
@@ -82,6 +89,14 @@ std::vector<byte> SP_Image::to_bytes(void) const {
 		return to_binary_bytes();
 	else
 		return to_planar_bytes();
+}
+
+const std::vector<byte>& SP_Image::get_unknown_bytes(void) const {
+	return m_unknown_data;
+}
+
+bool SP_Image::is_binary(void) const {
+	return m_binary;
 }
 
 std::vector<byte> SP_Image::to_binary_bytes(void) const {

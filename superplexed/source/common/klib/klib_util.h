@@ -36,7 +36,8 @@ namespace klib {
 			for (std::size_t i{ 0 }; i < p_values.size(); ++i)
 				result += std::to_string(p_values[i]) + p_delimiter;
 
-			result.pop_back();
+			if (!result.empty())
+				result.pop_back();
 
 			return result;
 		}

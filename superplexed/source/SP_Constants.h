@@ -32,6 +32,8 @@ namespace c {
 
 	// level file XMLs
 	constexpr char XML_COMMENTS[]{ " Supaplex Level created by Superplexed (https://github.com/kaimitai/superplexed) " };
+	constexpr char XML_COMMENTS_IMAGE[]{ " Supaplex Image created by Superplexed (https://github.com/kaimitai/superplexed) " };
+	constexpr char XML_COMMENTS_PALETTE[]{ " Supaplex Palettes created by Superplexed (https://github.com/kaimitai/superplexed) " };
 	constexpr char XML_TAG_META[]{ "superplexed" };
 	constexpr char XML_TAG_LEVEL[]{ "level" };
 	constexpr char XML_TAG_TILE_ROWS[]{ "tile_rows" };
@@ -59,6 +61,24 @@ namespace c {
 
 	constexpr char XML_VAL_TRUE[]{ "true" };
 	constexpr char XML_VAL_FALSE[]{ "false" };
+
+	// image file xmls
+	constexpr char XML_TAG_IMAGE[]{"image"};
+	constexpr char XML_ATTR_WIDTH[]{ "width" };
+	constexpr char XML_ATTR_HEIGHT[]{ "height" };
+	constexpr char XML_ATTR_IMGTYPE[]{ "image_type" };
+	constexpr char XML_VAL_BINARY[]{ "binary" };
+	constexpr char XML_VAL_PLANAR[]{ "planar" };
+	constexpr char XML_TAG_PIXEL_ROWS[]{ "pixel_rows" };
+	constexpr char XML_TAG_PIXEL_ROW[]{ "pixel_row" };
+
+	// palette file xmls
+	constexpr char XML_TAG_PALETTES[]{ "palettes" };
+	constexpr char XML_TAG_PALETTE[]{ "palette" };
+	constexpr char XML_TAG_COLOR[]{ "color" };
+	constexpr char XML_ATTR_R[]{ "r" };
+	constexpr char XML_ATTR_G[]{ "g" };
+	constexpr char XML_ATTR_B[]{ "b" };
 
 	// gfx constants
 	constexpr unsigned int TILE_W{ 16 };

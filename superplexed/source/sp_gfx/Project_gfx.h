@@ -63,6 +63,10 @@ public:
 
 	// bmp functions
 	void load_bmp(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
+
+	// xml functions
+	void load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
+	void save_image_xml(const SP_Config& p_config, const std::string& p_filename) const;
 };
 
 #endif
