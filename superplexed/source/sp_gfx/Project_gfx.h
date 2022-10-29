@@ -37,6 +37,9 @@ class Project_gfx {
 	bool save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const;
 	void regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_filename);
 
+	// bmp functions
+	byte find_nearest_palette_index(SDL_Color p_color, const SP_Palette& p_palette) const;
+
 public:
 	Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	~Project_gfx(void);
@@ -57,6 +60,9 @@ public:
 	const std::vector<SP_Palette>& get_palettes(void) const;
 	void set_palettes(const std::vector<SP_Palette>& p_palettes);
 	void save_palettes_dat(const SP_Config& p_config);
+
+	// bmp functions
+	void load_bmp(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
 };
 
 #endif

@@ -20,6 +20,7 @@ class SP_Image {
 	bool get_bit(byte, int) const;
 
 public:
+	SP_Image(const std::vector<std::vector<byte>>& p_pixels, bool p_extra = false, bool p_binary = false);
 	SP_Image(const std::vector<byte>& p_bytes, int p_w, bool p_binary = false);
 	byte get_palette_index(int p_x, int p_y) const;
 	int get_w(void) const;

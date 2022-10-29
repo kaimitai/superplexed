@@ -123,6 +123,37 @@ void klib::gfx::put_pixel(SDL_Surface* srf, int x, int y, Uint32 pixel) {
 	SDL_UnlockSurface(srf);
 }
 
+Uint32 klib::gfx::get_pixel(SDL_Surface* surface, int x, int y) {
+	int bpp = surface->format->BytesPerPixel;
+	/* Here p is the address to the pixel we want to retrieve */
+	Uint8* p = (Uint8*)surface->pixels + y * surface->pitch + x * bpp;
+
+	switch (bpp)
+	{
+	case 1:
+		return *p;
+		break;
+
+	case 2:
+		return *(Uint16*)p;
+		break;
+
+	case 3:
+		if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+			return p[0] << 16 | p[1] << 8 | p[2];
+		else
+			return p[0] | p[1] << 8 | p[2] << 16;
+		break;
+
+	case 4:
+		return *(Uint32*)p;
+		break;
+
+	default:
+		return 0;       /* shouldn't happen, but avoids warnings */
+	}
+}
+
 SDL_Color klib::gfx::pulse_color(SDL_Color a, SDL_Color b, float p_progress) {
 	Uint8 cr = static_cast<Uint8>(a.r + (b.r - a.r) * p_progress);
 	Uint8 cg = static_cast<Uint8>(a.g + (b.g - a.g) * p_progress);

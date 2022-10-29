@@ -67,6 +67,17 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 			p_config.add_message("Could not load file: " + std::string(ex.what()));
 		}
 	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load bmp")) {
+		try {
+			p_gfx.load_bmp(p_rnd, p_config, m_selected_file);
+			p_config.add_message("Loaded and recolored " + p_config.get_bmp_full_path(m_selected_file));
+		}
+		catch (const std::exception& ex) {
+			p_config.add_message(std::string(ex.what()));
+			p_config.add_message("Could not load " + p_config.get_bmp_full_path(m_selected_file));
+		}
+	}
 
 	if (ImGui::Button("Save DAT")) {
 		try {
@@ -78,7 +89,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Export bmp")) {
+	if (ImGui::Button("Save bmp")) {
 		if (p_gfx.save_bmp(m_selected_file, p_config))
 			p_config.add_message("Saved " + p_config.get_bmp_full_path(m_selected_file));
 		else

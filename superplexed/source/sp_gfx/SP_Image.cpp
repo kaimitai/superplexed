@@ -1,5 +1,15 @@
 #include "SP_Image.h"
 
+SP_Image::SP_Image(const std::vector<std::vector<byte>>& p_pixels, bool p_extra, bool p_binary)
+	:
+	m_pixels{ p_pixels }, m_binary{ p_binary }
+{
+	// not being quite consisten here. we assume the extra byte to be 0xff, but
+	// maybe this should have been editable
+	if (p_extra)
+		m_unknown_data.push_back(0xff);
+}
+
 SP_Image::SP_Image(const std::vector<byte>& p_bytes, int p_w, bool p_binary) : m_binary{ p_binary } {
 
 	if (p_binary) {

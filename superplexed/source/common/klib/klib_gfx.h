@@ -23,6 +23,7 @@ namespace klib {
 		std::vector<SDL_Texture*> split_surface_specified(SDL_Renderer* p_rnd, SDL_Surface* srf, const std::vector<SDL_Rect>& p_rects, bool p_destroy_surface = true, bool p_transparent = false, SDL_Color p_transp_col = COL_TRANSP);
 
 		void put_pixel(SDL_Surface* srf, int x, int y, Uint32 pixel);
+		Uint32 get_pixel(SDL_Surface*, int, int);
 
 		SDL_Color pulse_color(SDL_Color a, SDL_Color b, float p_progress);
 	}
