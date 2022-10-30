@@ -38,7 +38,7 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 
 	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) +
 		" (" + SP_Level::get_description(m_sel_tile) + ")" };
-	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(m_sel_tile), { 2.0f * l_icon_w,2.0f * l_icon_w });
+	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(m_sel_tile, 0), { 2.0f * l_icon_w,2.0f * l_icon_w });
 	ImGui::Text(l_sel_tile_no.c_str());
 
 	ImGui::Separator();
@@ -53,7 +53,7 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 			if (l_is_selected)
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 1.0f, 1.0f, 0.0f, 1.0f });
 			ImGui::PushID(n);
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_static(n), { l_icon_w,l_icon_w }))
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(n, 0), { l_icon_w,l_icon_w }))
 				m_sel_tile = n;
 			ImGui::PopID();
 			if (l_is_selected)

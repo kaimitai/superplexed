@@ -7,15 +7,11 @@
 
 using byte = unsigned char;
 
-SDL_Texture* Project_gfx::get_static(std::size_t p_texture_no) const {
-	return m_static.at(p_texture_no);
-}
-
-SDL_Texture* Project_gfx::get_animated(std::size_t p_texture_no, std::size_t p_frame_no) const {
+SDL_Texture* Project_gfx::get_tile_texture(std::size_t p_texture_no, std::size_t p_frame_no) const {
 	if (m_animations.find(p_texture_no) != end(m_animations))
-		return m_moving[m_animations.at(p_texture_no).at(p_frame_no)];
+		return m_tile_textures[m_animations.at(p_texture_no).at(p_frame_no)];
 	else
-		return get_static(p_texture_no);
+		return m_tile_textures[p_texture_no];
 }
 
 SDL_Texture* Project_gfx::get_image_texture(const std::string& p_filename) const {
@@ -27,11 +23,7 @@ SDL_Texture* Project_gfx::get_image_texture(const std::string& p_filename) const
 }
 
 Project_gfx::~Project_gfx(void) {
-	for (auto texture : m_static)
-		if (texture != nullptr)
-			SDL_DestroyTexture(texture);
-
-	for (auto texture : m_moving)
+	for (auto texture : m_tile_textures)
 		if (texture != nullptr)
 			SDL_DestroyTexture(texture);
 
@@ -96,10 +88,28 @@ void Project_gfx::generate_tile_definitions(void) {
 	for (int i{ 0 }; i < m_image_metadata.at("FIXED").m_width; i += c::TILE_W)
 		m_tile_definitions.push_back(std::make_pair(i, 0)
 		);
-	// set the tile for "bug" enemy to a graphic were it actually shows
-	// this is the only icon that will be taken from MOVING
-	// remember to add 16 to the y-offset in this case
-	m_tile_definitions.at(25) = std::make_pair(272, 196 + c::TILE_W);
+
+	// hard coded animations
+	const std::vector<std::pair<int, int>> lc_hc_tiles{
+		// player frames #40-45
+		{176, 446 + c::TILE_W}, {176 + 16, 446 + c::TILE_W},{176 + 32, 446 + c::TILE_W},{176 + 48, 446 + c::TILE_W},{176 + 64, 446 + c::TILE_W},
+		// "bug" frames #46-49
+		{304, 64 + c::TILE_W}, { 304, 100 + c::TILE_W }, { 256, 196 + c::TILE_W }, { 272, 196 + c::TILE_W }, { 288, 196 + c::TILE_W }, { 304, 196 + c::TILE_W },
+		// lightning frames #51-56
+		{16, 405 + c::TILE_W}, {16 + 16, 405 + c::TILE_W}, {16 + 32, 405 + c::TILE_W}, {16 + 48, 405 + c::TILE_W}, {16 + 64, 405 + c::TILE_W}, {16 + 80, 405 + c::TILE_W},
+		// scissors frames #57-58
+		{32, 424 + c::TILE_W}, {32 + c::TILE_W, 424 + c::TILE_W} //, {32 + 2 * c::TILE_W, 424 + c::TILE_W}, {32 + 3 * c::TILE_W, 424 + c::TILE_W}, {32 + 4 * c::TILE_W, 424 + c::TILE_W}, {32 + 5 * c::TILE_W, 424 + c::TILE_W}
+	};
+
+	m_tile_definitions.insert(end(m_tile_definitions),
+		begin(lc_hc_tiles), end(lc_hc_tiles));
+
+	// set up animations
+	m_animations.clear();
+	m_animations[3] = { 3, 40, 41, 42, 43, 44 }; // player
+	m_animations[25] = { 49, 50, 46, 47, 48, 2 }; // "bug" enemy
+	m_animations[24] = { 51, 52, 53, 54, 55, 56 }; // "lightning" enemy
+	m_animations[17] = { 57, 58, 57, 58, 57, 58 }; // "scissors" enemy
 }
 
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
@@ -134,20 +144,8 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 		l_font_rect, true, true,
 		sp_color_to_sdl(m_palettes.at(m_image_metadata.at("CHARS8").m_palette_no).get_color(0)));
 
-	m_static.clear();
 	for (int i{ 0 }; i < static_cast<int>(m_tile_definitions.size()); ++i)
-		m_static.push_back(create_tile_texture(p_rnd, i));
-
-	auto l_moving_srf = sp_image_to_sdl_surface(m_image_files.at("MOVING"), m_palettes.at(1));
-	std::vector<SDL_Rect> l_moving_rects{
-		{304, 64, 16, 16 }, { 304, 100, 16, 16 }, { 256, 196, 16, 16 }, { 272, 196, 16, 16 }, { 288, 196, 16, 16 }, { 304, 196, 16, 16 },
-		{176, 446, 16, 16}, {176 + 16, 446, 16, 16},{176 + 32, 446, 16, 16},{176 + 48, 446, 16, 16},{176 + 64, 446, 16, 16}
-	};
-
-	m_moving = klib::gfx::split_surface_specified(p_rnd, l_moving_srf, l_moving_rects);
-
-	m_animations[3] = { 6, 7,8,9,10,9 }; // player
-	m_animations[25] = { 0, 1,2,3,4,5 }; // "bug" enemy
+		m_tile_textures.push_back(create_tile_texture(p_rnd, i));
 }
 
 void Project_gfx::save_dat(const std::string& p_filename, SP_Config& p_config) const {

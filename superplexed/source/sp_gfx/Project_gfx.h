@@ -25,11 +25,11 @@ class Project_gfx {
 	};
 
 	std::vector<std::pair<int, int>> m_tile_definitions;
-	std::vector<SDL_Texture*> m_static;
-	std::vector<SDL_Texture*> m_moving;
+	std::vector<SDL_Texture*> m_tile_textures;
+	std::map<std::size_t, std::vector<std::size_t>> m_animations;
+
 	std::vector<SDL_Texture*> m_font;
 	std::vector<SP_Palette> m_palettes;
-	std::map<std::size_t, std::vector<std::size_t>> m_animations;
 
 	std::map<std::string, SP_Image> m_image_files;
 	std::map<std::string, SDL_Texture*> m_image_textures;
@@ -58,8 +58,7 @@ class Project_gfx {
 public:
 	Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	~Project_gfx(void);
-	SDL_Texture* get_static(std::size_t p_texture_no) const;
-	SDL_Texture* get_animated(std::size_t p_texture_no, std::size_t p_frame_no) const;
+	SDL_Texture* get_tile_texture(std::size_t p_texture_no, std::size_t p_frame_no) const;
 	SDL_Texture* get_image_texture(const std::string& p_filename) const;
 	void blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, int p_w, int p_h, SDL_Color p_color) const;
 

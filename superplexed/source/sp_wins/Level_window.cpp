@@ -152,15 +152,12 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 		for (int j = 0; j < 24; ++j) {
 			byte l_tile_no = m_levels.at(get_current_level_idx()).get_tile_no(i, j);
 			klib::gfx::blit(p_rnd,
-				m_ui_animate ? p_gfx.get_animated(l_tile_no, l_atime) :
-				p_gfx.get_static(l_tile_no),
+				p_gfx.get_tile_texture(l_tile_no, m_ui_animate ? l_atime : 0),
 				i * c::TILE_W, j * c::TILE_W);
 		}
 
 	auto l_spos = m_levels.at(get_current_level_idx()).get_start_pos();
-	klib::gfx::blit(p_rnd,
-		m_ui_animate ? p_gfx.get_animated(3, l_atime) :
-		p_gfx.get_static(3),
+	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(3, m_ui_animate ? l_atime : 0),
 		c::TILE_W * l_spos.first, c::TILE_W * l_spos.second);
 
 	int l_letter_w = m_timers[2].get_frame();
