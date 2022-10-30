@@ -106,10 +106,10 @@ void Project_gfx::generate_tile_definitions(void) {
 
 	// set up animations
 	m_animations.clear();
-	m_animations[3] = { 3, 40, 41, 42, 43, 44 }; // player
 	m_animations[25] = { 49, 50, 46, 47, 48, 2 }; // "bug" enemy
 	m_animations[24] = { 51, 52, 53, 54, 55, 56 }; // "lightning" enemy
 	m_animations[17] = { 57, 58, 57, 58, 57, 58 }; // "scissors" enemy
+	m_animations[40] = { 3, 40, 41, 42, 43, 44 }; // player
 }
 
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {

@@ -302,7 +302,7 @@ std::vector<std::string> SP_Level::sm_descriptions = {
   "Empty Space",
   "Zonk",
   "Base",
-  "Player Start",
+  "Morphy",
   "Infotron",
   "RAM Chip - Chip",
   "Wall",
@@ -338,7 +338,8 @@ std::vector<std::string> SP_Level::sm_descriptions = {
   "Hardware 09",
   "Hardware 10",
   "RAM Chip - Top",
-  "RAM Chip - Bottom"
+  "RAM Chip - Bottom",
+  "Player Start"
 };
 
 std::string& SP_Level::get_description(int p_tile_no) {

@@ -23,11 +23,11 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 
 	// initialize the tile picker
 	m_tile_picker = {
-		{"Basic Tiles", {3, 0, 2, 4, 6, 7, 1, 17, 24, 25}},
+		{"Basic Tiles", {40, 0, 2, 4, 6, 7, 1, 17, 24, 25}},
 		{"Floppies", {8, 18, 20, 19}},
 		{"Ports", {9, 10, 11, 12, 21, 22, 23}},
 		{"RAM Chips", {5,26, 27, 38, 39}},
-		{"Decoration", {28, 29, 30, 31, 32, 33, 34, 35, 36, 37}},
+		{"Decoration", {28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 3}},
 		{"Special Ports", {13, 14, 15, 16}}
 	};
 
@@ -104,7 +104,7 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		}
 		else if (p_input.mouse_held(false)) {
 			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
-			if (m_sel_tile == 3)
+			if (m_sel_tile == 40)
 				m_levels.at(get_current_level_idx()).set_player_start(tcoords.first, tcoords.second);
 			else
 				m_levels.at(get_current_level_idx()).set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
@@ -157,7 +157,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 		}
 
 	auto l_spos = m_levels.at(get_current_level_idx()).get_start_pos();
-	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(3, m_ui_animate ? l_atime : 0),
+	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(40, m_ui_animate ? l_atime : 0),
 		c::TILE_W * l_spos.first, c::TILE_W * l_spos.second);
 
 	int l_letter_w = m_timers[2].get_frame();
