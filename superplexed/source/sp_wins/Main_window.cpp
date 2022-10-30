@@ -20,8 +20,10 @@ Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_gfx_win.set_palette_cache(m_gfx);
 
 	// initialize output
-	p_config.add_message("Read the documentation for the best experience!");
+	p_config.add_message("Build Date: " + std::string(__DATE__) + ' ' +
+		std::string(__TIME__) + " CET");
 	p_config.add_message("Homepage: https://github.com/kaimitai/superplexed");
+	p_config.add_message("Read the documentation for efficient usage!");
 	p_config.add_message("Welcome to Superplexed by Kai E. Froeland");
 }
 
@@ -68,10 +70,16 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 	}
 
 	ImGui::Separator();
+
 	ImGui::Text("Output Messages");
 	ImGui::Separator();
 	for (const auto& msg : p_config.get_messages())
 		ImGui::Text(msg.c_str());
+
+	ImGui::Separator();
+	if (ImGui::Button("Reload Configuration"))
+		p_config.load_configuration();
+
 	ImGui::End();
 
 	switch (m_current_window) {

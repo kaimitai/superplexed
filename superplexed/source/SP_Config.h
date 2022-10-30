@@ -25,6 +25,8 @@ public:
 	std::string get_level_lst_full_path(void) const;
 	std::string get_dat_full_path(const std::string& p_filename) const;
 
+	void load_configuration(void);
+
 	// dat conversion bmp
 	std::string get_bmp_full_path(const std::string& p_dat_filename) const;
 	// image xml

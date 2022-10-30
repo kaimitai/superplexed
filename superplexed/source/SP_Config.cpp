@@ -6,6 +6,10 @@
 #include "./common/klib/klib_util.h"
 
 SP_Config::SP_Config(void) {
+	load_configuration();
+}
+
+void SP_Config::load_configuration(void) {
 	try {
 		pugi::xml_document doc;
 		if (!doc.load_file(c::SPCONFIG_XML_FILENAME))
@@ -16,12 +20,16 @@ SP_Config::SP_Config(void) {
 			m_levels_filename = n_meta.attribute(c::XML_ATTR_LEVELS_DAT_FILE).as_string();
 			m_level_list_filename = n_meta.attribute(c::XML_ATTR_LEVEL_LST_FILE).as_string();
 		}
+		add_message("Configuration loaded");
 	}
 	catch (...) {
 		m_levels_filename = c::FILENAME_LEVELS;
 		m_level_list_filename = c::FILENAME_LEVEL;
 		m_project_folder = c::DEFAULT_PROJECT_FOLDER;
+		add_message(std::string(c::SPCONFIG_XML_FILENAME) + " not found; using default configuration");
 	}
+
+	add_message("Level File: " + get_levels_dat_full_path());
 }
 
 std::string SP_Config::get_level_lst_full_path(void) const {
