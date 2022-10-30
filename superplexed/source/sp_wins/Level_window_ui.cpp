@@ -127,7 +127,7 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 
 	}
 
-	if (l_gp_count < 10) {
+	if (l_gp_count < c::MAX_GP_COUNT) {
 		if (l_gp_count > 0)
 			ImGui::SameLine();
 		if (ImGui::Button("Add Port")) {

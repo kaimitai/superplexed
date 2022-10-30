@@ -23,12 +23,12 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 
 	// initialize the tile picker
 	m_tile_picker = {
-		{"Basic Tiles", {40, 0, 2, 4, 6, 7, 1, 17, 24, 25}},
-		{"Floppies", {8, 18, 20, 19}},
-		{"Ports", {9, 10, 11, 12, 21, 22, 23}},
-		{"RAM Chips", {5,26, 27, 38, 39}},
-		{"Decoration", {28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 3}},
-		{"Special Ports", {13, 14, 15, 16}}
+		{"Basic Tiles", {c::TILE_NO_PLAYER_START, c::TILE_NO_EMPTY, c::TILE_NO_BASE, c::TILE_NO_INFOTRON, c::TILE_NO_WALL, c::TILE_NO_EXIT, c::TILE_NO_ZONK, c::TILE_NO_SNIKSNAK, c::TILE_NO_ELECTRON, c::TILE_NO_BUG}},
+		{"Floppies", {c::TILE_NO_FLOPPY_O, c::TILE_NO_FLOPPY_Y, c::TILE_NO_FLOPPY_R, c::TILE_NO_TERMINAL}},
+		{"Ports", {c::TILE_NO_PORT_RIGHT, c::TILE_NO_PORT_DOWN, c::TILE_NO_PORT_LEFT, c::TILE_NO_PORT_UP, c::TILE_NO_PORT2WAY_V, c::TILE_NO_PORT2WAY_H, c::TILE_NO_PORT4WAY}},
+		{"RAM Chips", {c::TILE_NO_RAMCHIP,c::TILE_NO_RAM_LEFT, c::TILE_NO_RAM_RIGHT, c::TILE_NO_RAM_TOP, c::TILE_NO_RAM_BOTTOM}},
+		{"Decoration", {c::TILE_NO_HW01,c::TILE_NO_HW02,c::TILE_NO_HW03,c::TILE_NO_HW04,c::TILE_NO_HW05,c::TILE_NO_HW06,c::TILE_NO_HW07,c::TILE_NO_HW08,c::TILE_NO_HW09,c::TILE_NO_HW10, c::TILE_NO_MURPHY}},
+		{"Special Ports", {c::TILE_NO_GP_RIGHT, c::TILE_NO_FP_DOWN, c::TILE_NO_GP_LEFT, c::TILE_NO_GP_UP}}
 	};
 
 	// initalize timers
@@ -67,12 +67,6 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			show_clipboard_destination();
 		else if (p_input.is_pressed(SDL_SCANCODE_R))
 			rotate_selection(l_shift, p_config);
-		else if (l_shift && p_input.is_pressed(SDL_SCANCODE_G)) {
-			if (m_levels.at(get_current_level_idx()).get_gravity_port_count() >= m_current_gp) {
-				m_sel_x = m_levels.at(get_current_level_idx()).get_gp_x(m_current_gp - 1);
-				m_sel_y = m_levels.at(get_current_level_idx()).get_gp_y(m_current_gp - 1);
-			}
-		}
 		else if (p_input.is_pressed(SDL_SCANCODE_TAB)) {
 			int l_gp_count = m_levels.at(get_current_level_idx()).get_gravity_port_count();
 			m_current_gp += (l_shift ? -1 : 1);
@@ -96,18 +90,34 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 				m_sel_x2 = tcoords.first;
 				m_sel_y2 = tcoords.second;
 			}
+			else if (p_input.is_pressed(SDL_SCANCODE_G) &&
+				m_levels.at(get_current_level_idx()).get_gravity_port_count() > 0) {
+				m_levels.at(get_current_level_idx()).set_gp_x(m_current_gp - 1, tcoords.first);
+				m_levels.at(get_current_level_idx()).set_gp_y(m_current_gp - 1, tcoords.second);
+			}
 			else {
 				clear_selection();
 				m_sel_x = tcoords.first;
 				m_sel_y = tcoords.second;
+
+				// select a special port if one was clicked
+				int l_gp_no{ m_levels.at(get_current_level_idx()).has_gp_at_pos(m_sel_x, m_sel_y) };
+				if (l_gp_no > -1)
+					m_current_gp = l_gp_no + 1;
 			}
 		}
 		else if (p_input.mouse_held(false)) {
 			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
-			if (m_sel_tile == 40)
+			if (m_sel_tile == c::TILE_NO_PLAYER_START)
 				m_levels.at(get_current_level_idx()).set_player_start(tcoords.first, tcoords.second);
-			else
+			else {
 				m_levels.at(get_current_level_idx()).set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
+				if (m_sel_tile >= c::TILE_NO_GP_RIGHT &&
+					m_sel_tile <= c::TILE_NO_GP_UP &&
+					m_levels.at(get_current_level_idx()).has_gp_at_pos(tcoords.first, tcoords.second) == -1 &&
+					m_levels.at(get_current_level_idx()).get_gravity_port_count() < c::MAX_GP_COUNT)
+					m_levels.at(get_current_level_idx()).add_gravity_port(tcoords.first, tcoords.second);
+			}
 		}
 		else if (p_input.mw_down()) {
 			if (l_shift && get_current_level_idx() > 0)

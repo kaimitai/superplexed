@@ -85,7 +85,7 @@ void Project_gfx::generate_tile_definitions(void) {
 	m_tile_definitions.clear();
 
 	// first 40 tiles will represent the icons in the program
-	for (int i{ 0 }; i < m_image_metadata.at("FIXED").m_width; i += c::TILE_W)
+	for (int i{ 0 }; i < m_image_metadata.at(c::FILENAME_FIXED).m_width; i += c::TILE_W)
 		m_tile_definitions.push_back(std::make_pair(i, 0)
 		);
 
@@ -114,35 +114,35 @@ void Project_gfx::generate_tile_definitions(void) {
 
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	// initialize image metadata
-	m_image_metadata.insert(std::make_pair("BACK", Gfx_metadata(320, 200, 0)));
-	m_image_metadata.insert(std::make_pair("CONTROLS", Gfx_metadata(320, 200, 1, true)));
-	m_image_metadata.insert(std::make_pair("CHARS6", Gfx_metadata(512, 8, 4, false, true)));
-	m_image_metadata.insert(std::make_pair("CHARS8", Gfx_metadata(512, 8, 4, false, true)));
-	m_image_metadata.insert(std::make_pair("FIXED", Gfx_metadata(640, 16, 1)));
-	m_image_metadata.insert(std::make_pair("GFX", Gfx_metadata(320, 200, 1, true)));
-	m_image_metadata.insert(std::make_pair("MENU", Gfx_metadata(320, 200, 1)));
-	m_image_metadata.insert(std::make_pair("MOVING", Gfx_metadata(320, 462, 1)));
-	m_image_metadata.insert(std::make_pair("PANEL", Gfx_metadata(320, 24, 1)));
-	m_image_metadata.insert(std::make_pair("TITLE", Gfx_metadata(320, 200, 5, true)));
-	m_image_metadata.insert(std::make_pair("TITLE1", Gfx_metadata(320, 200, 6)));
-	m_image_metadata.insert(std::make_pair("TITLE2", Gfx_metadata(320, 200, 7)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_BACK, Gfx_metadata(320, 200, 0)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_CONTROLS, Gfx_metadata(320, 200, 1, true)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_CHARS6, Gfx_metadata(512, 8, 4, false, true)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_CHARS8, Gfx_metadata(512, 8, 4, false, true)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_FIXED, Gfx_metadata(640, 16, 1)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_GFX, Gfx_metadata(320, 200, 1, true)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_MENU, Gfx_metadata(320, 200, 1)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_MOVING, Gfx_metadata(320, 462, 1)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_PANEL, Gfx_metadata(320, 24, 1)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_TITLE, Gfx_metadata(320, 200, 5, true)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_TITLE1, Gfx_metadata(320, 200, 6)));
+	m_image_metadata.insert(std::make_pair(c::FILENAME_TITLE2, Gfx_metadata(320, 200, 7)));
 
 	load_palettes(p_rnd, p_config);
 
 	// read required image data for the program
 	generate_tile_definitions();
-	load_image_data_from_file(p_rnd, "FIXED", p_config);
-	load_image_data_from_file(p_rnd, "MOVING", p_config);
-	load_image_data_from_file(p_rnd, "CHARS8", p_config);
+	load_image_data_from_file(p_rnd, c::FILENAME_FIXED, p_config);
+	load_image_data_from_file(p_rnd, c::FILENAME_MOVING, p_config);
+	load_image_data_from_file(p_rnd, c::FILENAME_CHARS8, p_config);
 
 	// create textures used by the editor
 	std::vector<SDL_Rect> l_font_rect{ {311,0,8,8},{463,0,8,8},{295,0,8,8},{79,0,8,8} };
 
 	m_font = klib::gfx::split_surface_specified(p_rnd,
-		sp_image_to_sdl_surface(m_image_files.at("CHARS8"),
-			m_palettes.at(m_image_metadata.at("CHARS8").m_palette_no)),
+		sp_image_to_sdl_surface(m_image_files.at(c::FILENAME_CHARS8),
+			m_palettes.at(m_image_metadata.at(c::FILENAME_CHARS8).m_palette_no)),
 		l_font_rect, true, true,
-		sp_color_to_sdl(m_palettes.at(m_image_metadata.at("CHARS8").m_palette_no).get_color(0)));
+		sp_color_to_sdl(m_palettes.at(m_image_metadata.at(c::FILENAME_CHARS8).m_palette_no).get_color(0)));
 
 	for (int i{ 0 }; i < static_cast<int>(m_tile_definitions.size()); ++i)
 		m_tile_textures.push_back(create_tile_texture(p_rnd, i));
@@ -234,7 +234,7 @@ void Project_gfx::load_palettes(SDL_Renderer* p_rnd, const SP_Config& p_config) 
 // palette 1: game objects and screens (apart from the title-screens and fonts)
 // palette 2: ???
 // palette 3: ???
-	std::vector<byte> l_bytes = klib::file::read_file_as_bytes(p_config.get_dat_full_path("PALETTES"));
+	std::vector<byte> l_bytes = klib::file::read_file_as_bytes(p_config.get_dat_full_path(c::FILENAME_PALETTES));
 	for (std::size_t i{ 0 }; i < 4; ++i)
 		m_palettes.push_back(SP_Palette(std::vector<byte>(begin(l_bytes) + i * 4 * 16,
 			begin(l_bytes) + (i + 1) * 4 * 16)));
@@ -263,5 +263,5 @@ void Project_gfx::save_palettes_dat(const SP_Config& p_config) {
 	}
 
 	klib::file::write_bytes_to_file(l_out_bytes,
-		p_config.get_dat_full_path("PALETTES"));
+		p_config.get_dat_full_path(c::FILENAME_PALETTES));
 }

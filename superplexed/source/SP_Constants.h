@@ -10,13 +10,11 @@ namespace c {
 
 	// filenames
 	constexpr char SPCONFIG_XML_FILENAME[]{ "spconfig.xml" };
-	constexpr char DEFAULT_LVL_FILE[]{ "LEVELS" };
-	constexpr char DEFAULT_LVL_LIST_FILE[]{ "LEVEL" };
 	constexpr char DEFAULT_PROJECT_FOLDER[]{ "." };
 
 	// folders and file extensions
 	constexpr char SUFFIX_DAT[]{ "DAT" };
-	constexpr char SUFFIX_BMP[]{"bmp"};
+	constexpr char SUFFIX_BMP[]{ "bmp" };
 	constexpr char SUFFIX_LST[]{ "LST" };
 	constexpr char SUFFIX_SP[]{ "SP" };
 	constexpr char SUFFIX_XML[]{ "xml" };
@@ -63,7 +61,7 @@ namespace c {
 	constexpr char XML_VAL_FALSE[]{ "false" };
 
 	// image file xmls
-	constexpr char XML_TAG_IMAGE[]{"image"};
+	constexpr char XML_TAG_IMAGE[]{ "image" };
 	constexpr char XML_ATTR_WIDTH[]{ "width" };
 	constexpr char XML_ATTR_HEIGHT[]{ "height" };
 	constexpr char XML_ATTR_IMGTYPE[]{ "image_type" };
@@ -94,6 +92,114 @@ namespace c {
 		LENGTH_TITLE{ 23 }, LENGTH_GP{ 6 }, LENGTH_SF_DEMO_BYTES{ 4 },
 		LENGTH_UNUSED_BYTES{ 4 },
 		LVL_DATA_BYTE_SIZE{ 1536 };
+	constexpr int MAX_GP_COUNT{ 10 };
+
+	// tile descriptions
+	constexpr char TILE_DESC_EMPTY[]{ "Empty Space" };
+	constexpr char TILE_DESC_ZONK[]{ "Zonk" };
+	constexpr char TILE_DESC_BASE[]{ "Base" };
+	constexpr char TILE_DESC_MURPHY[]{ "Murphy" };
+	constexpr char TILE_DESC_INFOTRON[]{ "Infotron" };
+	constexpr char TILE_DESC_RAMCHIP[]{ "RAM Chip - Chip" };
+	constexpr char TILE_DESC_WALL[]{ "Wall" };
+	constexpr char TILE_DESC_EXIT[]{ "Exit" };
+	constexpr char TILE_DESC_FLOPPY_O[]{ "Floppy - Orange" };
+	constexpr char TILE_DESC_PORT_RIGHT[]{ "Port - Right" };
+	constexpr char TILE_DESC_PORT_DOWN[]{ "Port - Down" };
+	constexpr char TILE_DESC_PORT_LEFT[]{ "Port - Left" };
+	constexpr char TILE_DESC_PORT_UP[]{ "Port - Up" };
+	constexpr char TILE_DESC_GP_RIGHT[]{ "Special Port - Right" };
+	constexpr char TILE_DESC_FP_DOWN[]{ "Special Port - Down" };
+	constexpr char TILE_DESC_GP_LEFT[]{ "Special Port - Left" };
+	constexpr char TILE_DESC_GP_UP[]{ "Special Port - Up" };
+	constexpr char TILE_DESC_SNIKSNAK[]{ "Snik Snak" };
+	constexpr char TILE_DESC_FLOPPY_Y[]{ "Floppy - Yellow" };
+	constexpr char TILE_DESC_TERMINAL[]{ "Terminal" };
+	constexpr char TILE_DESC_FLOPPY_R[]{ "Floppy - Red" };
+	constexpr char TILE_DESC_PORT2WAY_V[]{ "Port - Two-Way Vertical" };
+	constexpr char TILE_DESC_PORT2WAY_H[]{ "Port - Two-Way Horizontal" };
+	constexpr char TILE_DESC_PORT4WAY[]{ "Port - Four-Way" };
+	constexpr char TILE_DESC_ELECTRON[]{ "Electron" };
+	constexpr char TILE_DESC_BUG[]{ "Bug" };
+	constexpr char TILE_DESC_RAM_LEFT[]{ "RAM Chip - Left" };
+	constexpr char TILE_DESC_RAM_RIGHT[]{ "RAM Chip - Right" };
+	constexpr char TILE_DESC_HW01[]{ "Hardware 01" };
+	constexpr char TILE_DESC_HW02[]{ "Hardware 02" };
+	constexpr char TILE_DESC_HW03[]{ "Hardware 03" };
+	constexpr char TILE_DESC_HW04[]{ "Hardware 04" };
+	constexpr char TILE_DESC_HW05[]{ "Hardware 05" };
+	constexpr char TILE_DESC_HW06[]{ "Hardware 06" };
+	constexpr char TILE_DESC_HW07[]{ "Hardware 07" };
+	constexpr char TILE_DESC_HW08[]{ "Hardware 08" };
+	constexpr char TILE_DESC_HW09[]{ "Hardware 09" };
+	constexpr char TILE_DESC_HW10[]{ "Hardware 10" };
+	constexpr char TILE_DESC_RAM_TOP[]{ "RAM Chip - Top" };
+	constexpr char TILE_DESC_RAM_BOTTOM[]{ "RAM Chip - Bottom" };
+	constexpr char TILE_DESC_PLAYER_START[]{ "Player Start" };
+
+	// tile numbers
+	constexpr unsigned char TILE_NO_EMPTY{ 0 };
+	constexpr unsigned char TILE_NO_ZONK{ 1 };
+	constexpr unsigned char TILE_NO_BASE{ 2 };
+	constexpr unsigned char TILE_NO_MURPHY{ 3 };
+	constexpr unsigned char TILE_NO_INFOTRON{ 4 };
+	constexpr unsigned char TILE_NO_RAMCHIP{ 5 };
+	constexpr unsigned char TILE_NO_WALL{ 6 };
+	constexpr unsigned char TILE_NO_EXIT{ 7 };
+	constexpr unsigned char TILE_NO_FLOPPY_O{ 8 };
+	constexpr unsigned char TILE_NO_PORT_RIGHT{ 9 };
+	constexpr unsigned char TILE_NO_PORT_DOWN{ 10 };
+	constexpr unsigned char TILE_NO_PORT_LEFT{ 11 };
+	constexpr unsigned char TILE_NO_PORT_UP{ 12 };
+	constexpr unsigned char TILE_NO_GP_RIGHT{ 13 };
+	constexpr unsigned char TILE_NO_FP_DOWN{ 14 };
+	constexpr unsigned char TILE_NO_GP_LEFT{ 15 };
+	constexpr unsigned char TILE_NO_GP_UP{ 16 };
+	constexpr unsigned char TILE_NO_SNIKSNAK{ 17 };
+	constexpr unsigned char TILE_NO_FLOPPY_Y{ 18 };
+	constexpr unsigned char TILE_NO_TERMINAL{ 19 };
+	constexpr unsigned char TILE_NO_FLOPPY_R{ 20 };
+	constexpr unsigned char TILE_NO_PORT2WAY_V{ 21 };
+	constexpr unsigned char TILE_NO_PORT2WAY_H{ 22 };
+	constexpr unsigned char TILE_NO_PORT4WAY{ 23 };
+	constexpr unsigned char TILE_NO_ELECTRON{ 24 };
+	constexpr unsigned char TILE_NO_BUG{ 25 };
+	constexpr unsigned char TILE_NO_RAM_LEFT{ 26 };
+	constexpr unsigned char TILE_NO_RAM_RIGHT{ 27 };
+	constexpr unsigned char TILE_NO_HW01{ 28 };
+	constexpr unsigned char TILE_NO_HW02{ 29 };
+	constexpr unsigned char TILE_NO_HW03{ 30 };
+	constexpr unsigned char TILE_NO_HW04{ 31 };
+	constexpr unsigned char TILE_NO_HW05{ 32 };
+	constexpr unsigned char TILE_NO_HW06{ 33 };
+	constexpr unsigned char TILE_NO_HW07{ 34 };
+	constexpr unsigned char TILE_NO_HW08{ 35 };
+	constexpr unsigned char TILE_NO_HW09{ 36 };
+	constexpr unsigned char TILE_NO_HW10{ 37 };
+	constexpr unsigned char TILE_NO_RAM_TOP{ 38 };
+	constexpr unsigned char TILE_NO_RAM_BOTTOM{ 39 };
+	constexpr unsigned char TILE_NO_PLAYER_START{ 40 };
+
+	// supaplex dat filenames
+	// leves and level list
+	constexpr char FILENAME_LEVELS[]{ "LEVELS" };
+	constexpr char FILENAME_LEVEL[]{ "LEVEL" };
+	// palettes
+	constexpr char FILENAME_PALETTES[]{ "PALETTES" };
+	// graphics files
+	constexpr char FILENAME_BACK[]{ "BACK" };
+	constexpr char FILENAME_CHARS6[]{ "CHARS6" };
+	constexpr char FILENAME_CHARS8[]{ "CHARS8" };
+	constexpr char FILENAME_CONTROLS[]{ "CONTROLS" };
+	constexpr char FILENAME_FIXED[]{ "FIXED" };
+	constexpr char FILENAME_GFX[]{ "GFX" };
+	constexpr char FILENAME_MENU[]{ "MENU" };
+	constexpr char FILENAME_MOVING[]{ "MOVING" };
+	constexpr char FILENAME_PANEL[]{ "PANEL" };
+	constexpr char FILENAME_TITLE[]{ "TITLE" };
+	constexpr char FILENAME_TITLE1[]{ "TITLE1" };
+	constexpr char FILENAME_TITLE2[]{ "TITLE2" };
+
 }
 
 #endif

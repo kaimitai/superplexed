@@ -15,7 +15,7 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 		std::vector<byte> l_row;
 		for (std::size_t x{ 0 }; x < c::LEVEL_W; ++x) {
 			byte l_value = p_bytes.at(c::OFFSET_TILES + c::LEVEL_W * y + x);
-			if (l_value == 3 && !l_player_found) {
+			if (l_value == c::TILE_NO_MURPHY && !l_player_found) {
 				m_player_x = static_cast<byte>(x);
 				m_player_y = static_cast<byte>(y);
 				l_row.push_back(0);
@@ -91,7 +91,7 @@ std::vector<byte> SP_Level::get_bytes(bool p_include_demo) const {
 		result.insert(end(result), begin(l_gp_bytes), end(l_gp_bytes));
 	}
 
-	for (std::size_t i{ 10 }; i > m_gravity_ports.size(); --i)
+	for (std::size_t i{ c::MAX_GP_COUNT }; i > m_gravity_ports.size(); --i)
 		for (int j{ 0 }; j < c::LENGTH_GP; ++j)
 			result.push_back(0);
 
@@ -294,52 +294,15 @@ int SP_Level::has_gp_at_pos(int p_x, int p_y) {
 // check if a gravity port psoition is using a gravity port tile (#13-#16)
 bool SP_Level::get_gp_status(int p_gp_no) const {
 	byte l_tile_no = get_tile_no(get_gp_x(p_gp_no), get_gp_y(p_gp_no));
-	return l_tile_no >= 13 && l_tile_no <= 16;
+	return l_tile_no >= c::TILE_NO_GP_RIGHT && l_tile_no <= c::TILE_NO_GP_UP;
 }
 
 // static members
 std::vector<std::string> SP_Level::sm_descriptions = {
-  "Empty Space",
-  "Zonk",
-  "Base",
-  "Morphy",
-  "Infotron",
-  "RAM Chip - Chip",
-  "Wall",
-  "Exit",
-  "Floppy - Orange",
-  "Port - Right",
-  "Port - Down",
-  "Port - Left",
-  "Port - Up",
-  "Gravity Port - Right",
-  "Gravity Port - Down",
-  "Gravity Port - Left",
-  "Gravity Port - Up",
-  "Snik Snak",
-  "Floppy - Yellow",
-  "Terminal",
-  "Floppy - Red",
-  "Port - Two-Way Vertical",
-  "Port - Two-Way Horizontal",
-  "Port - Four-Way",
-  "Electron",
-  "Bug",
-  "RAM Chip - Left",
-  "RAM Chip - Right",
-  "Hardware 01",
-  "Hardware 02",
-  "Hardware 03",
-  "Hardware 04",
-  "Hardware 05",
-  "Hardware 06",
-  "Hardware 07",
-  "Hardware 08",
-  "Hardware 09",
-  "Hardware 10",
-  "RAM Chip - Top",
-  "RAM Chip - Bottom",
-  "Player Start"
+c::TILE_DESC_EMPTY, c::TILE_DESC_ZONK, c::TILE_DESC_BASE, c::TILE_DESC_MURPHY, c::TILE_DESC_INFOTRON, c::TILE_DESC_RAMCHIP, c::TILE_DESC_WALL, c::TILE_DESC_EXIT, c::TILE_DESC_FLOPPY_O, c::TILE_DESC_PORT_RIGHT, c::TILE_DESC_PORT_DOWN,
+c::TILE_DESC_PORT_LEFT, c::TILE_DESC_PORT_UP, c::TILE_DESC_GP_RIGHT, c::TILE_DESC_FP_DOWN, c::TILE_DESC_GP_LEFT, c::TILE_DESC_GP_UP, c::TILE_DESC_SNIKSNAK, c::TILE_DESC_FLOPPY_Y, c::TILE_DESC_TERMINAL, c::TILE_DESC_FLOPPY_R,
+c::TILE_DESC_PORT2WAY_V, c::TILE_DESC_PORT2WAY_H, c::TILE_DESC_PORT4WAY, c::TILE_DESC_ELECTRON, c::TILE_DESC_BUG, c::TILE_DESC_RAM_LEFT, c::TILE_DESC_RAM_RIGHT, c::TILE_DESC_HW01, c::TILE_DESC_HW02, c::TILE_DESC_HW03, c::TILE_DESC_HW04,
+c::TILE_DESC_HW05, c::TILE_DESC_HW06, c::TILE_DESC_HW07, c::TILE_DESC_HW08, c::TILE_DESC_HW09, c::TILE_DESC_HW10, c::TILE_DESC_RAM_TOP, c::TILE_DESC_RAM_BOTTOM, c::TILE_DESC_PLAYER_START
 };
 
 std::string& SP_Level::get_description(int p_tile_no) {

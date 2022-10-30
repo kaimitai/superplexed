@@ -80,7 +80,7 @@ void Project_gfx::draw_rect_on_surface(SDL_Surface* p_srf, int p_x, int p_y, int
 
 SDL_Texture* Project_gfx::create_tile_texture(SDL_Renderer* p_rnd, int p_tile_no) const {
 	SDL_Surface* l_srf = create_sdl_surface_with_sp_palette(c::TILE_W, c::TILE_W,
-		m_image_metadata.at("FIXED").m_palette_no);
+		m_image_metadata.at(c::FILENAME_FIXED).m_palette_no);
 	draw_tile_on_sdl_surface(l_srf, p_tile_no, 0, 0);
 	return klib::gfx::surface_to_texture(p_rnd, l_srf);
 }
@@ -99,7 +99,7 @@ void Project_gfx::draw_tile_on_sdl_surface(SDL_Surface* p_srf, int p_tile_no, in
 
 bool Project_gfx::save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config, bool p_draw_metadata) const {
 	SDL_Surface* l_bmp{ create_sdl_surface_with_sp_palette(c::TILE_W * c::LEVEL_W,
-		c::TILE_W * c::LEVEL_H, m_image_metadata.at("FIXED").m_palette_no) };
+		c::TILE_W * c::LEVEL_H, m_image_metadata.at(c::FILENAME_FIXED).m_palette_no) };
 
 	for (int j{ 0 }; j < c::LEVEL_H; ++j)
 		for (int i{ 0 }; i < c::LEVEL_W; ++i)
@@ -191,9 +191,9 @@ bool Project_gfx::save_bmp(const SP_Image& p_image, const SP_Palette& p_palette,
 
 byte Project_gfx::get_sprite_pixel(int p_x, int p_y) const {
 	if (p_y < c::TILE_W)
-		return m_image_files.at("FIXED").get_palette_index(p_x, p_y);
+		return m_image_files.at(c::FILENAME_FIXED).get_palette_index(p_x, p_y);
 	else
-		return m_image_files.at("MOVING").get_palette_index(p_x, p_y - c::TILE_W);
+		return m_image_files.at(c::FILENAME_MOVING).get_palette_index(p_x, p_y - c::TILE_W);
 }
 
 void save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config) {

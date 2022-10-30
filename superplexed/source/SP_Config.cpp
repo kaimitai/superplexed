@@ -18,8 +18,8 @@ SP_Config::SP_Config(void) {
 		}
 	}
 	catch (...) {
-		m_levels_filename = c::DEFAULT_LVL_FILE;
-		m_level_list_filename = c::DEFAULT_LVL_LIST_FILE;
+		m_levels_filename = c::FILENAME_LEVELS;
+		m_level_list_filename = c::FILENAME_LEVEL;
 		m_project_folder = c::DEFAULT_PROJECT_FOLDER;
 	}
 }

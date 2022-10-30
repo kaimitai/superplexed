@@ -78,7 +78,7 @@ public:
 	void set_gp_freeze_zonks(int p_gp_no, bool p_param);
 	void set_gp_freeze_enemies(int p_gp_no, bool p_param);
 	void delete_gravity_port(int p_gp_no);
-	void add_gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown = 0);
+	void add_gravity_port(int p_x, int p_y, bool p_grav = false, bool p_fz = false, bool p_fe = false, byte p_unknown = 0);
 
 	// static functions
 	static std::string& get_description(int p_tile_no);
