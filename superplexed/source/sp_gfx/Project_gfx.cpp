@@ -135,24 +135,6 @@ void Project_gfx::save_dat(const std::string& p_filename, SP_Config& p_config) c
 		p_config.get_dat_full_path(p_filename));
 }
 
-bool Project_gfx::save_bmp(const std::string& p_filename, SP_Config& p_config) const {
-	if (m_image_files.find(p_filename) == end(m_image_files))
-		return false;
-
-	std::filesystem::create_directory(p_config.get_bmp_folder());
-
-	return save_bmp(m_image_files.at(p_filename),
-		m_palettes.at(m_image_metadata.at(p_filename).m_palette_no),
-		p_config.get_bmp_full_path(p_filename));
-}
-
-bool Project_gfx::save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const {
-	SDL_Surface* l_bmp = sp_image_to_sdl_surface(p_image, p_palette);
-	int file_status = SDL_SaveBMP(l_bmp, p_filename.c_str());
-	SDL_FreeSurface(l_bmp);
-	return (file_status != -1);
-}
-
 SDL_Color Project_gfx::sp_color_to_sdl(const std::tuple<byte, byte, byte, byte>& p_col) const {
 	return SDL_Color{
 		std::get<0>(p_col),

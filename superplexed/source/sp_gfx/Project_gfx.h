@@ -9,6 +9,7 @@
 #include "SP_Palette.h"
 #include "SP_Image.h"
 #include "./../SP_Config.h"
+#include "./../sp_levels/SP_Level.h"
 
 using byte = unsigned char;
 
@@ -43,7 +44,12 @@ class Project_gfx {
 	void load_fixed_palettes(void);
 
 	// bmp functions
+	// will retrieve pixel values from FIXED and MOVING
+	// acts as if the pictures are glued together with FIXED on top
+	byte get_sprite_pixel(int p_x, int p_y) const;
+	void draw_tile_on_sdl_surface(SDL_Surface* p_srf, int p_tile_no, int p_tile_x, int p_tile_y) const;
 	byte find_nearest_palette_index(SDL_Color p_color, const SP_Palette& p_palette) const;
+	SDL_Surface* create_sdl_surface_with_sp_palette(int p_w, int p_h, int p_palette_no) const;
 
 public:
 	Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config);
@@ -69,6 +75,7 @@ public:
 
 	// bmp functions
 	void load_bmp(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
+	bool save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config) const;
 
 	// xml functions
 	void load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);

@@ -6,7 +6,7 @@
 #include "./../SP_Constants.h"
 
 void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input, SP_Config& p_config) {
-	draw_ui_level_win(p_input, p_config);
+	draw_ui_level_win(p_input, p_gfx, p_config);
 	draw_ui_tile_win(p_gfx);
 	draw_ui_gp_win(p_config);
 	/*
@@ -140,7 +140,7 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 	ImGui::End();
 }
 
-void Level_window::draw_ui_level_win(const klib::User_input& p_input, SP_Config& p_config) {
+void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config) {
 	std::string l_clvl{ std::to_string(m_current_level) };
 
 	std::string m_lvl_label{ "Levels (" + l_clvl + " of " + std::to_string(m_levels.size()) + ")###levels" };
@@ -232,8 +232,13 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, SP_Config&
 			save_sp(i, p_config);
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save BMP")) {
-
+	if (ImGui::Button("Save bmp")) {
+		if (p_gfx.save_level_bmp(m_levels.at(get_current_level_idx()),
+			get_current_level_idx(),
+			p_config))
+			p_config.add_message("Saved " + p_config.get_bmp_full_path(get_current_level_idx()));
+		else
+			p_config.add_message("Could not save " + p_config.get_bmp_full_path(get_current_level_idx()));
 	}
 
 	// load from disk
