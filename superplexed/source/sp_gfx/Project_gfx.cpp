@@ -83,6 +83,25 @@ bool Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::stri
 	return true;
 }
 
+/* will load the tile definitions which will be used when generating tile data.
+ supaplex tiles consist of images from both MOVING and FIXED, so we will work as
+ if these two images were glue together, with FIXED on top. these pairs will
+ define the top left positions of each pixel, as if they were coordinates on this
+ imaginary image.
+*/
+void Project_gfx::generate_tile_definitions(void) {
+	m_tile_definitions.clear();
+
+	// first 40 tiles will represent the icons in the program
+	for (int i{ 0 }; i < m_image_metadata.at("FIXED").m_width; i += c::TILE_W)
+		m_tile_definitions.push_back(std::make_pair(i, 0)
+		);
+	// set the tile for "bug" enemy to a graphic were it actually shows
+	// this is the only icon that will be taken from MOVING
+	// remember to add 16 to the y-offset in this case
+	m_tile_definitions.at(25) = std::make_pair(272, 196 + c::TILE_W);
+}
+
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	// initialize image metadata
 	m_image_metadata.insert(std::make_pair("BACK", Gfx_metadata(320, 200, 0)));
@@ -101,6 +120,7 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	load_palettes(p_rnd, p_config);
 
 	// read required image data for the program
+	generate_tile_definitions();
 	load_image_data_from_file(p_rnd, "FIXED", p_config);
 	load_image_data_from_file(p_rnd, "MOVING", p_config);
 	load_image_data_from_file(p_rnd, "CHARS8", p_config);
@@ -114,9 +134,9 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 		l_font_rect, true, true,
 		sp_color_to_sdl(m_palettes.at(m_image_metadata.at("CHARS8").m_palette_no).get_color(0)));
 
-	m_static = klib::gfx::split_surface(p_rnd,
-		sp_image_to_sdl_surface(m_image_files.at("FIXED"), m_palettes.at(1)),
-		16, 16);
+	m_static.clear();
+	for (int i{ 0 }; i < static_cast<int>(m_tile_definitions.size()); ++i)
+		m_static.push_back(create_tile_texture(p_rnd, i));
 
 	auto l_moving_srf = sp_image_to_sdl_surface(m_image_files.at("MOVING"), m_palettes.at(1));
 	std::vector<SDL_Rect> l_moving_rects{

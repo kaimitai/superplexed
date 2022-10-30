@@ -59,17 +59,45 @@ void Project_gfx::load_bmp(SDL_Renderer* p_rnd,
 	regenerate_texture(p_rnd, p_filename);
 }
 
+void Project_gfx::draw_rect_on_surface(SDL_Surface* p_srf, int p_x, int p_y, int p_w, int p_h, byte p_col_index, int p_thickness) const {
+
+	const auto draw_rect = [](SDL_Surface* pp_srf, int pp_x, int pp_y, int pp_w, int pp_h, byte pp_col) -> void {
+		for (int i{ 0 }; i < pp_h; ++i) {
+			klib::gfx::put_pixel(pp_srf, pp_x, pp_y + i, pp_col);
+			klib::gfx::put_pixel(pp_srf, pp_x + pp_w - 1, pp_y + i, pp_col);
+		}
+
+		for (int i{ 0 }; i < pp_w; ++i) {
+			klib::gfx::put_pixel(pp_srf, pp_x + i, pp_y, pp_col);
+			klib::gfx::put_pixel(pp_srf, pp_x + i, pp_y + pp_h - 1, pp_col);
+		}
+	};
+
+	for (int i{ 0 }; i < p_thickness; ++i)
+		draw_rect(p_srf, p_x + i, p_y + i, p_w - 2 * i, p_h - 2 * i, p_col_index);
+
+}
+
+SDL_Texture* Project_gfx::create_tile_texture(SDL_Renderer* p_rnd, int p_tile_no) const {
+	SDL_Surface* l_srf = create_sdl_surface_with_sp_palette(c::TILE_W, c::TILE_W,
+		m_image_metadata.at("FIXED").m_palette_no);
+	draw_tile_on_sdl_surface(l_srf, p_tile_no, 0, 0);
+	return klib::gfx::surface_to_texture(p_rnd, l_srf);
+}
+
 void Project_gfx::draw_tile_on_sdl_surface(SDL_Surface* p_srf, int p_tile_no, int p_tile_x, int p_tile_y) const {
 	int l_tx = c::TILE_W * p_tile_x;
 	int l_ty = c::TILE_W * p_tile_y;
+	int l_sx = m_tile_definitions.at(p_tile_no).first;
+	int l_sy = m_tile_definitions.at(p_tile_no).second;
 
 	for (int x{ 0 }; x < c::TILE_W; ++x)
 		for (int y{ 0 }; y < c::TILE_W; ++y)
 			klib::gfx::put_pixel(p_srf, l_tx + x, l_ty + y,
-				get_sprite_pixel(p_tile_no * c::TILE_W + x, y));
+				get_sprite_pixel(l_sx + x, l_sy + y));
 }
 
-bool Project_gfx::save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config) const {
+bool Project_gfx::save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config, bool p_draw_metadata) const {
 	SDL_Surface* l_bmp{ create_sdl_surface_with_sp_palette(c::TILE_W * c::LEVEL_W,
 		c::TILE_W * c::LEVEL_H, m_image_metadata.at("FIXED").m_palette_no) };
 
@@ -81,6 +109,48 @@ bool Project_gfx::save_level_bmp(const SP_Level& p_level, std::size_t p_level_no
 
 	draw_tile_on_sdl_surface(l_bmp, 3,
 		p_level.get_start_pos().first, p_level.get_start_pos().second);
+
+	constexpr byte PAL_IND_BORDER{ 0 }, PAL_IND_ON{ 2 }, PAL_IND_OFF{ 7 };
+
+	// level metatada
+	if (p_draw_metadata) {
+		for (int ii{ 0 }; ii < 2; ++ii)
+			draw_rect_on_surface(l_bmp, 1 + 5 * ii, 1, 4, 4,
+				PAL_IND_BORDER,
+				1);
+		// gravity?
+		draw_rect_on_surface(l_bmp, 2, 2, 2, 2,
+			p_level.get_gravity() ? PAL_IND_ON : PAL_IND_OFF,
+			1);
+		// freeze zonks?
+		draw_rect_on_surface(l_bmp, 2 + 5, 2, 2, 2,
+			p_level.get_freeze_zonks() ? PAL_IND_ON : PAL_IND_OFF,
+			1);
+
+		// special ports metadata
+		for (int i{ 0 }; i < p_level.get_gravity_port_count(); ++i) {
+			int l_tx = c::TILE_W * p_level.get_gp_x(i);
+			int l_ty = c::TILE_W * p_level.get_gp_y(i);
+
+			//border
+			for (int ii{ 0 }; ii < 3; ++ii)
+				draw_rect_on_surface(l_bmp, l_tx + 1 + 5 * ii, l_ty + 1, 4, 4,
+					PAL_IND_BORDER,
+					1);
+			// gravity?
+			draw_rect_on_surface(l_bmp, l_tx + 2, l_ty + 2, 2, 2,
+				p_level.get_gp_gravity(i) ? PAL_IND_ON : PAL_IND_OFF,
+				1);
+			// freeze zonks?
+			draw_rect_on_surface(l_bmp, l_tx + 2 + 5, l_ty + 2, 2, 2,
+				p_level.get_gp_freeze_zonks(i) ? PAL_IND_ON : PAL_IND_OFF,
+				1);
+			// freeze enemies?
+			draw_rect_on_surface(l_bmp, l_tx + 2 + 10, l_ty + 2, 2, 2,
+				p_level.get_gp_freeze_enemies(i) ? PAL_IND_ON : PAL_IND_OFF,
+				1);
+		}
+	}
 
 	std::filesystem::create_directory(p_config.get_bmp_folder());
 	int file_status = SDL_SaveBMP(l_bmp, p_config.get_bmp_full_path(p_level_no).c_str());

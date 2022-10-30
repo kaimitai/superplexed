@@ -233,9 +233,10 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Save bmp")) {
+		// use the ui animation flag to determine whether or not to draw metadata
 		if (p_gfx.save_level_bmp(m_levels.at(get_current_level_idx()),
 			get_current_level_idx(),
-			p_config))
+			p_config, m_ui_animate))
 			p_config.add_message("Saved " + p_config.get_bmp_full_path(get_current_level_idx()));
 		else
 			p_config.add_message("Could not save " + p_config.get_bmp_full_path(get_current_level_idx()));

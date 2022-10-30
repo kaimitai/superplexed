@@ -24,6 +24,7 @@ class Project_gfx {
 			bool p_xtra = false, bool p_binary = false);
 	};
 
+	std::vector<std::pair<int, int>> m_tile_definitions;
 	std::vector<SDL_Texture*> m_static;
 	std::vector<SDL_Texture*> m_moving;
 	std::vector<SDL_Texture*> m_font;
@@ -39,6 +40,7 @@ class Project_gfx {
 	bool save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const;
 	void regenerate_all_textures(SDL_Renderer* p_rnd);
 	void regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_filename);
+	void generate_tile_definitions(void);
 
 	// palette functions
 	void load_fixed_palettes(void);
@@ -50,6 +52,8 @@ class Project_gfx {
 	void draw_tile_on_sdl_surface(SDL_Surface* p_srf, int p_tile_no, int p_tile_x, int p_tile_y) const;
 	byte find_nearest_palette_index(SDL_Color p_color, const SP_Palette& p_palette) const;
 	SDL_Surface* create_sdl_surface_with_sp_palette(int p_w, int p_h, int p_palette_no) const;
+	SDL_Texture* create_tile_texture(SDL_Renderer* p_rnd, int p_tile_no = 0) const;
+	void draw_rect_on_surface(SDL_Surface* p_srf, int p_x, int p_y, int p_w, int p_h, byte p_col_index, int p_thickness = 0) const;
 
 public:
 	Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config);
@@ -75,7 +79,7 @@ public:
 
 	// bmp functions
 	void load_bmp(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
-	bool save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config) const;
+	bool save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config, bool p_draw_metadata) const;
 
 	// xml functions
 	void load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
