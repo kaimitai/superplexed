@@ -9,6 +9,11 @@
 #include <algorithm>
 #include <filesystem>
 
+constexpr std::size_t TRANS_H_IDX{ 0 };
+constexpr std::size_t TRANS_V_IDX{ 1 };
+constexpr std::size_t TRANS_RC_IDX{ 2 };
+constexpr std::size_t TRANS_RCC_IDX{ 3 };
+
 Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true },
@@ -28,7 +33,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 		{"Ports", {c::TILE_NO_PORT_RIGHT, c::TILE_NO_PORT_DOWN, c::TILE_NO_PORT_LEFT, c::TILE_NO_PORT_UP, c::TILE_NO_PORT2WAY_V, c::TILE_NO_PORT2WAY_H, c::TILE_NO_PORT4WAY}},
 		{"RAM Chips", {c::TILE_NO_RAMCHIP,c::TILE_NO_RAM_LEFT, c::TILE_NO_RAM_RIGHT, c::TILE_NO_RAM_TOP, c::TILE_NO_RAM_BOTTOM}},
 		{"Decoration", {c::TILE_NO_HW01,c::TILE_NO_HW02,c::TILE_NO_HW03,c::TILE_NO_HW04,c::TILE_NO_HW05,c::TILE_NO_HW06,c::TILE_NO_HW07,c::TILE_NO_HW08,c::TILE_NO_HW09,c::TILE_NO_HW10, c::TILE_NO_MURPHY}},
-		{"Special Ports", {c::TILE_NO_GP_RIGHT, c::TILE_NO_FP_DOWN, c::TILE_NO_GP_LEFT, c::TILE_NO_GP_UP}}
+		{"Special Ports", {c::TILE_NO_GP_RIGHT, c::TILE_NO_GP_DOWN, c::TILE_NO_GP_LEFT, c::TILE_NO_GP_UP}}
 	};
 
 	// initalize timers
@@ -38,6 +43,37 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 		klib::Timer(8, 100, true),		// pulsating letter size and index
 		klib::Timer(3, 1750, false)
 	};
+
+	// initialize transforms
+	// map: from tile -> to tile, under the given transform
+	m_transforms = {
+		// flip in the x-direction
+		{{c::TILE_NO_PORT_LEFT, c::TILE_NO_PORT_RIGHT},
+		{c::TILE_NO_PORT_RIGHT, c::TILE_NO_PORT_LEFT},
+		{c::TILE_NO_GP_LEFT, c::TILE_NO_GP_RIGHT},
+		{c::TILE_NO_GP_RIGHT, c::TILE_NO_GP_LEFT}},
+		// flips in the y-direction
+		{{c::TILE_NO_PORT_UP, c::TILE_NO_PORT_DOWN},
+		{c::TILE_NO_PORT_DOWN, c::TILE_NO_PORT_UP},
+		{c::TILE_NO_GP_UP, c::TILE_NO_GP_DOWN},
+		{c::TILE_NO_GP_DOWN, c::TILE_NO_GP_UP}},
+		// clockwise rotations
+		{{c::TILE_NO_PORT_RIGHT,c::TILE_NO_PORT_DOWN},
+		{c::TILE_NO_PORT_DOWN,c::TILE_NO_PORT_LEFT},
+		{c::TILE_NO_PORT_LEFT,c::TILE_NO_PORT_UP},
+		{c::TILE_NO_PORT_UP,c::TILE_NO_PORT_RIGHT},
+		{c::TILE_NO_GP_RIGHT,c::TILE_NO_GP_DOWN},
+		{c::TILE_NO_GP_DOWN,c::TILE_NO_GP_LEFT},
+		{c::TILE_NO_GP_LEFT,c::TILE_NO_GP_UP},
+		{c::TILE_NO_GP_UP,c::TILE_NO_GP_RIGHT},
+		{c::TILE_NO_PORT2WAY_H, c::TILE_NO_PORT2WAY_V},
+		{c::TILE_NO_PORT2WAY_V, c::TILE_NO_PORT2WAY_H}}
+	};
+	// finally generate transform for counter-clockwise rotation
+	std::map<byte, byte> l_cc_transforms;
+	for (const auto& kv : m_transforms.at(TRANS_RC_IDX))
+		l_cc_transforms.insert(std::make_pair(kv.second, kv.first));
+	m_transforms.push_back(l_cc_transforms);
 }
 
 void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h) {
@@ -170,6 +206,15 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(40, m_ui_animate ? l_atime : 0),
 		c::TILE_W * l_spos.first, c::TILE_W * l_spos.second);
 
+	SDL_SetRenderDrawColor(p_rnd, 0, 0, 0, 0);
+
+	if (m_ui_show_grid) {
+		for (int i{ 1 }; i < c::LEVEL_W; ++i)
+			SDL_RenderDrawLine(p_rnd, i * c::TILE_W, 0, i * c::TILE_W, c::LEVEL_H * c::TILE_W);
+		for (int i{ 1 }; i < c::LEVEL_H; ++i)
+			SDL_RenderDrawLine(p_rnd, 0, i * c::TILE_W, c::LEVEL_W * c::TILE_W, i * c::TILE_W);
+	}
+
 	int l_letter_w = m_timers[2].get_frame();
 	int l_letter_ind = m_timers[3].get_frame();
 
@@ -246,6 +291,12 @@ bool Level_window::is_selection_empty(void) const {
 	return true;
 }
 
+byte Level_window::apply_transform(byte p_byte, std::size_t p_transform_type) const {
+	auto iter = m_transforms[p_transform_type].find(p_byte);
+	return (iter != end(m_transforms[p_transform_type]) ?
+		iter->second : p_byte);
+}
+
 void Level_window::flip_selection(bool p_vertical) {
 	auto l_rect = get_selection_rectangle();
 
@@ -269,6 +320,13 @@ void Level_window::flip_selection(bool p_vertical) {
 				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + l_rect.w - j, l_rect.y + i, l_tmp);
 			}
 	}
+
+	for (int i{ 0 }; i <= l_rect.w; ++i)
+		for (int j{ 0 }; j <= l_rect.h; ++j)
+			m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + i, l_rect.y + j,
+				apply_transform(m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + i, l_rect.y + j),
+					p_vertical ? TRANS_V_IDX : TRANS_H_IDX)
+			);
 }
 
 void Level_window::select_all(void) {
@@ -352,6 +410,11 @@ void Level_window::rotate_selection(bool p_cclockwise, SP_Config& p_config) {
 		}
 		p_config.add_message("Clipboard rotated clockwise");
 	}
+
+	for (std::size_t y{ 0 }; y < result.size(); ++y)
+		for (std::size_t x{ 0 }; x < result[y].size(); ++x)
+			result[y][x] = apply_transform(result[y][x],
+				p_cclockwise ? TRANS_RCC_IDX : TRANS_RC_IDX);
 
 	m_clipboard = result;
 }

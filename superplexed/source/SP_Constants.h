@@ -152,7 +152,7 @@ namespace c {
 	constexpr unsigned char TILE_NO_PORT_LEFT{ 11 };
 	constexpr unsigned char TILE_NO_PORT_UP{ 12 };
 	constexpr unsigned char TILE_NO_GP_RIGHT{ 13 };
-	constexpr unsigned char TILE_NO_FP_DOWN{ 14 };
+	constexpr unsigned char TILE_NO_GP_DOWN{ 14 };
 	constexpr unsigned char TILE_NO_GP_LEFT{ 15 };
 	constexpr unsigned char TILE_NO_GP_UP{ 16 };
 	constexpr unsigned char TILE_NO_SNIKSNAK{ 17 };
