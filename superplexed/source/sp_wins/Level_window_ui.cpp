@@ -141,6 +141,8 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 }
 
 void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config) {
+	bool l_shift = p_input.is_shift_pressed();
+	bool l_ctrl = p_input.is_ctrl_pressed();
 	std::string l_clvl{ std::to_string(m_current_level) };
 
 	std::string m_lvl_label{ "Levels (" + l_clvl + " of " + std::to_string(m_levels.size()) + ")###levels" };
@@ -198,7 +200,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	ImGui::Separator();
 	ImGui::Text("File Operations");
 	// save to disk
-	if (ImGui::Button("Save DAT")) {
+	if (ImGui::Button(c::SAVE_DAT)) {
 		// generate LEVELS.DAT and LEVEL.LST
 		std::vector<byte> l_file_bytes;
 		std::vector<byte> l_list_file_bytes;
@@ -222,17 +224,17 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 			p_config.get_level_lst_full_path());
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save XML")) {
+	if (ImGui::Button(c::SAVE_XML)) {
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
 			save_xml(i, p_config);
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save SP")) {
+	if (ImGui::Button(c::SAVE_SP)) {
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
 			save_sp(i, p_config);
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save bmp")) {
+	if (ImGui::Button(c::SAVE_BMP)) {
 		// use the ui animation flag to determine whether or not to draw metadata
 		if (p_gfx.save_level_bmp(m_levels.at(get_current_level_idx()),
 			get_current_level_idx(),
@@ -243,11 +245,11 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	}
 
 	// load from disk
-	if (ImGui::Button("Load DAT")) {
+	if (ImGui::Button(c::LOAD_DAT)) {
 
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Load XML")) {
+	if (ImGui::Button(c::LOAD_XML)) {
 
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
 			try {
@@ -260,7 +262,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Load SP")) {
+	if (ImGui::Button(c::LOAD_SP)) {
 
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
 			try {

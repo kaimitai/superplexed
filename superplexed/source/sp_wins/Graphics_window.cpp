@@ -61,7 +61,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	ImGui::Text("File Operations");
 	ImGui::Separator();
 
-	if (ImGui::Button("Load DAT")) {
+	if (ImGui::Button(c::LOAD_DAT)) {
 		try {
 			p_gfx.load_image_data_from_file(p_rnd, m_selected_file, p_config);
 			p_config.add_message("Loaded " + p_config.get_dat_full_path(m_selected_file));
@@ -71,7 +71,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Load xml")) {
+	if (ImGui::Button(c::LOAD_XML)) {
 		try {
 			p_gfx.load_image_xml(p_rnd, p_config, m_selected_file);
 			p_config.add_message("Loaded " + p_config.get_xml_full_path(m_selected_file));
@@ -81,7 +81,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Load bmp")) {
+	if (ImGui::Button(c::LOAD_BMP)) {
 		try {
 			p_gfx.load_bmp(p_rnd, p_config, m_selected_file);
 			p_config.add_message("Loaded and recolored " + p_config.get_bmp_full_path(m_selected_file));
@@ -91,7 +91,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 
-	if (ImGui::Button("Save DAT")) {
+	if (ImGui::Button(c::SAVE_DAT)) {
 		try {
 			p_gfx.save_dat(m_selected_file, p_config);
 			p_config.add_message("Saved " + p_config.get_dat_full_path(m_selected_file));
@@ -101,7 +101,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save xml")) {
+	if (ImGui::Button(c::SAVE_XML)) {
 		try {
 			p_gfx.save_image_xml(p_config, m_selected_file);
 			p_config.add_message("Saved " + p_config.get_xml_full_path(m_selected_file));
@@ -111,7 +111,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save bmp")) {
+	if (ImGui::Button(c::SAVE_BMP)) {
 		if (p_gfx.save_bmp(m_selected_file, p_config))
 			p_config.add_message("Saved " + p_config.get_bmp_full_path(m_selected_file));
 		else
@@ -167,7 +167,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	ImGui::Text("File Operations");
 	ImGui::Separator();
 
-	if (ImGui::Button("Load DAT")) {
+	if (ImGui::Button(c::LOAD_DAT)) {
 		try {
 			p_gfx.load_palettes(p_rnd, p_config);
 			p_config.add_message("Loaded " + p_config.get_dat_full_path(c::FILENAME_PALETTES));
@@ -177,7 +177,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Load xml")) {
+	if (ImGui::Button(c::LOAD_XML)) {
 		try {
 			p_gfx.load_palette_xml(p_rnd, p_config);
 			p_config.add_message("Loaded " + p_config.get_xml_full_path(c::FILENAME_PALETTES));
@@ -187,7 +187,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 
-	if (ImGui::Button("Save DAT")) {
+	if (ImGui::Button(c::SAVE_DAT)) {
 		try {
 			set_project_gfx_palette(p_rnd, p_gfx);
 			p_gfx.save_palettes_dat(p_config);
@@ -199,7 +199,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		}
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Save xml")) {
+	if (ImGui::Button(c::SAVE_XML)) {
 		try {
 			p_gfx.save_palette_xml(p_config);
 			p_config.add_message("Saved " + p_config.get_xml_full_path(c::FILENAME_PALETTES));

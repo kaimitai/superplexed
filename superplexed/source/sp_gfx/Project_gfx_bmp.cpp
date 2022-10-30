@@ -97,6 +97,14 @@ void Project_gfx::draw_tile_on_sdl_surface(SDL_Surface* p_srf, int p_tile_no, in
 				get_sprite_pixel(l_sx + x, l_sy + y));
 }
 
+SDL_Surface* Project_gfx::create_application_icon(void) const {
+	SDL_Surface* result = create_sdl_surface_with_sp_palette(c::TILE_W, c::TILE_W, 1);
+	draw_tile_on_sdl_surface(result, c::TILE_NO_INFOTRON, 0, 0);
+	SDL_Color l_trans_rgb = sp_color_to_sdl(m_palettes.at(1).get_color(0));
+	SDL_SetColorKey(result, true, SDL_MapRGB(result->format, l_trans_rgb.r, l_trans_rgb.g, l_trans_rgb.b));
+	return result;
+}
+
 bool Project_gfx::save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config, bool p_draw_metadata) const {
 	SDL_Surface* l_bmp{ create_sdl_surface_with_sp_palette(c::TILE_W * c::LEVEL_W,
 		c::TILE_W * c::LEVEL_H, m_image_metadata.at(c::FILENAME_FIXED).m_palette_no) };
@@ -194,10 +202,6 @@ byte Project_gfx::get_sprite_pixel(int p_x, int p_y) const {
 		return m_image_files.at(c::FILENAME_FIXED).get_palette_index(p_x, p_y);
 	else
 		return m_image_files.at(c::FILENAME_MOVING).get_palette_index(p_x, p_y - c::TILE_W);
-}
-
-void save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config) {
-
 }
 
 byte Project_gfx::find_nearest_palette_index(SDL_Color p_color, const SP_Palette& p_palette) const {

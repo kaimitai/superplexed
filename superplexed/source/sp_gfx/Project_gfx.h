@@ -79,6 +79,7 @@ public:
 	// bmp functions
 	void load_bmp(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);
 	bool save_level_bmp(const SP_Level& p_level, std::size_t p_level_no, const SP_Config& p_config, bool p_draw_metadata) const;
+	SDL_Surface* create_application_icon(void) const;
 
 	// xml functions
 	void load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename);

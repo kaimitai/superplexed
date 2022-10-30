@@ -53,6 +53,7 @@ int main(int argc, char* args[]) {
 			// main window object to handle all logic and drawing
 			SP_Config config;
 			Main_window main_window(l_rnd, config);
+			main_window.set_application_icon(l_window);
 
 			// input handler
 			klib::User_input input;

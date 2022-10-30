@@ -22,6 +22,16 @@ namespace c {
 	// output messages
 	constexpr unsigned int MESSAGES_MAX_SIZE{ 25 };
 
+	// ui texts
+	constexpr char SAVE_BMP[]{ "Save bmp" };
+	constexpr char SAVE_DAT[]{ "Save DAT" };
+	constexpr char SAVE_SP[]{ "Save SP" };
+	constexpr char SAVE_XML[]{ "Save xml" };
+	constexpr char LOAD_BMP[]{ "Load bmp" };
+	constexpr char LOAD_DAT[]{ "Load DAT" };
+	constexpr char LOAD_SP[]{ "Load SP" };
+	constexpr char LOAD_XML[]{ "Load xml" };
+
 	// xml tags, attributes and values
 	// configuration XML
 	constexpr char XML_ATTR_PROJECT_FOLDER[]{ "project_folder" };

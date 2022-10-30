@@ -23,6 +23,7 @@ public:
 	void move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h);
 	void draw(SDL_Renderer* p_rnd, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h);
 	void draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, SP_Config& p_config);
+	void set_application_icon(SDL_Window* p_win) const;
 };
 
 #endif

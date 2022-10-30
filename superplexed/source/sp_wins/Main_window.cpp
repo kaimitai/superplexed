@@ -96,3 +96,9 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 	ImGui::Render();
 	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 }
+
+void Main_window::set_application_icon(SDL_Window* p_win) const {
+	SDL_Surface* l_icon_srf{ m_gfx.create_application_icon() };
+	SDL_SetWindowIcon(p_win, l_icon_srf);
+	SDL_FreeSurface(l_icon_srf);
+}
