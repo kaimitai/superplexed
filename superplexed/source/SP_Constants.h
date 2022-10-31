@@ -210,6 +210,9 @@ namespace c {
 	constexpr char FILENAME_TITLE1[]{ "TITLE1" };
 	constexpr char FILENAME_TITLE2[]{ "TITLE2" };
 
+	// default level constants
+	constexpr char DEFAULT_LVL_TITLE[]{ "----- SUPERPLEXED -----" };
+	constexpr unsigned char DEFAULT_LVL_SF_VERSION{ 32 };
 }
 
 #endif

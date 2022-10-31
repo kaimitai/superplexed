@@ -27,8 +27,10 @@ class SP_Level {
 	bool m_gravity, m_freeze_zonks;
 	unsigned int m_player_x, m_player_y;
 	byte m_solve_it_count, m_sf_version;
+	void apply_wall_border(void);
 
 public:
+	SP_Level(void);
 	SP_Level(const std::vector<byte>& p_bytes);
 	SP_Level(const std::string& p_title,
 		const std::vector<std::vector<byte>>& p_tile_data,

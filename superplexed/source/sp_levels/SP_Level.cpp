@@ -56,6 +56,30 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 		);
 }
 
+// default level
+SP_Level::SP_Level(void) :
+	m_title{ c::DEFAULT_LVL_TITLE }, m_solve_it_count{ 1 },
+	m_sf_version{ c::DEFAULT_LVL_SF_VERSION }, m_gravity{ false }, m_freeze_zonks{ false },
+	m_sf_demo_bytes{ std::vector<byte>(4, 0) }, m_unused_bytes{ std::vector<byte>(4, 0) }
+{
+	m_tiles = std::vector<std::vector<byte>>(c::LEVEL_H, std::vector<byte>(c::LEVEL_W, c::TILE_NO_BASE));
+	set_tile_value(c::LEVEL_W / 2, c::LEVEL_H / 2, c::TILE_NO_INFOTRON);
+	set_tile_value(c::LEVEL_W / 2 + 1, c::LEVEL_H / 2, c::TILE_NO_EXIT);
+	set_player_start(c::LEVEL_W / 2 - 1, c::LEVEL_H / 2);
+	apply_wall_border();
+}
+
+void SP_Level::apply_wall_border(void) {
+	for (int i{ 0 }; i < c::LEVEL_W; ++i) {
+		m_tiles.at(0).at(i) = c::TILE_NO_WALL;
+		m_tiles.at(static_cast<std::size_t>(c::LEVEL_H - 1)).at(i) = c::TILE_NO_WALL;
+	}
+	for (int i{ 0 }; i < c::LEVEL_H; ++i) {
+		m_tiles.at(i).at(0) = c::TILE_NO_WALL;
+		m_tiles.at(i).at(static_cast<std::size_t>(c::LEVEL_W - 1)) = c::TILE_NO_WALL;
+	}
+}
+
 SP_Level::SP_Level(const std::string& p_title,
 	const std::vector<std::vector<byte>>& p_tile_data,
 	unsigned int p_px, unsigned int p_py, int p_solve_it_count, bool p_grav, bool p_fz,

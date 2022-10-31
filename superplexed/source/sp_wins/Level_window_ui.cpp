@@ -113,9 +113,10 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 		if (!l_gp_status)
 			ImGui::Text("Warning: No Gravity Port tile at this position");
 		else {
-			std::string l_gp_tile{ "Tile: " + m_levels.at(get_current_level_idx()).get_description(
+			const std::string& l_description{ m_levels.at(get_current_level_idx()).get_description(
 			m_levels.at(get_current_level_idx()).get_tile_no(l_gp_x, l_gp_y)
 			) };
+			std::string l_gp_tile{ "Tile: " + l_description };
 			ImGui::Text(l_gp_tile.c_str());
 		}
 		ImGui::Separator();
@@ -145,7 +146,8 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	bool l_ctrl = p_input.is_ctrl_pressed();
 	std::string l_clvl{ std::to_string(m_current_level) };
 
-	std::string m_lvl_label{ "Levels (" + l_clvl + " of " + std::to_string(m_levels.size()) + ")###levels" };
+	std::string m_lvl_label{ "Level " + l_clvl + " of " + std::to_string(m_levels.size()) + ": \"" +
+		m_levels.at(get_current_level_idx()).get_title() + "\"###levels" };
 	ImGui::Begin(m_lvl_label.c_str());
 
 	// current level number
@@ -246,7 +248,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 
 	// load from disk
 	if (ImGui::Button(c::LOAD_DAT)) {
-
+		load_levels_dat(p_config);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(c::LOAD_XML)) {

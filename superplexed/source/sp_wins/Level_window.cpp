@@ -14,17 +14,36 @@ constexpr std::size_t TRANS_V_IDX{ 1 };
 constexpr std::size_t TRANS_RC_IDX{ 2 };
 constexpr std::size_t TRANS_RCC_IDX{ 3 };
 
+void Level_window::load_levels_dat(SP_Config& p_config) {
+	try {
+		std::vector<SP_Level> l_levels;
+		auto l_bytes = klib::file::read_file_as_bytes(p_config.get_levels_dat_full_path());
+
+		for (std::size_t i{ 0 }; i < l_bytes.size(); i += c::LVL_DATA_BYTE_SIZE)
+			l_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + c::LVL_DATA_BYTE_SIZE)));
+
+		m_levels = l_levels;
+		p_config.add_message("Loaded " + std::to_string(m_levels.size()) + " levels from " + p_config.get_levels_dat_full_path());
+		if (m_current_level > static_cast<int>(m_levels.size()))
+			m_current_level = static_cast<int>(m_levels.size());
+	}
+	catch (const std::exception& ex) {
+		p_config.add_message(ex.what());
+		if (m_levels.empty()) {
+			m_levels.push_back(SP_Level());
+			p_config.add_message("Initialized with default level");
+		}
+	}
+}
+
 Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
 	m_sel_tile{ 0 }, m_tile_picker_scale{ 1.0f }
 {
+	load_levels_dat(p_config);
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
-	auto l_bytes = klib::file::read_file_as_bytes(p_config.get_levels_dat_full_path());
-
-	for (std::size_t i{ 0 }; i < l_bytes.size(); i += c::LVL_DATA_BYTE_SIZE)
-		m_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + c::LVL_DATA_BYTE_SIZE)));
 
 	// initialize the tile picker
 	m_tile_picker = {

@@ -53,11 +53,11 @@ class Level_window {
 	// xml read/write
 	void save_xml(std::size_t p_level_no, const SP_Config& p_config) const;
 	SP_Level load_xml(std::size_t p_level_no, const SP_Config& p_config) const;
-
 	// sp read/write
 	void save_sp(std::size_t p_level_no, const SP_Config& p_config) const;
 	SP_Level load_sp(std::size_t p_level_no, const SP_Config& p_config) const;
-
+	// dat read/write
+	void load_levels_dat(SP_Config& p_config);
 	// ui
 	void draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config);
 	void draw_ui_gp_win(SP_Config& p_config);
