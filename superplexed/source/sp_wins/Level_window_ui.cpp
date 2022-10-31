@@ -113,10 +113,9 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 		if (!l_gp_status)
 			ImGui::Text("Warning: No Gravity Port tile at this position");
 		else {
-			const std::string& l_description{ m_levels.at(get_current_level_idx()).get_description(
+			std::string l_gp_tile{ "Tile: " + SP_Level::get_description(
 			m_levels.at(get_current_level_idx()).get_tile_no(l_gp_x, l_gp_y)
 			) };
-			std::string l_gp_tile{ "Tile: " + l_description };
 			ImGui::Text(l_gp_tile.c_str());
 		}
 		ImGui::Separator();
@@ -202,80 +201,26 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	ImGui::Separator();
 	ImGui::Text("File Operations");
 	// save to disk
-	if (ImGui::Button(c::SAVE_DAT)) {
-		// generate LEVELS.DAT and LEVEL.LST
-		std::vector<byte> l_file_bytes;
-		std::vector<byte> l_list_file_bytes;
-
-		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
-			auto l_lvl_bytes = m_levels[i].get_bytes();
-			l_file_bytes.insert(end(l_file_bytes),
-				begin(l_lvl_bytes), end(l_lvl_bytes));
-
-			std::string l_line = klib::util::stringnum(i + 1) + ' ' + m_levels[i].get_title();
-
-			l_list_file_bytes.insert(end(l_list_file_bytes),
-				begin(l_line), end(l_line));
-			l_list_file_bytes.push_back(13);
-			l_list_file_bytes.push_back(10);
-		}
-
-		klib::file::write_bytes_to_file(l_file_bytes,
-			p_config.get_levels_dat_full_path());
-		klib::file::write_bytes_to_file(l_list_file_bytes,
-			p_config.get_level_lst_full_path());
-	}
+	if (ImGui::Button(c::SAVE_DAT))
+		save_levels_dat(p_config);
 	ImGui::SameLine();
-	if (ImGui::Button(c::SAVE_XML)) {
-		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
-			save_xml(i, p_config);
-	}
+	if (ImGui::Button(c::SAVE_XML))
+		save_file(SP_file_type::xml, p_config, p_gfx, l_shift);
 	ImGui::SameLine();
-	if (ImGui::Button(c::SAVE_SP)) {
-		for (std::size_t i{ 0 }; i < m_levels.size(); ++i)
-			save_sp(i, p_config);
-	}
+	if (ImGui::Button(c::SAVE_SP))
+		save_file(SP_file_type::sp, p_config, p_gfx, l_shift);
 	ImGui::SameLine();
-	if (ImGui::Button(c::SAVE_BMP)) {
-		// use the ui animation flag to determine whether or not to draw metadata
-		if (p_gfx.save_level_bmp(m_levels.at(get_current_level_idx()),
-			get_current_level_idx(),
-			p_config, m_ui_animate))
-			p_config.add_message("Saved " + p_config.get_bmp_full_path(get_current_level_idx()));
-		else
-			p_config.add_message("Could not save " + p_config.get_bmp_full_path(get_current_level_idx()));
-	}
-
+	if (ImGui::Button(c::SAVE_BMP))
+		save_file(SP_file_type::bmp, p_config, p_gfx, l_shift);
 	// load from disk
-	if (ImGui::Button(c::LOAD_DAT)) {
+	if (ImGui::Button(c::LOAD_DAT))
 		load_levels_dat(p_config);
-	}
 	ImGui::SameLine();
-	if (ImGui::Button(c::LOAD_XML)) {
-
-		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
-			try {
-				auto l_lvl = load_xml(i, p_config);
-				m_levels.at(i) = l_lvl;
-			}
-			catch (const std::exception&) {
-
-			}
-		}
-	}
+	if (ImGui::Button(c::LOAD_XML))
+		load_file(SP_file_type::xml, p_config, l_shift);
 	ImGui::SameLine();
-	if (ImGui::Button(c::LOAD_SP)) {
-
-		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
-			try {
-				auto l_lvl = load_sp(i, p_config);
-				m_levels.at(i) = l_lvl;
-			}
-			catch (const std::exception&) {
-
-			}
-		}
-	}
+	if (ImGui::Button(c::LOAD_SP))
+		load_file(SP_file_type::sp, p_config, l_shift);
 
 	// UI settings
 	ImGui::Separator();

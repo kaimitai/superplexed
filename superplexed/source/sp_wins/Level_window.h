@@ -13,6 +13,7 @@
 #include "./../common/klib/Timer.h"
 
 class Level_window {
+	enum class SP_file_type { bmp, dat, sp, xml };
 
 	std::vector<SP_Level> m_levels;
 	int m_cam_x, m_current_level, m_current_gp, m_sel_tile;
@@ -58,10 +59,15 @@ class Level_window {
 	SP_Level load_sp(std::size_t p_level_no, const SP_Config& p_config) const;
 	// dat read/write
 	void load_levels_dat(SP_Config& p_config);
+	void save_levels_dat(SP_Config& p_config);
 	// ui
 	void draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config);
 	void draw_ui_gp_win(SP_Config& p_config);
 	void draw_ui_tile_win(const Project_gfx& p_gfx);
+
+	// general procedures for saving to and loading from files
+	void load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_all);
+	void save_file(SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const;
 
 public:
 	Level_window(SDL_Renderer* p_rnd, SP_Config& p_config);

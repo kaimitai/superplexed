@@ -14,6 +14,116 @@ constexpr std::size_t TRANS_V_IDX{ 1 };
 constexpr std::size_t TRANS_RC_IDX{ 2 };
 constexpr std::size_t TRANS_RCC_IDX{ 3 };
 
+void Level_window::save_file(SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const {
+	int l_file_counter{ 0 };
+
+	const auto ll_save_level = [*this](SP_file_type p_ftype, std::size_t p_level_no, const SP_Config& p_config, const Project_gfx& p_gfx) -> void {
+		if (p_ftype == SP_file_type::xml)
+			save_xml(p_level_no, p_config);
+		else if (p_ftype == SP_file_type::sp)
+			save_sp(p_level_no, p_config);
+		else if (p_ftype == SP_file_type::bmp)
+			p_gfx.save_level_bmp(m_levels.at(p_level_no),
+				p_level_no, p_config, m_ui_animate);
+		else
+			throw std::exception("Invalid filetype");
+	};
+
+	for (std::size_t i{ p_all ? 0 : get_current_level_idx() };
+		i < (p_all ? m_levels.size() : get_current_level_idx() + 1);
+		++i) {
+		try {
+			ll_save_level(p_ftype, i, p_config, p_gfx);
+			++l_file_counter;
+		}
+		catch (const std::exception& ex) {
+			if (!p_all)
+				p_config.add_message(ex.what());
+		}
+	}
+	if (p_all)
+		p_config.add_message("Saved " + std::to_string(l_file_counter) + " file(s)");
+	else if (l_file_counter != 0) {
+		std::size_t l_lvl_idx = get_current_level_idx();
+		if (p_ftype == SP_file_type::bmp)
+			p_config.add_message("Saved " + p_config.get_bmp_full_path(l_lvl_idx));
+		else
+			p_config.add_message("Saved " +
+				(p_ftype == SP_file_type::xml ?
+					p_config.get_xml_full_path(l_lvl_idx) :
+					p_config.get_SP_full_path(l_lvl_idx))
+			);
+	}
+
+}
+
+void Level_window::load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_all) {
+	int l_file_counter{ 0 };
+
+	const auto ll_load_level = [*this](SP_file_type p_ftype, std::size_t p_level_no, const SP_Config& p_config)->SP_Level {
+		if (p_ftype == SP_file_type::xml)
+			return load_xml(p_level_no, p_config);
+		else if (p_ftype == SP_file_type::sp)
+			return load_sp(p_level_no, p_config);
+		else
+			throw std::exception("Invalid filetype");
+	};
+
+	for (std::size_t i{ p_all ? 0 : get_current_level_idx() };
+		i < (p_all ? m_levels.size() : get_current_level_idx() + 1);
+		++i) {
+		try {
+			auto l_lvl = ll_load_level(p_ftype, i, p_config);
+
+			m_levels.at(i) = l_lvl;
+			++l_file_counter;
+		}
+		catch (const std::exception& ex) {
+			if (!p_all)
+				p_config.add_message(ex.what());
+		}
+	}
+	if (p_all)
+		p_config.add_message("Loaded " + std::to_string(l_file_counter) + " file(s)");
+	else if (l_file_counter != 0)
+		p_config.add_message("Loaded " +
+			(p_ftype == SP_file_type::xml ?
+				p_config.get_xml_full_path(get_current_level_idx()) :
+				p_config.get_SP_full_path(get_current_level_idx()))
+		);
+}
+
+void Level_window::save_levels_dat(SP_Config& p_config) {
+	// generate LEVELS.DAT and LEVEL.LST
+	std::vector<byte> l_file_bytes;
+	std::vector<byte> l_list_file_bytes;
+
+	for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
+		auto l_lvl_bytes = m_levels[i].get_bytes();
+		l_file_bytes.insert(end(l_file_bytes),
+			begin(l_lvl_bytes), end(l_lvl_bytes));
+
+		std::string l_line = klib::util::stringnum(i + 1) + ' ' + m_levels[i].get_title();
+
+		l_list_file_bytes.insert(end(l_list_file_bytes),
+			begin(l_line), end(l_line));
+		l_list_file_bytes.push_back(13);
+		l_list_file_bytes.push_back(10);
+	}
+
+	try {
+		klib::file::write_bytes_to_file(l_list_file_bytes,
+			p_config.get_level_lst_full_path());
+		p_config.add_message("Wrote " + p_config.get_level_lst_full_path());
+		klib::file::write_bytes_to_file(l_file_bytes,
+			p_config.get_levels_dat_full_path());
+		p_config.add_message("Wrote " + std::to_string(m_levels.size()) + " levels to " + p_config.get_levels_dat_full_path());
+	}
+	catch (const std::exception& ex) {
+		p_config.add_message(ex.what());
+	}
+}
+
 void Level_window::load_levels_dat(SP_Config& p_config) {
 	try {
 		std::vector<SP_Level> l_levels;
