@@ -213,6 +213,29 @@ namespace c {
 	// default level constants
 	constexpr char DEFAULT_LVL_TITLE[]{ "----- SUPERPLEXED -----" };
 	constexpr unsigned char DEFAULT_LVL_SF_VERSION{ 32 };
+
+	// color constants
+	struct SP_Color {
+		unsigned char r;
+		unsigned char g;
+		unsigned char b;
+	};
+
+	constexpr SP_Color COL_RED{ 0xff, 0x00, 0x00 };
+	constexpr SP_Color COL_RED_DARK{ 0x80, 0x00, 0x00 };
+	constexpr SP_Color COL_ORANGE{ 255,165, 0 };
+	constexpr SP_Color COL_ORANGE_LIGHT{ 255,213, 128 };
+	constexpr SP_Color COL_BLACK{ 0x00, 0x00, 0x00 };
+	constexpr SP_Color COL_WHITE{ 0xff, 0xff, 0xff };
+	constexpr SP_Color COL_YELLOW{ 0xff,0xff,0x00 };
+	constexpr SP_Color COL_YELLOW_DARK{ 200,220,0 };
+
+	constexpr SP_Color COL_BLUE{ 0x00,0x00,0xff };
+	constexpr SP_Color COL_BLUE_LIGHT{ 0x00,0x80,0xff };
+	constexpr SP_Color COL_BLUE_DARK{ 0x00,0x00,0x80 };
+
+	constexpr SP_Color COL_GREEN_LIGHT{ 0xbf,0xe3,0xb4 };
+	constexpr SP_Color COL_GREEN{ 0x00,0xff,0x00 };
 }
 
 #endif

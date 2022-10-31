@@ -6,11 +6,14 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include "./../common/imgui/imgui_impl_sdl.h"
+#include "./../common/imgui/imgui_impl_sdlrenderer.h"
 #include "./../SP_Config.h"
 #include "./../sp_levels/SP_Level.h"
 #include "./../sp_gfx/Project_gfx.h"
 #include "./../common/klib/User_input.h"
 #include "./../common/klib/Timer.h"
+#include "./../SP_Constants.h"
 
 class Level_window {
 	enum class SP_file_type { bmp, dat, sp, xml };

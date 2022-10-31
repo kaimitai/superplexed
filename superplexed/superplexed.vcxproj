@@ -147,6 +147,7 @@
     <ClInclude Include="source\common\imgui\imstb_rectpack.h" />
     <ClInclude Include="source\common\imgui\imstb_textedit.h" />
     <ClInclude Include="source\common\imgui\imstb_truetype.h" />
+    <ClInclude Include="source\common\klib\KImage.h" />
     <ClInclude Include="source\common\klib\klib_file.h" />
     <ClInclude Include="source\common\klib\klib_gfx.h" />
     <ClInclude Include="source\common\klib\klib_util.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="source\common\imgui\imgui_impl_sdlrenderer.cpp" />
     <ClCompile Include="source\common\imgui\imgui_tables.cpp" />
     <ClCompile Include="source\common\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="source\common\klib\KImage.cpp" />
     <ClCompile Include="source\common\klib\klib_file.cpp" />
     <ClCompile Include="source\common\klib\klib_gfx.cpp" />
     <ClCompile Include="source\common\klib\Timer.cpp" />

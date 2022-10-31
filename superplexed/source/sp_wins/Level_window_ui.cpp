@@ -140,6 +140,13 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 	ImGui::End();
 }
 
+// forward declare as much of Main_window as we need
+class Main_window {
+public:
+	static void window_start(const std::string& p_title, c::SP_Color p_text, c::SP_Color p_active, c::SP_Color p_inactive, c::SP_Color p_collapsed);
+	static ImU32 sp_color_to_imgui(c::SP_Color p_color);
+};
+
 void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
@@ -147,7 +154,8 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 
 	std::string m_lvl_label{ "Level " + l_clvl + " of " + std::to_string(m_levels.size()) + ": \"" +
 		m_levels.at(get_current_level_idx()).get_title() + "\"###levels" };
-	ImGui::Begin(m_lvl_label.c_str());
+
+	Main_window::window_start(m_lvl_label, c::COL_BLACK, c::COL_ORANGE_LIGHT, c::COL_ORANGE, c::COL_ORANGE);
 
 	// current level number
 	ImGui::SliderInt("Level", &m_current_level, 1, static_cast<int>(m_levels.size()));
@@ -185,10 +193,15 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	ImGui::Separator();
 	ImGui::Text("Level Collection Operations");
 
-	if (ImGui::Button("Copy Level")) {
-		m_levels.insert(begin(m_levels) + get_current_level_idx(),
-			m_levels.at(get_current_level_idx()));
-		p_config.add_message("Made a copy of level #" + l_clvl);
+	if (ImGui::Button("Insert Level")) {
+		std::size_t l_insert_idx{ get_current_level_idx() + (l_shift ? 0 : 1) };
+		m_levels.insert(begin(m_levels) + l_insert_idx,
+			SP_Level());
+		if (l_shift)
+			++m_current_level;
+		p_config.add_message("Inserted new level " +
+			std::string(l_shift ? "before" : "after")
+			+ " current");
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Delete Level")) {

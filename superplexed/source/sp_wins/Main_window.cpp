@@ -5,6 +5,7 @@
 #include "./../common/imgui/imgui.h"
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
+#include "./../SP_Constants.h"
 
 Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_lvl_win{ p_rnd, p_config },
@@ -57,7 +58,8 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 	ImGui::NewFrame();
 
 	// draw the main window, this will be visible on all other screens
-	ImGui::Begin("Main Window");
+	//ImGui::Begin("Main Window");
+	window_start("Main Window", c::COL_WHITE, c::COL_BLUE_LIGHT, c::COL_BLUE_DARK, c::COL_BLUE_DARK);
 
 	if (ImGui::BeginCombo("Editor Mode", m_selectable_windows[m_current_window].c_str(), 0)) {
 		for (std::size_t i{ 0 }; i < 2; ++i) {
@@ -101,4 +103,20 @@ void Main_window::set_application_icon(SDL_Window* p_win) const {
 	SDL_Surface* l_icon_srf{ m_gfx.create_application_icon() };
 	SDL_SetWindowIcon(p_win, l_icon_srf);
 	SDL_FreeSurface(l_icon_srf);
+}
+
+void Main_window::window_start(const std::string& p_title, c::SP_Color p_text, c::SP_Color p_active, c::SP_Color p_inactive, c::SP_Color p_collapsed) {
+	ImGui::PushStyleColor(ImGuiCol_TitleBg, sp_color_to_imgui(p_inactive));
+	ImGui::PushStyleColor(ImGuiCol_TitleBgActive, sp_color_to_imgui(p_active));
+	ImGui::PushStyleColor(ImGuiCol_TitleBgCollapsed, sp_color_to_imgui(p_collapsed));
+	ImGui::PushStyleColor(ImGuiCol_Text, sp_color_to_imgui(p_text));
+	ImGui::Begin(p_title.c_str());
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleColor();
+}
+
+ImU32 Main_window::sp_color_to_imgui(c::SP_Color p_color) {
+	return IM_COL32(p_color.r, p_color.g, p_color.b, 255);
 }

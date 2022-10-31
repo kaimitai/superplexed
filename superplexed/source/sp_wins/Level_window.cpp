@@ -169,8 +169,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_timers = {
 		klib::Timer(6, 250),			// tile animations
 		klib::Timer(255, 5, true),		// pulsating colors
-		klib::Timer(8, 100, true),		// pulsating letter size and index
-		klib::Timer(3, 1750, false)
+		klib::Timer(3, 500, false),		// pulsating letter
 	};
 
 	// initialize transforms
@@ -321,7 +320,16 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	SDL_RenderClear(p_rnd);
 
 	int l_atime = m_timers[0].get_frame();
-	int l_ptime = m_timers[1].get_frame();
+	int l_ltime = m_timers[2].get_frame();
+
+	// calculate pulsating colors for this frame
+	float l_pulse_progress = static_cast<float>(m_timers[1].get_frame()) / 255.0f;
+	std::vector<SDL_Color> l_pulse_colors;
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_RED_DARK), Project_gfx::sp_col_to_sdl(c::COL_RED), l_pulse_progress));  // gravity port property turned off
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_ORANGE), Project_gfx::sp_col_to_sdl(c::COL_RED), l_pulse_progress));      // gravity port property not ok
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_YELLOW), Project_gfx::sp_col_to_sdl(c::COL_ORANGE), l_pulse_progress));        // selection rectangle
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_BLUE_LIGHT), Project_gfx::sp_col_to_sdl(c::COL_BLUE), l_pulse_progress));      // selected gravity port outline
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_WHITE), Project_gfx::sp_col_to_sdl(c::COL_GREEN), l_pulse_progress));      // gravity port property turned on
 
 	for (int i = 0; i < 60; ++i)
 		for (int j = 0; j < 24; ++j) {
@@ -344,36 +352,35 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 			SDL_RenderDrawLine(p_rnd, 0, i * c::TILE_W, c::LEVEL_W * c::TILE_W, i * c::TILE_W);
 	}
 
-	int l_letter_w = m_timers[2].get_frame();
-	int l_letter_ind = m_timers[3].get_frame();
+	int l_letter_ind = m_timers[2].get_frame();
 
 	for (int i{ 0 }; i < m_levels.at(get_current_level_idx()).get_gravity_port_count(); ++i) {
 		int l_x = c::TILE_W * m_levels.at(get_current_level_idx()).get_gp_x(i);
 		int l_y = c::TILE_W * m_levels.at(get_current_level_idx()).get_gp_y(i);
+		bool l_gp_grav = m_levels.at(get_current_level_idx()).get_gp_gravity(i);
+		bool l_gp_fz = m_levels.at(get_current_level_idx()).get_gp_freeze_zonks(i);
+		bool l_gp_fe = m_levels.at(get_current_level_idx()).get_gp_freeze_enemies(i);
+
 		bool l_port_ok = m_levels.at(get_current_level_idx()).get_gp_status(i);
 
 		if (i == m_current_gp - 1)
 			klib::gfx::draw_rect(p_rnd, l_x, l_y, c::TILE_W, c::TILE_W,
-				klib::gfx::pulse_color(SDL_Color{ 180, 180, 255 }, SDL_Color{ 255,255,255 }, l_ptime / 255.0f),
+				l_pulse_colors[3],
 				1);
 
 		if (l_port_ok) {
-			p_gfx.blit_font(p_rnd, l_letter_ind,
-				l_x - l_letter_w + 8,
-				l_y - l_letter_w + 8,
-				2 * l_letter_w, 2 * l_letter_w,
-				SDL_Color{ 255, 255, 0 });
+			bool l_property_on = ((l_ltime == 0 && l_gp_grav) || (l_ltime == 2 && l_gp_fz) || (l_ltime == 1 && l_gp_fe));
+
+			p_gfx.blit_fixed(p_rnd, l_letter_ind, l_x, l_y, l_pulse_colors[l_property_on ? 4 : 0]);
 		}
 		else {
-			p_gfx.blit_font(p_rnd, 3, l_x - l_letter_w + 8, l_y - l_letter_w + 8,
-				2 * l_letter_w, 2 * l_letter_w,
-				SDL_Color{ 255, 0, 0 });
+			p_gfx.blit_fixed(p_rnd, 3, l_x, l_y, l_pulse_colors[1]);
 		}
 	}
 
 	auto l_rect = this->get_selection_rectangle();
 	klib::gfx::draw_rect(p_rnd, c::TILE_W * l_rect.x, c::TILE_W * l_rect.y, c::TILE_W * (l_rect.w + 1), c::TILE_W * (l_rect.h + 1),
-		klib::gfx::pulse_color(SDL_Color{ 180, 200, 0 }, SDL_Color{ 255,255,50 }, l_ptime / 255.0f), //SDL_Color{ 200, 200, 50 },
+		l_pulse_colors[2],
 		3);
 
 	SDL_SetRenderTarget(p_rnd, nullptr);

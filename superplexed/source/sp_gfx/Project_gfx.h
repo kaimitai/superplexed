@@ -10,6 +10,7 @@
 #include "SP_Image.h"
 #include "./../SP_Config.h"
 #include "./../sp_levels/SP_Level.h"
+#include "./../SP_Constants.h"
 
 using byte = unsigned char;
 
@@ -60,7 +61,7 @@ public:
 	~Project_gfx(void);
 	SDL_Texture* get_tile_texture(std::size_t p_texture_no, std::size_t p_frame_no) const;
 	SDL_Texture* get_image_texture(const std::string& p_filename) const;
-	void blit_font(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, int p_w, int p_h, SDL_Color p_color) const;
+	void blit_fixed(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, SDL_Color p_color) const;
 
 	std::pair<int, int> get_image_dimensions(const std::string& p_filename) const;
 
@@ -69,6 +70,10 @@ public:
 	void save_dat(const std::string& p_filename, SP_Config& p_config) const;
 
 	const std::map<std::string, Project_gfx::Gfx_metadata>& get_meta(void) const;
+
+	constexpr static SDL_Color sp_col_to_sdl(c::SP_Color p_col) {
+		return SDL_Color{ p_col.r, p_col.g, p_col.b };
+	}
 
 	// palette functions
 	const std::vector<SP_Palette>& get_palettes(void) const;
