@@ -251,6 +251,22 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			else if (m_current_gp > l_gp_count)
 				m_current_gp = 1;
 		}
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
+			save_levels_dat(p_config);
+		else if (p_input.is_pressed(SDL_SCANCODE_1))
+			toggle_selected_gp_property(1);
+		else if (p_input.is_pressed(SDL_SCANCODE_2))
+			toggle_selected_gp_property(2);
+		else if (p_input.is_pressed(SDL_SCANCODE_3))
+			toggle_selected_gp_property(3);
+		else if (p_input.is_pressed(SDL_SCANCODE_HOME))
+			m_current_level = 1;
+		else if (p_input.is_pressed(SDL_SCANCODE_END))
+			m_current_level = static_cast<int>(m_levels.size());
+		else if (p_input.is_pressed(SDL_SCANCODE_UP))
+			m_current_level = std::min(static_cast<int>(m_levels.size()), m_current_level + (l_ctrl ? 10 : 1));
+		else if (p_input.is_pressed(SDL_SCANCODE_DOWN))
+			m_current_level = std::max(1, m_current_level - (l_ctrl ? 10 : 1));
 	}
 
 	// handle mouse
@@ -421,6 +437,10 @@ SP_Level& Level_window::get_current_level(void) {
 	return m_levels[get_current_level_idx()];
 }
 
+const SP_Level& Level_window::get_current_level(void) const {
+	return m_levels[get_current_level_idx()];
+}
+
 // selections
 bool Level_window::has_selection(void) const {
 	return (m_sel_x2 != -1);
@@ -448,7 +468,7 @@ bool Level_window::is_selection_empty(void) const {
 
 	for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j)
 		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
-			if (m_levels.at(get_current_level_idx()).get_tile_no(i, j) != 0)
+			if (get_current_level().get_tile_no(i, j) != 0)
 				return false;
 
 	return true;
@@ -611,8 +631,21 @@ std::vector<int> Level_window::get_tile_counts(bool p_all_levels) const {
 		return result;
 	}
 	else
-		return m_levels.at(get_current_level_idx()).get_tile_counts();
+		return get_current_level().get_tile_counts();
 
+}
+
+void Level_window::toggle_selected_gp_property(int p_property_no) {
+	auto& l_lvl = get_current_level();
+	int l_gp_index = m_current_gp - 1;
+	if (l_gp_index < l_lvl.get_gravity_port_count()) {
+		if (p_property_no == 1)
+			l_lvl.set_gp_gravity(l_gp_index, !l_lvl.get_gp_gravity(l_gp_index));
+		else if (p_property_no == 2)
+			l_lvl.set_gp_freeze_zonks(l_gp_index, !l_lvl.get_gp_freeze_zonks(l_gp_index));
+		else if (p_property_no == 3)
+			l_lvl.set_gp_freeze_enemies(l_gp_index, !l_lvl.get_gp_freeze_enemies(l_gp_index));
+	}
 }
 
 // SP load/save

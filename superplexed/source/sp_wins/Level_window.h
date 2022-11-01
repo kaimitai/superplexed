@@ -48,6 +48,7 @@ class Level_window {
 	void regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx);
 	std::size_t get_current_level_idx(void) const;
 	SP_Level& get_current_level(void);
+	const SP_Level& get_current_level(void) const;
 
 	// selection procedures and functions
 	bool has_selection(void) const;
@@ -65,6 +66,7 @@ class Level_window {
 	void rotate_selection(bool p_cclockwise, SP_Config& p_config);
 	std::pair<int, int> mouse_coords_to_tile(int p_mouse_x, int p_mouse_y, int p_screen_h) const;
 	std::vector<int> get_tile_counts(bool p_all_levels) const;
+	void toggle_selected_gp_property(int p_property_no);
 
 	// xml read/write
 	void save_xml(std::size_t p_level_no, const SP_Config& p_config) const;
