@@ -212,6 +212,7 @@ int Level_window::get_max_cam_x(int p_w, int p_h) const {
 void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
+	bool l_g = p_input.is_pressed(SDL_SCANCODE_G);
 
 	for (auto& timer : m_timers)
 		timer.move(p_delta_ms);
@@ -219,7 +220,7 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 	// handle keyboard
 	if (!ImGui::GetIO().WantCaptureKeyboard) {
 		if (p_input.is_pressed(SDL_SCANCODE_DELETE))
-			delete_selection();
+			delete_selection(l_g);
 		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_C))
 			copy_to_clipboard();
 		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_V)) {
@@ -240,10 +241,10 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			m_cam_x = std::max(0,
 				m_cam_x - (l_ctrl ? 4 : 1));
 		else if (p_input.is_pressed(SDL_SCANCODE_RIGHT) && m_cam_x < get_max_cam_x(p_w, p_h))
-			m_cam_x = std::min(get_max_cam_x(p_w, p_h) + 1,
+			m_cam_x = std::min(get_max_cam_x(p_w, p_h),
 				m_cam_x + (l_ctrl ? 4 : 1));
 		else if (p_input.is_pressed(SDL_SCANCODE_TAB)) {
-			int l_gp_count = m_levels.at(get_current_level_idx()).get_gravity_port_count();
+			int l_gp_count = get_current_level().get_gravity_port_count();
 			m_current_gp += (l_shift ? -1 : 1);
 			if (m_current_gp <= 0)
 				m_current_gp = l_gp_count;
@@ -259,16 +260,16 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
 
 			if (l_ctrl) {
-				m_sel_tile = m_levels.at(get_current_level_idx()).get_tile_no(tcoords.first, tcoords.second);
+				m_sel_tile = get_current_level().get_tile_no(tcoords.first, tcoords.second);
 			}
 			if (!l_ctrl && l_shift) {
 				m_sel_x2 = tcoords.first;
 				m_sel_y2 = tcoords.second;
 			}
-			else if (p_input.is_pressed(SDL_SCANCODE_G) &&
-				m_levels.at(get_current_level_idx()).get_gravity_port_count() > 0) {
-				m_levels.at(get_current_level_idx()).set_gp_x(m_current_gp - 1, tcoords.first);
-				m_levels.at(get_current_level_idx()).set_gp_y(m_current_gp - 1, tcoords.second);
+			else if (l_g &&
+				get_current_level().get_gravity_port_count() > 0) {
+				get_current_level().set_gp_x(m_current_gp - 1, tcoords.first);
+				get_current_level().set_gp_y(m_current_gp - 1, tcoords.second);
 			}
 			else {
 				clear_selection();
@@ -276,7 +277,7 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 				m_sel_y = tcoords.second;
 
 				// select a special port if one was clicked
-				int l_gp_no{ m_levels.at(get_current_level_idx()).has_gp_at_pos(m_sel_x, m_sel_y) };
+				int l_gp_no{ get_current_level().has_gp_at_pos(m_sel_x, m_sel_y) };
 				if (l_gp_no > -1)
 					m_current_gp = l_gp_no + 1;
 			}
@@ -284,14 +285,14 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		else if (p_input.mouse_held(false)) {
 			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
 			if (m_sel_tile == c::TILE_NO_PLAYER_START)
-				m_levels.at(get_current_level_idx()).set_player_start(tcoords.first, tcoords.second);
+				get_current_level().set_player_start(tcoords.first, tcoords.second);
 			else {
-				m_levels.at(get_current_level_idx()).set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
+				get_current_level().set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
 				if (m_sel_tile >= c::TILE_NO_GP_RIGHT &&
 					m_sel_tile <= c::TILE_NO_GP_UP &&
-					m_levels.at(get_current_level_idx()).has_gp_at_pos(tcoords.first, tcoords.second) == -1 &&
-					m_levels.at(get_current_level_idx()).get_gravity_port_count() < c::MAX_GP_COUNT)
-					m_levels.at(get_current_level_idx()).add_gravity_port(tcoords.first, tcoords.second);
+					get_current_level().has_gp_at_pos(tcoords.first, tcoords.second) == -1 &&
+					get_current_level().get_gravity_port_count() < c::MAX_GP_COUNT)
+					get_current_level().add_gravity_port(tcoords.first, tcoords.second);
 			}
 		}
 		else if (p_input.mw_down()) {
@@ -304,7 +305,7 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			if (l_shift && get_current_level_idx() < m_levels.size() - 1)
 				++m_current_level;
 			else if (!l_shift && m_cam_x < get_max_cam_x(p_w, p_h))
-				m_cam_x = std::min(get_max_cam_x(p_w, p_h) + 1,
+				m_cam_x = std::min(get_max_cam_x(p_w, p_h),
 					m_cam_x + (l_ctrl ? 4 : 1));
 		}
 
@@ -342,10 +343,11 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_YELLOW), Project_gfx::sp_col_to_sdl(c::COL_ORANGE), l_pulse_progress));        // selection rectangle
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_BLUE_LIGHT), Project_gfx::sp_col_to_sdl(c::COL_BLUE), l_pulse_progress));      // selected gravity port outline
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_GREEN), Project_gfx::sp_col_to_sdl(c::COL_GREEN_LIGHT), l_pulse_progress));      // gravity port property turned on
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::SP_Color(0x30, 0x30, 0x30)), Project_gfx::sp_col_to_sdl(c::SP_Color(0x55, 0x55, 0x55)), l_pulse_progress));      // grid color
 
 	for (int i = 0; i < 60; ++i)
 		for (int j = 0; j < 24; ++j) {
-			byte l_tile_no = m_levels.at(get_current_level_idx()).get_tile_no(i, j);
+			byte l_tile_no = get_current_level().get_tile_no(i, j);
 			klib::gfx::blit(p_rnd,
 				p_gfx.get_tile_texture(l_tile_no, m_ui_animate ? l_atime : 0),
 				i * c::TILE_W, j * c::TILE_W);
@@ -356,11 +358,12 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 			}
 		}
 
-	auto l_spos = m_levels.at(get_current_level_idx()).get_start_pos();
+	auto l_spos = get_current_level().get_start_pos();
 	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(40, m_ui_animate ? l_atime : 0),
 		c::TILE_W * l_spos.first, c::TILE_W * l_spos.second);
 
-	SDL_SetRenderDrawColor(p_rnd, 0, 0, 0, 0);
+	SDL_SetRenderDrawColor(p_rnd, l_pulse_colors[5].r,
+		l_pulse_colors[5].g, l_pulse_colors[5].b, 0);
 
 	if (m_ui_show_grid) {
 		for (int i{ 1 }; i < c::LEVEL_W; ++i)
@@ -371,27 +374,30 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 
 	int l_letter_ind = m_timers[2].get_frame();
 
-	for (int i{ 0 }; i < m_levels.at(get_current_level_idx()).get_gravity_port_count(); ++i) {
-		int l_x = c::TILE_W * m_levels.at(get_current_level_idx()).get_gp_x(i);
-		int l_y = c::TILE_W * m_levels.at(get_current_level_idx()).get_gp_y(i);
-		bool l_gp_grav = m_levels.at(get_current_level_idx()).get_gp_gravity(i);
-		bool l_gp_fz = m_levels.at(get_current_level_idx()).get_gp_freeze_zonks(i);
-		bool l_gp_fe = m_levels.at(get_current_level_idx()).get_gp_freeze_enemies(i);
+	// draw special port indicators if animate flag is set
+	if (m_ui_animate) {
+		for (int i{ 0 }; i < get_current_level().get_gravity_port_count(); ++i) {
+			int l_x = c::TILE_W * get_current_level().get_gp_x(i);
+			int l_y = c::TILE_W * get_current_level().get_gp_y(i);
+			bool l_gp_grav = get_current_level().get_gp_gravity(i);
+			bool l_gp_fz = get_current_level().get_gp_freeze_zonks(i);
+			bool l_gp_fe = get_current_level().get_gp_freeze_enemies(i);
 
-		bool l_port_ok = m_levels.at(get_current_level_idx()).get_gp_status(i);
+			bool l_port_ok = get_current_level().get_gp_status(i);
 
-		if (i == m_current_gp - 1)
-			klib::gfx::draw_rect(p_rnd, l_x, l_y, c::TILE_W, c::TILE_W,
-				l_pulse_colors[3],
-				1);
+			if (i == m_current_gp - 1)
+				klib::gfx::draw_rect(p_rnd, l_x, l_y, c::TILE_W, c::TILE_W,
+					l_pulse_colors[3],
+					1);
 
-		if (l_port_ok) {
-			bool l_property_on = ((l_ltime == 0 && l_gp_grav) || (l_ltime == 1 && l_gp_fz) || (l_ltime == 2 && l_gp_fe));
+			if (l_port_ok) {
+				bool l_property_on = ((l_ltime == 0 && l_gp_grav) || (l_ltime == 1 && l_gp_fz) || (l_ltime == 2 && l_gp_fe));
 
-			p_gfx.blit_fixed(p_rnd, l_letter_ind, l_x, l_y, l_pulse_colors[l_property_on ? 4 : 0]);
-		}
-		else {
-			p_gfx.blit_fixed(p_rnd, 3, l_x, l_y, l_pulse_colors[1]);
+				p_gfx.blit_fixed(p_rnd, l_letter_ind, l_x, l_y, l_pulse_colors[l_property_on ? 4 : 0]);
+			}
+			else {
+				p_gfx.blit_fixed(p_rnd, 3, l_x, l_y, l_pulse_colors[1]);
+			}
 		}
 	}
 
@@ -409,6 +415,10 @@ int Level_window::get_tile_pixel_w(int p_screen_pixel_h) const {
 
 std::size_t Level_window::get_current_level_idx(void) const {
 	return static_cast<std::size_t>(m_current_level) - 1;
+}
+
+SP_Level& Level_window::get_current_level(void) {
+	return m_levels[get_current_level_idx()];
 }
 
 // selections
@@ -457,27 +467,27 @@ void Level_window::flip_selection(bool p_vertical) {
 	if (p_vertical) {
 		for (int j{ 0 }; j <= l_rect.w; ++j)
 			for (int i{ 0 }; i <= l_rect.h / 2; ++i) {
-				byte l_tmp = m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + j, l_rect.y + i);
-				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + j, l_rect.y + i,
-					m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + j, l_rect.y + l_rect.h - i));
-				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + j, l_rect.y + l_rect.h - i, l_tmp);
+				byte l_tmp = get_current_level().get_tile_no(l_rect.x + j, l_rect.y + i);
+				get_current_level().set_tile_value(l_rect.x + j, l_rect.y + i,
+					get_current_level().get_tile_no(l_rect.x + j, l_rect.y + l_rect.h - i));
+				get_current_level().set_tile_value(l_rect.x + j, l_rect.y + l_rect.h - i, l_tmp);
 			}
 	}
 	// horizontal flip
 	else {
 		for (int j{ 0 }; j <= l_rect.w / 2; ++j)
 			for (int i{ 0 }; i <= l_rect.h; ++i) {
-				byte l_tmp = m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + j, l_rect.y + i);
-				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + j, l_rect.y + i,
-					m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + l_rect.w - j, l_rect.y + i));
-				m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + l_rect.w - j, l_rect.y + i, l_tmp);
+				byte l_tmp = get_current_level().get_tile_no(l_rect.x + j, l_rect.y + i);
+				get_current_level().set_tile_value(l_rect.x + j, l_rect.y + i,
+					get_current_level().get_tile_no(l_rect.x + l_rect.w - j, l_rect.y + i));
+				get_current_level().set_tile_value(l_rect.x + l_rect.w - j, l_rect.y + i, l_tmp);
 			}
 	}
 
 	for (int i{ 0 }; i <= l_rect.w; ++i)
 		for (int j{ 0 }; j <= l_rect.h; ++j)
-			m_levels.at(get_current_level_idx()).set_tile_value(l_rect.x + i, l_rect.y + j,
-				apply_transform(m_levels.at(get_current_level_idx()).get_tile_no(l_rect.x + i, l_rect.y + j),
+			get_current_level().set_tile_value(l_rect.x + i, l_rect.y + j,
+				apply_transform(get_current_level().get_tile_no(l_rect.x + i, l_rect.y + j),
 					p_vertical ? TRANS_V_IDX : TRANS_H_IDX)
 			);
 }
@@ -507,7 +517,7 @@ void Level_window::copy_to_clipboard(void) {
 	for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j) {
 		std::vector<byte> l_row;
 		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
-			l_row.push_back(m_levels.at(get_current_level_idx()).get_tile_no(i, j));
+			l_row.push_back(get_current_level().get_tile_no(i, j));
 		m_clipboard.push_back(l_row);
 	}
 
@@ -516,22 +526,28 @@ void Level_window::copy_to_clipboard(void) {
 void Level_window::paste_from_clipboard(void) {
 	for (int j{ 0 }; j < m_clipboard.size(); ++j)
 		for (int i{ 0 }; i < m_clipboard.at(j).size(); ++i)
-			m_levels.at(get_current_level_idx()).set_tile_value(
+			get_current_level().set_tile_value(
 				m_sel_x + i, m_sel_y + j, m_clipboard[j][i]);
 }
 
-void Level_window::delete_selection(void) {
+void Level_window::delete_selection(bool p_delete_special_ports_only) {
 	auto l_rect = get_selection_rectangle();
 
 	for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j)
-		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i)
-			m_levels.at(get_current_level_idx()).set_tile_value(i, j, 0);
+		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i) {
+			int l_gp_index = get_current_level().has_gp_at_pos(i, j);
+			if (l_gp_index >= 0)
+				get_current_level().delete_gravity_port(l_gp_index);
+			if (!p_delete_special_ports_only) {
+				get_current_level().set_tile_value(i, j, 0);
+			}
+		}
 }
 
 void Level_window::cut_selection(void) {
 	if (!is_selection_empty()) {
 		copy_to_clipboard();
-		delete_selection();
+		delete_selection(false);
 	}
 }
 

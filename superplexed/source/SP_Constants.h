@@ -215,6 +215,7 @@ namespace c {
 	// default level constants
 	constexpr char DEFAULT_LVL_TITLE[]{ "----- SUPERPLEXED -----" };
 	constexpr unsigned char DEFAULT_LVL_SF_VERSION{ 32 };
+	constexpr char FONT_GFX_CHARS[] {" !\"#$ % &´() * +,-. / 0123456789:; <=> ? @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\ } ^ "};
 
 	// color constants
 	struct SP_Color {

@@ -47,13 +47,14 @@ class Level_window {
 	int get_tile_pixel_w(int p_screen_pixel_h) const;
 	void regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx);
 	std::size_t get_current_level_idx(void) const;
+	SP_Level& get_current_level(void);
 
 	// selection procedures and functions
 	bool has_selection(void) const;
 	void clear_selection(void);
 	void copy_to_clipboard(void);
 	void paste_from_clipboard(void);
-	void delete_selection(void);
+	void delete_selection(bool p_delete_special_ports);
 	void cut_selection(void);
 	SDL_Rect get_selection_rectangle(void) const;
 	bool is_selection_empty(void) const;
@@ -76,7 +77,7 @@ class Level_window {
 	void save_levels_dat(SP_Config& p_config);
 	// ui
 	void draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config);
-	void draw_ui_gp_win(SP_Config& p_config);
+	void draw_ui_gp_win(const Project_gfx& p_gfx, SP_Config& p_config);
 	void draw_ui_tile_win(const klib::User_input& p_input, SP_Config& p_config, const Project_gfx& p_gfx);
 	void draw_ui_statistics(const Project_gfx& p_gfx);
 
