@@ -134,7 +134,6 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	generate_tile_definitions();
 	load_image_data_from_file(p_rnd, c::FILENAME_FIXED, p_config);
 	load_image_data_from_file(p_rnd, c::FILENAME_MOVING, p_config);
-	load_image_data_from_file(p_rnd, c::FILENAME_CHARS8, p_config);
 
 	// create textures used by the editor
 	// tile textures

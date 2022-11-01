@@ -34,6 +34,9 @@ void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_i
 void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& p_config, const Project_gfx& p_gfx) {
 
 	std::string l_sel_tile{ "Tiles - Cursor @ (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")###tiles" };
+	
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_TP_X, c::WIN_TP_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_TP_W, c::WIN_TP_H), ImGuiCond_FirstUseEver);
 	ImGui::Begin(l_sel_tile.c_str());
 
 	float l_icon_w = m_tile_picker_scale * static_cast<float>(c::TILE_W);
@@ -92,6 +95,9 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 	std::string l_clvl{ std::to_string(m_current_level) };
 
 	std::string l_gp_label{ "Special Ports (" + std::to_string(l_gp_count) + ")###gp" };
+	
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_SP_X, c::WIN_SP_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_SP_W, c::WIN_SP_H), ImGuiCond_FirstUseEver);
 	ImGui::Begin(l_gp_label.c_str());
 
 	if (l_gp_count > 0) {
@@ -131,7 +137,7 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 
 		ImGui::Separator();
 		if (!l_gp_status)
-			ImGui::Text("Warning: No Gravity Port tile at this position");
+			ImGui::Text("Warning: No Special Port tile at this position");
 		else {
 			std::string l_gp_tile{ "Tile: " + SP_Level::get_description(
 			m_levels.at(get_current_level_idx()).get_tile_no(l_gp_x, l_gp_y)
@@ -174,6 +180,8 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	std::string m_lvl_label{ "Level " + l_clvl + " of " + std::to_string(m_levels.size()) + ": \"" +
 		m_levels.at(get_current_level_idx()).get_title() + "\"###levels" };
 
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_LVL_X, c::WIN_LVL_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_LVL_W, c::WIN_LVL_H), ImGuiCond_FirstUseEver);
 	Main_window::window_start(m_lvl_label, c::COL_BLACK, c::COL_ORANGE, c::COL_ORANGE_LIGHT, c::COL_ORANGE_LIGHT);
 
 	// current level number
@@ -266,9 +274,12 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 }
 
 void Level_window::draw_ui_statistics(const Project_gfx& p_gfx) {
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_STATS_X, c::WIN_STATS_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_STATS_W, c::WIN_STATS_H), ImGuiCond_FirstUseEver);
+
 	std::string l_win_title{ "Statistics for " +
-		(m_show_stats == 0 ? "all levels" : "level " + std::to_string(m_show_stats)
-			+ "###stats")
+		std::string(m_show_stats == 0 ? "all levels" : "level "
+		+ std::to_string(m_show_stats)) + "###stats"
 	};
 	ImGui::Begin(l_win_title.c_str());
 

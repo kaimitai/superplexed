@@ -42,6 +42,7 @@ class Level_window {
 	// dictionary of substitutions for applying on rotations and flips
 	std::vector<std::map<byte, byte>> m_transforms;
 	byte apply_transform(byte p_byte_value, std::size_t p_transform_no) const;
+	int get_max_cam_x(int p_w, int p_h) const;
 
 	int get_tile_pixel_w(int p_screen_pixel_h) const;
 	void regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_gfx);

@@ -31,6 +31,8 @@ void Graphics_window::set_selected_file(const std::string& p_filename) {
 
 void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config& p_config) {
 
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_GFX_X, c::WIN_GFX_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_GFX_W, c::WIN_GFX_H), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Images");
 	const auto& l_meta = p_gfx.get_meta();
 	if (ImGui::BeginCombo("Image File", m_selected_file.c_str(), 0)) {
@@ -120,7 +122,8 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 
 	ImGui::End();
 
-
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_IMGPV_X, c::WIN_IMGPV_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_IMGPV_W, c::WIN_IMGPV_H), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Image Preview");
 
 	SDL_Texture* l_txt = p_gfx.get_image_texture(m_selected_file);
@@ -146,6 +149,8 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 
 	ImGui::End();
 
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_PAL_X, c::WIN_PAL_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_PAL_W, c::WIN_PAL_H), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Palettes");
 	ImGui::SliderInt("Palette", &m_selected_palette, 1, c::PALETTE_COUNT);
 

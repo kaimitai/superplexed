@@ -58,7 +58,8 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 	ImGui::NewFrame();
 
 	// draw the main window, this will be visible on all other screens
-	//ImGui::Begin("Main Window");
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_MAIN_X, c::WIN_MAIN_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_MAIN_W, c::WIN_MAIN_H), ImGuiCond_FirstUseEver);
 	window_start("Main Window", c::COL_WHITE, c::COL_BLUE_LIGHT, c::COL_BLUE_DARK, c::COL_BLUE_DARK);
 
 	if (ImGui::BeginCombo("Editor Mode", m_selectable_windows[m_current_window].c_str(), 0)) {

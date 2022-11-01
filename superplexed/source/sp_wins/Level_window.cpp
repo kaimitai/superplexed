@@ -205,6 +205,10 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_transforms.push_back(l_cc_transforms);
 }
 
+int Level_window::get_max_cam_x(int p_w, int p_h) const {
+	return static_cast<int>(c::LEVEL_W) - p_w / get_tile_pixel_w(p_h);
+}
+
 void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
@@ -232,6 +236,12 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			show_clipboard_destination();
 		else if (p_input.is_pressed(SDL_SCANCODE_R))
 			rotate_selection(l_shift, p_config);
+		else if (p_input.is_pressed(SDL_SCANCODE_LEFT) && m_cam_x > 0)
+			m_cam_x = std::max(0,
+				m_cam_x - (l_ctrl ? 4 : 1));
+		else if (p_input.is_pressed(SDL_SCANCODE_RIGHT) && m_cam_x < get_max_cam_x(p_w, p_h))
+			m_cam_x = std::min(get_max_cam_x(p_w, p_h) + 1,
+				m_cam_x + (l_ctrl ? 4 : 1));
 		else if (p_input.is_pressed(SDL_SCANCODE_TAB)) {
 			int l_gp_count = m_levels.at(get_current_level_idx()).get_gravity_port_count();
 			m_current_gp += (l_shift ? -1 : 1);
@@ -287,14 +297,15 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		else if (p_input.mw_down()) {
 			if (l_shift && get_current_level_idx() > 0)
 				--m_current_level;
-			else if (!l_shift && m_cam_x > 0)
-				--m_cam_x;
+			else if (m_cam_x > 0 && !l_shift)
+				m_cam_x = std::max(0, m_cam_x - (l_ctrl ? 4 : 1));
 		}
 		else if (p_input.mw_up()) {
 			if (l_shift && get_current_level_idx() < m_levels.size() - 1)
 				++m_current_level;
-			else if (!l_shift && m_cam_x < 40)
-				++m_cam_x;
+			else if (!l_shift && m_cam_x < get_max_cam_x(p_w, p_h))
+				m_cam_x = std::min(get_max_cam_x(p_w, p_h) + 1,
+					m_cam_x + (l_ctrl ? 4 : 1));
 		}
 
 	}

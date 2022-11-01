@@ -238,6 +238,18 @@ namespace c {
 
 	constexpr SP_Color COL_GREEN_LIGHT{ 0xbf,0xff,0xb4 };
 	constexpr SP_Color COL_GREEN{ 0x00,0xe0,0x00 };
+
+	// dear imgui window constants
+	constexpr int WIN_MAIN_X{ 10 }, WIN_MAIN_Y{ 5 }, WIN_MAIN_W{ 400 }, WIN_MAIN_H{ 235 };
+
+	constexpr int WIN_LVL_X{ 10 }, WIN_LVL_Y{ 240 }, WIN_LVL_W{ 400 }, WIN_LVL_H{ 325 };
+	constexpr int WIN_SP_X{ 10 }, WIN_SP_Y{ 570 }, WIN_SP_W{ 400 }, WIN_SP_H{ 150 };
+	constexpr int WIN_TP_X{ 650 }, WIN_TP_Y{ 5 }, WIN_TP_W{ 370 }, WIN_TP_H{ 420 };
+	constexpr int WIN_STATS_X{ 415 }, WIN_STATS_Y{ 5 }, WIN_STATS_W{ 230 }, WIN_STATS_H{ 675 };
+
+	constexpr int WIN_GFX_X{ 10 }, WIN_GFX_Y{ 240 }, WIN_GFX_W{ 400 }, WIN_GFX_H{ 235 };
+	constexpr int WIN_PAL_X{ 10 }, WIN_PAL_Y{ 480 }, WIN_PAL_W{ 400 }, WIN_PAL_H{ 270 };
+	constexpr int WIN_IMGPV_X{ 410 }, WIN_IMGPV_Y{ 5 }, WIN_IMGPV_W{ 610 }, WIN_IMGPV_H{ 405 };
 }
 
 #endif
