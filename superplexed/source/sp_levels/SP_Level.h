@@ -52,7 +52,7 @@ public:
 	const std::vector<byte>& get_unused_bytes(void) const;
 	const std::vector<byte>& get_solution_bytes(void) const;
 	byte get_speedfix_version(void) const;
-	std::map<byte, int> get_tile_counts(void) const;
+	std::vector<int> get_tile_counts(void) const;
 
 	// gravity port getters
 	int get_gravity_port_count(void) const;

@@ -29,7 +29,7 @@ public:
 
 	// static utility functions
 	static void window_start(const std::string& p_title, c::SP_Color p_text, c::SP_Color p_active, c::SP_Color p_inactive, c::SP_Color p_collapsed);
-	static ImU32 sp_color_to_imgui(c::SP_Color p_color);
+	static constexpr ImU32 sp_color_to_imgui(c::SP_Color p_color);
 };
 
 #endif

@@ -10,6 +10,7 @@ namespace c {
 
 	// filenames
 	constexpr char SPCONFIG_XML_FILENAME[]{ "spconfig.xml" };
+	constexpr char SP_IMGUI_INI_FILENAME[]{ "spwindows.ini" };
 	constexpr char DEFAULT_PROJECT_FOLDER[]{ "." };
 
 	// folders and file extensions
@@ -148,6 +149,7 @@ namespace c {
 	constexpr char TILE_DESC_PLAYER_START[]{ "Player Start" };
 
 	// tile numbers
+	constexpr int TILE_COUNT{ 40 };
 	constexpr unsigned char TILE_NO_EMPTY{ 0 };
 	constexpr unsigned char TILE_NO_ZONK{ 1 };
 	constexpr unsigned char TILE_NO_BASE{ 2 };
@@ -234,8 +236,8 @@ namespace c {
 	constexpr SP_Color COL_BLUE_LIGHT{ 0x00,0x80,0xff };
 	constexpr SP_Color COL_BLUE_DARK{ 0x00,0x00,0x80 };
 
-	constexpr SP_Color COL_GREEN_LIGHT{ 0xbf,0xe3,0xb4 };
-	constexpr SP_Color COL_GREEN{ 0x00,0xff,0x00 };
+	constexpr SP_Color COL_GREEN_LIGHT{ 0xbf,0xff,0xb4 };
+	constexpr SP_Color COL_GREEN{ 0x00,0xe0,0x00 };
 }
 
 #endif

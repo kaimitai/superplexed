@@ -207,8 +207,8 @@ byte SP_Level::get_speedfix_version(void) const {
 }
 
 // statistics - count each tile type
-std::map<byte, int> SP_Level::get_tile_counts(void) const {
-	std::map<byte, int> result;
+std::vector<int> SP_Level::get_tile_counts(void) const {
+	std::vector<int> result(c::TILE_COUNT, 0);
 
 	for (const auto& row : m_tiles)
 		for (byte v : row)

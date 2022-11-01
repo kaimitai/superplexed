@@ -16,11 +16,14 @@ namespace klib {
 
 		public:
 			KImage(const std::string& p_bmp_file);
-			KImage(const std::vector<byte>& p_bytes, int p_w, int p_h, const std::vector<SDL_Color>& p_palette);
+			KImage(const std::vector<byte>& p_bytes);
 			SDL_Surface* to_sdl_surface(std::size_t p_transp_ind = 256) const;
 			std::vector<byte> to_bytes(void) const;
-			std::vector<SDL_Color> get_palette(void) const;
+			const std::vector<SDL_Color>& get_palette(void) const;
 			int bits_per_pixel(void) const;
+
+			int w(void) const;
+			int h(void) const;
 		};
 	}
 }

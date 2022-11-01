@@ -7,8 +7,10 @@
 
 void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input, SP_Config& p_config) {
 	draw_ui_level_win(p_input, p_gfx, p_config);
-	draw_ui_tile_win(p_gfx);
+	draw_ui_tile_win(p_input, p_config, p_gfx);
 	draw_ui_gp_win(p_config);
+	if (m_show_stats != -1)
+		draw_ui_statistics(p_gfx);
 	/*
 	// test code for putting the gameboard graphics into a window
 	ImGui::Begin("Gameboard", nullptr, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
@@ -29,7 +31,7 @@ void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_i
 	*/
 }
 
-void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
+void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& p_config, const Project_gfx& p_gfx) {
 
 	std::string l_sel_tile{ "Tiles - Cursor @ (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")###tiles" };
 	ImGui::Begin(l_sel_tile.c_str());
@@ -39,6 +41,9 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) +
 		" (" + SP_Level::get_description(m_sel_tile) + ")" };
 	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(m_sel_tile, 0), { 2.0f * l_icon_w,2.0f * l_icon_w });
+	ImGui::SameLine();
+	ImGui::Checkbox("Flash", &m_ui_flash);
+
 	ImGui::Text(l_sel_tile_no.c_str());
 
 	ImGui::Separator();
@@ -62,6 +67,21 @@ void Level_window::draw_ui_tile_win(const Project_gfx& p_gfx) {
 			ImGui::SameLine();
 		}
 		ImGui::NewLine();
+	}
+	ImGui::Separator();
+	if (ImGui::Button("Count")) {
+		bool l_all = p_input.is_shift_pressed();
+		auto l_tile_counts = get_tile_counts(l_all);
+		p_config.add_message("Tile count for #" + std::to_string(m_sel_tile) +
+			(l_all ? " (all levels" : " (level " + std::to_string(m_current_level)) +
+			"): " + std::to_string(l_tile_counts.at(m_sel_tile))
+		);
+	}
+	ImGui::SameLine();
+	if (m_show_stats == -1 && ImGui::Button("Statistics")) {
+		bool l_all = p_input.is_shift_pressed();
+		m_statistics = get_tile_counts(l_all);
+		m_show_stats = l_all ? 0 : m_current_level;
 	}
 
 	ImGui::End();
@@ -144,7 +164,6 @@ void Level_window::draw_ui_gp_win(SP_Config& p_config) {
 class Main_window {
 public:
 	static void window_start(const std::string& p_title, c::SP_Color p_text, c::SP_Color p_active, c::SP_Color p_inactive, c::SP_Color p_collapsed);
-	static ImU32 sp_color_to_imgui(c::SP_Color p_color);
 };
 
 void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config) {
@@ -155,7 +174,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	std::string m_lvl_label{ "Level " + l_clvl + " of " + std::to_string(m_levels.size()) + ": \"" +
 		m_levels.at(get_current_level_idx()).get_title() + "\"###levels" };
 
-	Main_window::window_start(m_lvl_label, c::COL_BLACK, c::COL_ORANGE_LIGHT, c::COL_ORANGE, c::COL_ORANGE);
+	Main_window::window_start(m_lvl_label, c::COL_BLACK, c::COL_ORANGE, c::COL_ORANGE_LIGHT, c::COL_ORANGE_LIGHT);
 
 	// current level number
 	ImGui::SliderInt("Level", &m_current_level, 1, static_cast<int>(m_levels.size()));
@@ -242,6 +261,40 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	ImGui::SameLine();
 	ImGui::Checkbox("Animate", &m_ui_animate);
 	ImGui::SliderFloat("Icon Scale", &m_tile_picker_scale, 0.5f, 4.0f);
+
+	ImGui::End();
+}
+
+void Level_window::draw_ui_statistics(const Project_gfx& p_gfx) {
+	std::string l_win_title{ "Statistics for " +
+		(m_show_stats == 0 ? "all levels" : "level " + std::to_string(m_show_stats)
+			+ "###stats")
+	};
+	ImGui::Begin(l_win_title.c_str());
+
+	for (const auto& kv : m_tile_picker) {
+		ImGui::Separator();
+		ImGui::Text(kv.first.c_str());
+		ImGui::Separator();
+		for (int tv : kv.second) {
+			// filter out virtual tiles so count 0-39 only
+			if (tv < c::TILE_COUNT) {
+				int l_tile_count = m_statistics.at(tv);
+				if (l_tile_count > 0 || m_show_stats_tc0) {
+					std::string l_text = "#" + std::to_string(tv) + " (" +
+						SP_Level::get_description(tv) + "): " + std::to_string(l_tile_count);
+					ImGui::Image(p_gfx.get_tile_texture(tv, 0), { c::TILE_W, c::TILE_W });
+					ImGui::SameLine();
+					ImGui::Text(l_text.c_str());
+				}
+			}
+		}
+	}
+
+	ImGui::Separator();
+	ImGui::Checkbox("Show all", &m_show_stats_tc0);
+	if (ImGui::Button("Close"))
+		m_show_stats = -1;
 
 	ImGui::End();
 }

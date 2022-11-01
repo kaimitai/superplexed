@@ -49,6 +49,7 @@ int main(int argc, char* args[]) {
 			// Setup Platform/Renderer backends
 			ImGui_ImplSDL2_InitForSDLRenderer(l_window, l_rnd);
 			ImGui_ImplSDLRenderer_Init(l_rnd);
+			ImGui::GetIO().IniFilename = c::SP_IMGUI_INI_FILENAME;
 
 			// main window object to handle all logic and drawing
 			SP_Config config;

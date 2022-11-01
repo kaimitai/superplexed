@@ -117,6 +117,6 @@ void Main_window::window_start(const std::string& p_title, c::SP_Color p_text, c
 	ImGui::PopStyleColor();
 }
 
-ImU32 Main_window::sp_color_to_imgui(c::SP_Color p_color) {
+constexpr ImU32 Main_window::sp_color_to_imgui(c::SP_Color p_color) {
 	return IM_COL32(p_color.r, p_color.g, p_color.b, 255);
 }

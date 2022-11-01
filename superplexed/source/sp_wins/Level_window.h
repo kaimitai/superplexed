@@ -21,10 +21,19 @@ class Level_window {
 	std::vector<SP_Level> m_levels;
 	int m_cam_x, m_current_level, m_current_gp, m_sel_tile;
 	SDL_Texture* m_texture;
-	bool m_ui_show_grid, m_ui_animate;
+	bool m_ui_show_grid, m_ui_animate, m_ui_flash;
 	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 	float m_tile_picker_scale;
+	
+	// statistics variables
+	// -1: do not show
+	// 0: stats for all levels
+	// n>0: stats for level #n (counted from 1)
+	int m_show_stats; 
+	bool m_show_stats_tc0; // show tiles with a count of 0 in the stats
+	std::vector<int> m_statistics;
+	
 
 	// selection
 	int m_sel_x, m_sel_y,
@@ -53,6 +62,7 @@ class Level_window {
 	bool selection_fits(void) const;
 	void rotate_selection(bool p_cclockwise, SP_Config& p_config);
 	std::pair<int, int> mouse_coords_to_tile(int p_mouse_x, int p_mouse_y, int p_screen_h) const;
+	std::vector<int> get_tile_counts(bool p_all_levels) const;
 
 	// xml read/write
 	void save_xml(std::size_t p_level_no, const SP_Config& p_config) const;
@@ -66,7 +76,8 @@ class Level_window {
 	// ui
 	void draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config);
 	void draw_ui_gp_win(SP_Config& p_config);
-	void draw_ui_tile_win(const Project_gfx& p_gfx);
+	void draw_ui_tile_win(const klib::User_input& p_input, SP_Config& p_config, const Project_gfx& p_gfx);
+	void draw_ui_statistics(const Project_gfx& p_gfx);
 
 	// general procedures for saving to and loading from files
 	void load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_all);

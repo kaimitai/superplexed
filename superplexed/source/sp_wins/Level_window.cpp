@@ -148,9 +148,10 @@ void Level_window::load_levels_dat(SP_Config& p_config) {
 
 Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
-	m_ui_show_grid{ false }, m_ui_animate{ true },
+	m_ui_show_grid{ false }, m_ui_animate{ true }, m_ui_flash{ false },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
-	m_sel_tile{ 0 }, m_tile_picker_scale{ 1.0f }
+	m_sel_tile{ 0 }, m_tile_picker_scale{ 1.0f },
+	m_show_stats{ -1 }, m_show_stats_tc0{ false }
 {
 	load_levels_dat(p_config);
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
@@ -169,7 +170,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_timers = {
 		klib::Timer(6, 250),			// tile animations
 		klib::Timer(255, 5, true),		// pulsating colors
-		klib::Timer(3, 500, false),		// pulsating letter
+		klib::Timer(3, 1000, false),	// pulsating letter
 	};
 
 	// initialize transforms
@@ -329,7 +330,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_ORANGE), Project_gfx::sp_col_to_sdl(c::COL_RED), l_pulse_progress));      // gravity port property not ok
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_YELLOW), Project_gfx::sp_col_to_sdl(c::COL_ORANGE), l_pulse_progress));        // selection rectangle
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_BLUE_LIGHT), Project_gfx::sp_col_to_sdl(c::COL_BLUE), l_pulse_progress));      // selected gravity port outline
-	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_WHITE), Project_gfx::sp_col_to_sdl(c::COL_GREEN), l_pulse_progress));      // gravity port property turned on
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_GREEN), Project_gfx::sp_col_to_sdl(c::COL_GREEN_LIGHT), l_pulse_progress));      // gravity port property turned on
 
 	for (int i = 0; i < 60; ++i)
 		for (int j = 0; j < 24; ++j) {
@@ -337,6 +338,11 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 			klib::gfx::blit(p_rnd,
 				p_gfx.get_tile_texture(l_tile_no, m_ui_animate ? l_atime : 0),
 				i * c::TILE_W, j * c::TILE_W);
+
+			if (static_cast<byte>(m_sel_tile) == l_tile_no && m_ui_flash) {
+				p_gfx.blit_fixed(p_rnd, 4, i * c::TILE_W, j * c::TILE_W,
+					l_pulse_colors[4]);
+			}
 		}
 
 	auto l_spos = m_levels.at(get_current_level_idx()).get_start_pos();
@@ -369,7 +375,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 				1);
 
 		if (l_port_ok) {
-			bool l_property_on = ((l_ltime == 0 && l_gp_grav) || (l_ltime == 2 && l_gp_fz) || (l_ltime == 1 && l_gp_fe));
+			bool l_property_on = ((l_ltime == 0 && l_gp_grav) || (l_ltime == 1 && l_gp_fz) || (l_ltime == 2 && l_gp_fe));
 
 			p_gfx.blit_fixed(p_rnd, l_letter_ind, l_x, l_y, l_pulse_colors[l_property_on ? 4 : 0]);
 		}
@@ -565,6 +571,21 @@ std::pair<int, int> Level_window::mouse_coords_to_tile(int p_mouse_x, int p_mous
 		klib::util::validate(l_tx, 0, 59),
 		klib::util::validate(l_ty, 0, 23)
 	);
+}
+
+std::vector<int> Level_window::get_tile_counts(bool p_all_levels) const {
+	if (p_all_levels) {
+		std::vector<int> result(c::TILE_COUNT, 0);
+		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
+			auto l_lvl_counts = m_levels[i].get_tile_counts();
+			for (std::size_t j{ 0 }; j < l_lvl_counts.size(); ++j)
+				result[j] += l_lvl_counts[j];
+		}
+		return result;
+	}
+	else
+		return m_levels.at(get_current_level_idx()).get_tile_counts();
+
 }
 
 // SP load/save
