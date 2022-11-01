@@ -107,8 +107,7 @@ void Level_window::save_levels_dat(SP_Config& p_config) {
 
 		l_list_file_bytes.insert(end(l_list_file_bytes),
 			begin(l_line), end(l_line));
-		l_list_file_bytes.push_back(13);
-		l_list_file_bytes.push_back(10);
+		l_list_file_bytes.push_back(0x0a); // newline in the context of level.lst
 	}
 
 	try {
