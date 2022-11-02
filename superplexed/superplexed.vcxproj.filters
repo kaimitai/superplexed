@@ -52,6 +52,12 @@
     <Filter Include="Source Files\common\pugixml">
       <UniqueIdentifier>{40e2bd26-f535-4367-8aea-7892d39e7010}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\sp_saves">
+      <UniqueIdentifier>{af6a156d-2a88-4236-8b2a-9d6a431c7aa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sp_saves">
+      <UniqueIdentifier>{0a12a88c-6b0d-48b0-8961-1cf15cc2f105}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\sp_levels\SP_Level.h">
@@ -122,6 +128,12 @@
     </ClInclude>
     <ClInclude Include="source\common\klib\KImage.h">
       <Filter>Header Files\common\klib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sp_saves\SP_Hallfame.h">
+      <Filter>Header Files\sp_saves</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sp_saves\SP_Player_list.h">
+      <Filter>Header Files\sp_saves</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +214,12 @@
     </ClCompile>
     <ClCompile Include="source\common\klib\KImage.cpp">
       <Filter>Source Files\common\klib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_saves\SP_Hallfame.cpp">
+      <Filter>Source Files\sp_saves</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_saves\SP_Player_List.cpp">
+      <Filter>Source Files\sp_saves</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

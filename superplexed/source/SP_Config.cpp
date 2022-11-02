@@ -36,6 +36,10 @@ std::string SP_Config::get_level_lst_full_path(void) const {
 	return get_full_path(m_level_list_filename, c::SUFFIX_LST);
 }
 
+std::string SP_Config::get_lst_full_path(const std::string& p_filename) const {
+	return get_full_path(p_filename, c::SUFFIX_LST);
+}
+
 std::string SP_Config::get_dat_full_path(const std::string& p_filename) const {
 	return get_full_path(p_filename, c::SUFFIX_DAT);
 }

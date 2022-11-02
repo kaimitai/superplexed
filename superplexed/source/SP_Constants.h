@@ -211,11 +211,22 @@ namespace c {
 	constexpr char FILENAME_TITLE[]{ "TITLE" };
 	constexpr char FILENAME_TITLE1[]{ "TITLE1" };
 	constexpr char FILENAME_TITLE2[]{ "TITLE2" };
+	// savefiles LST-files
+	constexpr char FILENAME_HALLFAME[]{ "HALLFAME" };
+	constexpr char FILENAME_PLAYER[]{ "PLAYER" };
+
+	// default savefile constants
+	constexpr int PLAYER_COUNT{ 20 };
+	constexpr int HALLFAME_ENTRY_COUNT{ 3 };
+	constexpr int HALLFAME_ENTRY_SIZE{ 12 };
+	constexpr int PLAYER_NAME_SIZE{ 8 };
+	constexpr int PLAYER_ENTRY_SIZE{ 128 };
+	constexpr int DEFAULT_LEVEL_COUNT{ 111 };
 
 	// default level constants
 	constexpr char DEFAULT_LVL_TITLE[]{ "----- SUPERPLEXED -----" };
 	constexpr unsigned char DEFAULT_LVL_SF_VERSION{ 32 };
-	constexpr char FONT_GFX_CHARS[] {" !\"#$ % &´() * +,-. / 0123456789:; <=> ? @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\ } ^ "};
+	constexpr char FONT_GFX_CHARS[]{ " !\"#$ % &´() * +,-. / 0123456789:; <=> ? @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\ } ^ " };
 
 	// color constants
 	struct SP_Color {

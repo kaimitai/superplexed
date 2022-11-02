@@ -23,6 +23,7 @@ public:
 
 	std::string get_levels_dat_full_path(void) const;
 	std::string get_level_lst_full_path(void) const;
+	std::string get_lst_full_path(const std::string& p_filename) const;
 	std::string get_dat_full_path(const std::string& p_filename) const;
 
 	void load_configuration(void);
