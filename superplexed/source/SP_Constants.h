@@ -26,12 +26,17 @@ namespace c {
 	// ui texts
 	constexpr char SAVE_BMP[]{ "Save bmp" };
 	constexpr char SAVE_DAT[]{ "Save DAT" };
+	constexpr char SAVE_LST[]{ "Save LST" };
 	constexpr char SAVE_SP[]{ "Save SP" };
 	constexpr char SAVE_XML[]{ "Save xml" };
 	constexpr char LOAD_BMP[]{ "Load bmp" };
 	constexpr char LOAD_DAT[]{ "Load DAT" };
+	constexpr char LOAD_LST[]{ "Load LST" };
 	constexpr char LOAD_SP[]{ "Load SP" };
 	constexpr char LOAD_XML[]{ "Load xml" };
+
+	// assorted texts used in the applications for labels or parts of strings
+	constexpr char TXT_FILE_OPERATIONS[]{ "File Operations" };
 
 	// xml tags, attributes and values
 	// configuration XML
@@ -250,6 +255,7 @@ namespace c {
 
 	constexpr SP_Color COL_GREEN_LIGHT{ 0xbf,0xff,0xb4 };
 	constexpr SP_Color COL_GREEN{ 0x00,0xe0,0x00 };
+	constexpr SP_Color COL_GREEN_DARK{ 0x32,0xcd,0x32 };
 
 	// dear imgui window constants
 	constexpr int WIN_MAIN_X{ 10 }, WIN_MAIN_Y{ 5 }, WIN_MAIN_W{ 400 }, WIN_MAIN_H{ 235 };

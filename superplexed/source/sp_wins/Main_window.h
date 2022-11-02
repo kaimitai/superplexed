@@ -12,12 +12,14 @@
 #include "./../common/klib/User_input.h"
 #include "Level_window.h"
 #include "Graphics_window.h"
+#include "Savefile_window.h"
 
 class Main_window {
 	Project_gfx m_gfx;
 	std::size_t m_current_window;
 	Level_window m_lvl_win;
 	Graphics_window m_gfx_win;
+	Savefile_window m_savefile_win;
 	std::vector<std::string> m_selectable_windows;
 
 public:

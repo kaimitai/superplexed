@@ -10,10 +10,11 @@
 Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_lvl_win{ p_rnd, p_config },
 	m_gfx{ p_rnd, p_config },
+	m_savefile_win{ p_config },
 	m_current_window{ 1 }
 {
 	// initialize selectable windows
-	m_selectable_windows = { "Graphics", "Levels" };
+	m_selectable_windows = { "Graphics", "Levels", "Savefiles" };
 
 	// initialize first filename in the gfx window for combobox aesthetics :)
 	// cannot do that in the constructor of Graphics_window without refactoring
@@ -63,7 +64,7 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 	window_start("Main Window", c::COL_WHITE, c::COL_BLUE_LIGHT, c::COL_BLUE_DARK, c::COL_BLUE_DARK);
 
 	if (ImGui::BeginCombo("Editor Mode", m_selectable_windows[m_current_window].c_str(), 0)) {
-		for (std::size_t i{ 0 }; i < 2; ++i) {
+		for (std::size_t i{ 0 }; i < m_selectable_windows.size(); ++i) {
 			bool is_selected = (m_current_window == i);
 			if (ImGui::Selectable(m_selectable_windows[i].c_str(), is_selected))
 				m_current_window = i;
@@ -91,6 +92,9 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 		break;
 	case 1:
 		m_lvl_win.draw_ui(m_gfx, p_input, p_config);
+		break;
+	case 2:
+		m_savefile_win.draw_ui(p_config);
 		break;
 	default:
 		break;

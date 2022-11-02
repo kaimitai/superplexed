@@ -164,6 +164,7 @@
     <ClInclude Include="source\sp_wins\Graphics_window.h" />
     <ClInclude Include="source\sp_wins\Level_window.h" />
     <ClInclude Include="source\sp_wins\Main_window.h" />
+    <ClInclude Include="source\sp_wins\Savefile_window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\common\imgui\imgui.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="source\sp_wins\Level_window_ui.cpp" />
     <ClCompile Include="source\sp_wins\Level_window_xml.cpp" />
     <ClCompile Include="source\sp_wins\Main_window.cpp" />
+    <ClCompile Include="source\sp_wins\Savefile_window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

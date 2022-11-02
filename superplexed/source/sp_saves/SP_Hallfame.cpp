@@ -41,3 +41,35 @@ std::vector<byte> SP_Hallfame::to_bytes(void) const {
 
 	return result;
 }
+
+std::string SP_Hallfame::get_name(int p_entry_no) const {
+	return m_entries.at(p_entry_no).m_name;
+}
+
+byte SP_Hallfame::get_hrs(int p_entry_no) const {
+	return m_entries.at(p_entry_no).m_hrs;
+}
+
+byte SP_Hallfame::get_mins(int p_entry_no) const {
+	return m_entries.at(p_entry_no).m_mins;
+}
+
+byte SP_Hallfame::get_secs(int p_entry_no) const {
+	return m_entries.at(p_entry_no).m_secs;
+}
+
+void SP_Hallfame::set_name(int p_entry_no, const std::string& p_name) {
+	m_entries.at(p_entry_no).m_name = p_name;
+}
+
+void SP_Hallfame::set_hrs(int p_entry_no, byte p_hrs) {
+	m_entries.at(p_entry_no).m_hrs = p_hrs;
+}
+
+void SP_Hallfame::set_mins(int p_entry_no, byte p_mins) {
+	m_entries.at(p_entry_no).m_mins = p_mins;
+}
+
+void SP_Hallfame::set_secs(int p_entry_no, byte p_secs) {
+	m_entries.at(p_entry_no).m_secs = p_secs;
+}

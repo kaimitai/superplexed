@@ -239,7 +239,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		}
 	}
 	ImGui::Separator();
-	ImGui::Text("File Operations");
+	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	// save to disk
 	if (ImGui::Button(c::SAVE_DAT))
 		save_levels_dat(p_config);

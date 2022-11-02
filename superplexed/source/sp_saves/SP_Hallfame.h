@@ -22,6 +22,18 @@ public:
 	SP_Hallfame(void);
 	SP_Hallfame(const std::vector<byte>& p_bytes);
 	std::vector<byte> to_bytes(void) const;
+
+	// getters
+	std::string get_name(int p_entry_no) const;
+	byte get_hrs(int p_entry_no) const;
+	byte get_mins(int p_entry_no) const;
+	byte get_secs(int p_entry_no) const;
+
+	// setters
+	void set_name(int p_entry_no, const std::string& p_name);
+	void set_hrs(int p_entry_no, byte p_hrs);
+	void set_mins(int p_entry_no, byte p_mins);
+	void set_secs(int p_entry_no, byte p_secs);
 };
 
 #endif

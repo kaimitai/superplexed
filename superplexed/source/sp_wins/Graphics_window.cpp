@@ -60,7 +60,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	ImGui::Text(l_meta_str.c_str());
 
 	ImGui::Separator();
-	ImGui::Text("File Operations");
+	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	ImGui::Separator();
 
 	if (ImGui::Button(c::LOAD_DAT)) {
@@ -169,7 +169,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	}
 
 	ImGui::Separator();
-	ImGui::Text("File Operations");
+	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	ImGui::Separator();
 
 	if (ImGui::Button(c::LOAD_DAT)) {
