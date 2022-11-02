@@ -107,13 +107,9 @@ void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 	ImGui::Separator();
 	if (ImGui::Button(c::SAVE_LST))
 		save_hallfame_lst(p_config);
-	ImGui::SameLine();
-	ImGui::Button(c::SAVE_XML);
 
 	if (ImGui::Button(c::LOAD_LST))
 		load_hallfame_lst(p_config);
-	ImGui::SameLine();
-	ImGui::Button(c::LOAD_XML);
 
 	ImGui::End();
 }
@@ -196,13 +192,8 @@ void Savefile_window::draw_ui_players(SP_Config& p_config) {
 	ImGui::Separator();
 	if (ImGui::Button(c::SAVE_LST))
 		save_player_lst(p_config);
-	ImGui::SameLine();
-	ImGui::Button(c::SAVE_XML);
-
 	if (ImGui::Button(c::LOAD_LST))
 		load_player_lst(p_config);
-	ImGui::SameLine();
-	ImGui::Button(c::LOAD_XML);
 
 	ImGui::End();
 }
