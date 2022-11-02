@@ -1,6 +1,7 @@
 #include "Savefile_window.h"
 #include "./../common/klib/klib_file.h"
 #include "./../common/klib/klib_util.h"
+#include "./../sp_levels/SP_Level.h"
 
 Savefile_window::Savefile_window(SP_Config& p_config) :
 	m_selected_hf{ 1 }, m_selected_player{ 1 }
@@ -76,12 +77,17 @@ void Savefile_window::draw_ui(SP_Config& p_config) {
 void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 	int l_zindex = m_selected_hf - 1;
 
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_HF_X, c::WIN_HF_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_HF_W, c::WIN_HF_H), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Hall of Fame");
 	ImGui::SliderInt("Slot", &m_selected_hf, 1, c::HALLFAME_ENTRY_COUNT);
 
 	ImGui::Separator();
-	std::string l_name = "Name:" + m_hallfame.get_name(l_zindex);
-	ImGui::Text(l_name.c_str());
+
+	char l_pname[c::PLAYER_NAME_SIZE + 1]{};
+	strncpy_s(l_pname, m_hallfame.get_name(l_zindex).c_str(), sizeof(l_pname) - 1);
+	if (ImGui::InputText("Name###hfname", l_pname, c::PLAYER_NAME_SIZE + 1))
+		m_hallfame.set_name(l_zindex, SP_Level::sanitize_sp_string(l_pname, c::PLAYER_NAME_SIZE));
 	ImGui::Separator();
 
 	int l_hrs{ static_cast<int>(m_hallfame.get_hrs(l_zindex)) };
@@ -114,14 +120,19 @@ void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 
 void Savefile_window::draw_ui_players(SP_Config& p_config) {
 	int l_zindex = m_selected_player - 1;
-	int l_next_lvl = m_players.get_current_level(l_zindex);
+	int l_next_lvl = m_players.get_current_level(l_zindex) - 1;
+
+	ImGui::SetNextWindowPos(ImVec2(c::WIN_PL_X, c::WIN_PL_Y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(c::WIN_PL_W, c::WIN_PL_H), ImGuiCond_FirstUseEver);
 	ImGui::Begin("Players");
 
 	ImGui::SliderInt("Slot", &m_selected_player, 1, c::PLAYER_COUNT);
 
 	ImGui::Separator();
-	ImGui::Text(m_players.get_name(l_zindex).c_str());
-
+	char l_pname[c::PLAYER_NAME_SIZE + 1]{};
+	strncpy_s(l_pname, m_players.get_name(l_zindex).c_str(), sizeof(l_pname) - 1);
+	if (ImGui::InputText("Name###plname", l_pname, c::PLAYER_NAME_SIZE + 1))
+		m_players.set_name(l_zindex, SP_Level::sanitize_sp_string(l_pname, c::PLAYER_NAME_SIZE));
 	ImGui::Separator();
 
 	int l_hrs{ static_cast<int>(m_players.get_hrs(l_zindex)) };

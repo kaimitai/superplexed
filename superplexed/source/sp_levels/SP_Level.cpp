@@ -115,9 +115,15 @@ std::vector<byte> SP_Level::get_bytes(bool p_include_demo) const {
 		result.insert(end(result), begin(l_gp_bytes), end(l_gp_bytes));
 	}
 
+	const std::string l_FILE_SIGNATURE{ c::FILE_SIGNATURE };
+	auto iter = begin(l_FILE_SIGNATURE);
 	for (std::size_t i{ c::MAX_GP_COUNT }; i > m_gravity_ports.size(); --i)
-		for (int j{ 0 }; j < c::LENGTH_GP; ++j)
-			result.push_back(0);
+		for (int j{ 0 }; j < c::LENGTH_GP; ++j) {
+			//result.push_back(0);
+			result.push_back(*iter++);
+			if (iter == end(l_FILE_SIGNATURE))
+				iter = begin(l_FILE_SIGNATURE);
+		}
 
 	result.insert(end(result), begin(m_sf_demo_bytes), end(m_sf_demo_bytes));
 
@@ -253,12 +259,7 @@ void SP_Level::set_tile_value(int p_x, int p_y, byte p_value) {
 }
 
 void SP_Level::set_title(const std::string& p_title) {
-	m_title = p_title;
-
-	while (m_title.size() < c::LENGTH_TITLE)
-		m_title.push_back(' ');
-	while (m_title.size() > c::LENGTH_TITLE)
-		m_title.pop_back();
+	m_title = sanitize_sp_string(p_title, c::LENGTH_TITLE);
 }
 
 void SP_Level::set_solve_it_count(int p_count) {
@@ -331,4 +332,25 @@ c::TILE_DESC_HW05, c::TILE_DESC_HW06, c::TILE_DESC_HW07, c::TILE_DESC_HW08, c::T
 
 std::string& SP_Level::get_description(int p_tile_no) {
 	return sm_descriptions.at(p_tile_no);
+}
+
+std::string SP_Level::sanitize_sp_string(const std::string& p_str, int p_size,
+	unsigned char p_cmin, unsigned char p_cmax) {
+	std::string result;
+
+	for (char c : p_str) {
+		if (c >= 'a' && c <= 'z')
+			result.push_back(c - ('a' - 'A'));
+		else if (c < p_cmin || c > p_cmax)
+			result.push_back('?');
+		else
+			result.push_back(c);
+	}
+
+	while (result.size() < p_size)
+		result.push_back(p_cmin);
+	while (result.size() > p_size)
+		result.pop_back();
+
+	return result;
 }

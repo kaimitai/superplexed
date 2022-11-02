@@ -7,6 +7,7 @@ namespace c {
 	constexpr char APP_VERSION[]{ "0.1" };
 	constexpr int APP_WIN_W_INITIAL{ 1024 };
 	constexpr int APP_WIN_H_INITIAL{ 768 };
+	constexpr char FILE_SIGNATURE[]{ "kaimitai@github " };
 
 	// filenames
 	constexpr char SPCONFIG_XML_FILENAME[]{ "spconfig.xml" };
@@ -222,6 +223,7 @@ namespace c {
 
 	// default savefile constants
 	constexpr int PLAYER_COUNT{ 20 };
+	constexpr char EMPTY_PLAYER_NAME[]{ "--------" };
 	constexpr int HALLFAME_ENTRY_COUNT{ 3 };
 	constexpr int HALLFAME_ENTRY_SIZE{ 12 };
 	constexpr int PLAYER_NAME_SIZE{ 8 };
@@ -231,7 +233,6 @@ namespace c {
 	// default level constants
 	constexpr char DEFAULT_LVL_TITLE[]{ "----- SUPERPLEXED -----" };
 	constexpr unsigned char DEFAULT_LVL_SF_VERSION{ 32 };
-	constexpr char FONT_GFX_CHARS[]{ " !\"#$ % &´() * +,-. / 0123456789:; <=> ? @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\ } ^ " };
 
 	// color constants
 	struct SP_Color {
@@ -268,6 +269,9 @@ namespace c {
 	constexpr int WIN_GFX_X{ 10 }, WIN_GFX_Y{ 240 }, WIN_GFX_W{ 400 }, WIN_GFX_H{ 235 };
 	constexpr int WIN_PAL_X{ 10 }, WIN_PAL_Y{ 480 }, WIN_PAL_W{ 400 }, WIN_PAL_H{ 270 };
 	constexpr int WIN_IMGPV_X{ 410 }, WIN_IMGPV_Y{ 5 }, WIN_IMGPV_W{ 610 }, WIN_IMGPV_H{ 405 };
+
+	constexpr int WIN_HF_X{ 10 }, WIN_HF_Y{ 240 }, WIN_HF_W{ 400 }, WIN_HF_H{ 225 };
+	constexpr int WIN_PL_X{ 415 }, WIN_PL_Y{ 5 }, WIN_PL_W{ 380 }, WIN_PL_H{ 580 };
 }
 
 #endif

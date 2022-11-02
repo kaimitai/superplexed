@@ -3,7 +3,7 @@
 #include "./../SP_Constants.h"
 
 SP_Player_list::SP_Player::SP_Player(void) :
-	m_name{ std::string(c::PLAYER_NAME_SIZE, '-') },
+	m_name{ c::EMPTY_PLAYER_NAME },
 	m_hrs{ 0 }, m_mins{ 0 }, m_secs{ 0 }, // m_current_level{ 0 }
 	m_level_status{ std::vector<byte>(c::DEFAULT_LEVEL_COUNT, 0x00) }
 { }
@@ -34,7 +34,7 @@ std::vector<byte> SP_Player_list::SP_Player::to_bytes(void) const {
 	result.push_back(0x00); // unused
 	result.push_back(0x00); // unused
 	result.push_back(0x00); // unused
-	result.push_back(l_cur_level == 1 ? 0x00 : l_cur_level);
+	result.push_back(l_cur_level);
 	result.push_back(0x00); // unused
 
 	return result;
@@ -66,9 +66,12 @@ byte SP_Player_list::get_status(int p_player_no, int p_level_no) const {
 }
 
 int SP_Player_list::SP_Player::get_current_level(void) const {
+	if (m_level_status[0] == 0 && m_name == c::EMPTY_PLAYER_NAME)
+		return 0;
+
 	for (std::size_t i{ 0 }; i < m_level_status.size(); ++i)
 		if (m_level_status[i] == 0)
-			return static_cast<int>(i);
+			return static_cast<int>(i + 1);
 
 	return 113; // if all levels are solved, this is what is written to file for some reason
 }

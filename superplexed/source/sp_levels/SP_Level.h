@@ -84,6 +84,10 @@ public:
 
 	// static functions
 	static std::string& get_description(int p_tile_no);
+	static std::string sanitize_sp_string(const std::string& p, int p_size,
+		unsigned char p_cmin = 0x20, // space
+		unsigned char p_cmax = 0x5f  // underscore
+	);
 };
 
 #endif
