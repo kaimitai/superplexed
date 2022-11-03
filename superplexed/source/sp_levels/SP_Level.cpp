@@ -347,10 +347,23 @@ std::string SP_Level::sanitize_sp_string(const std::string& p_str, int p_size,
 			result.push_back(c);
 	}
 
-	while (result.size() < p_size)
-		result.push_back(p_cmin);
+	// if the input is too long, we drop the tail end
 	while (result.size() > p_size)
 		result.pop_back();
+
+	// if the input is too short, we make the string the required length
+	bool l_prepend{ true };
+	while (result.size() < p_size) {
+		if (p_size == c::LENGTH_TITLE) {
+			if (l_prepend)
+				result.insert(begin(result), '-');
+			else
+				result.push_back('-');
+			l_prepend = !l_prepend;
+		}
+		else
+			result.insert(begin(result), ' ');
+	}
 
 	return result;
 }

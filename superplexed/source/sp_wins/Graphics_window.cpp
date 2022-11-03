@@ -69,7 +69,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 			p_config.add_message("Loaded " + p_config.get_dat_full_path(m_selected_file));
 		}
 		catch (const std::exception& ex) {
-			p_config.add_message("Could not load file: " + std::string(ex.what()));
+			p_config.add_message(ex.what());
 		}
 	}
 	ImGui::SameLine();
@@ -175,6 +175,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::LOAD_DAT)) {
 		try {
 			p_gfx.load_palettes(p_rnd, p_config);
+			this->set_palette_cache(p_gfx);
 			p_config.add_message("Loaded " + p_config.get_dat_full_path(c::FILENAME_PALETTES));
 		}
 		catch (const std::exception& ex) {
@@ -185,6 +186,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::LOAD_XML)) {
 		try {
 			p_gfx.load_palette_xml(p_rnd, p_config);
+			this->set_palette_cache(p_gfx);
 			p_config.add_message("Loaded " + p_config.get_xml_full_path(c::FILENAME_PALETTES));
 		}
 		catch (const std::exception& ex) {

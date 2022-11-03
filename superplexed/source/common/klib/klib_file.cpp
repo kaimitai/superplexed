@@ -27,3 +27,13 @@ void klib::file::write_bytes_to_file(const std::vector<byte>& inp, const std::st
 
 	output.close();
 }
+
+void klib::file::append_string_to_file(const std::string& p_text, const std::string& p_file_name) {
+	std::ofstream output(p_file_name, std::ios::binary | std::ofstream::app);
+
+	if (!output.fail())
+		output << p_text;
+
+
+	output.close();
+}

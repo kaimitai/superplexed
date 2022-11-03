@@ -27,9 +27,9 @@ class Project_gfx {
 
 	std::vector<std::pair<int, int>> m_tile_definitions;
 	std::vector<SDL_Texture*> m_tile_textures;
-	std::map<std::size_t, std::vector<std::size_t>> m_animations;
+	std::vector<std::vector<std::size_t>> m_animations;
 
-	std::vector<SDL_Texture*> m_font;
+	std::vector<SDL_Texture*> m_app_gfx;
 	std::vector<SP_Palette> m_palettes;
 
 	std::map<std::string, SP_Image> m_image_files;
@@ -59,13 +59,13 @@ class Project_gfx {
 public:
 	Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config);
 	~Project_gfx(void);
-	SDL_Texture* get_tile_texture(std::size_t p_texture_no, std::size_t p_frame_no) const;
+	SDL_Texture* get_tile_texture(std::size_t p_texture_no, std::size_t p_frame_no = 0) const;
 	SDL_Texture* get_image_texture(const std::string& p_filename) const;
 	void blit_fixed(SDL_Renderer* p_rnd, std::size_t p_char_no, int p_x, int p_y, SDL_Color p_color) const;
 
 	std::pair<int, int> get_image_dimensions(const std::string& p_filename) const;
 
-	bool load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config);
+	void load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config);
 	bool save_bmp(const std::string& p_filename, SP_Config& p_config) const;
 	void save_dat(const std::string& p_filename, SP_Config& p_config) const;
 

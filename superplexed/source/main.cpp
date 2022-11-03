@@ -7,32 +7,35 @@
 #include "./sp_wins/Main_window.h"
 #include "./SP_Config.h"
 #include "./SP_Constants.h"
+#include "./common/klib/klib_file.h"
 
 #if !SDL_VERSION_ATLEAST(2,0,17)
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
 
+constexpr char ERROR_LOG_FILE[]{ "sp_err.log" };
+
 using byte = unsigned char;
 
-int main(int argc, char* args[]) {
+int main(int argc, char* args[]) try {
 	SDL_Window* l_window{ nullptr };
 	SDL_Renderer* l_rnd{ nullptr };
 	bool l_exit{ false };
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError();
+		throw std::exception(SDL_GetError());
 	else {
 		// Event handler
 		SDL_Event e;
 
 		l_window = SDL_CreateWindow(c::APP_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, c::APP_WIN_W_INITIAL, c::APP_WIN_H_INITIAL, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		if (l_window == nullptr)
-			std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError();
+			throw std::exception(SDL_GetError());
 		else {
 			l_rnd = SDL_CreateRenderer(l_window, -1, SDL_RENDERER_ACCELERATED);
 
 			if (l_rnd == nullptr)
-				std::cerr << "Renderer could not be created!SDL Error: " << SDL_GetError();
+				throw std::exception(SDL_GetError());
 			else {
 				//Initialize renderer color
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
@@ -124,4 +127,12 @@ int main(int argc, char* args[]) {
 	SDL_Quit();
 
 	return 0;
+}
+catch (const std::exception& ex) {
+	klib::file::append_string_to_file("Runtime error. Exception was:\n" + std::string(ex.what()) + "\n", ERROR_LOG_FILE);
+	return 1;
+}
+catch (...) {
+	klib::file::append_string_to_file("Unknown runtime error occurred.\n", ERROR_LOG_FILE);
+	return 1;
 }

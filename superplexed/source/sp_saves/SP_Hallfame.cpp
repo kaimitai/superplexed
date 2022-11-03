@@ -3,7 +3,7 @@
 
 SP_Hallfame::HF_Entry::HF_Entry(void) :
 	m_hrs{ 0 }, m_mins{ 0 }, m_secs{ 0 },
-	m_name{ std::string(' ', c::PLAYER_NAME_SIZE) }
+	m_name{ std::string(c::PLAYER_NAME_SIZE, ' ') }
 {}
 
 SP_Hallfame::HF_Entry::HF_Entry(const std::string& p_name,

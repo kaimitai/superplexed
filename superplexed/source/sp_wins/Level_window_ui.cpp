@@ -5,6 +5,12 @@
 #include "./../common/klib/klib_util.h"
 #include "./../SP_Constants.h"
 
+// forward declare as much of Main_window as we need
+class Main_window {
+public:
+	static void window_start(const std::string& p_title, c::SP_Color p_text, c::SP_Color p_active, c::SP_Color p_inactive, c::SP_Color p_collapsed);
+};
+
 void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input, SP_Config& p_config) {
 	draw_ui_level_win(p_input, p_gfx, p_config);
 	draw_ui_tile_win(p_input, p_config, p_gfx);
@@ -37,13 +43,14 @@ void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& 
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_TP_X, c::WIN_TP_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_TP_W, c::WIN_TP_H), ImGuiCond_FirstUseEver);
-	ImGui::Begin(l_sel_tile.c_str());
+	
+	Main_window::window_start(l_sel_tile, c::COL_BLACK, c::COL_GREEN, c::COL_GREEN_LIGHT, c::COL_GREEN_LIGHT);
 
 	float l_icon_w = m_tile_picker_scale * static_cast<float>(c::TILE_W);
 
 	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) +
 		" (" + SP_Level::get_description(m_sel_tile) + ")" };
-	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(m_sel_tile, 0), { 2.0f * l_icon_w,2.0f * l_icon_w });
+	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(m_sel_tile), { 2.0f * l_icon_w,2.0f * l_icon_w });
 	ImGui::SameLine();
 	ImGui::Checkbox("Flash", &m_ui_flash);
 
@@ -61,7 +68,7 @@ void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& 
 			if (l_is_selected)
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 1.0f, 1.0f, 0.0f, 1.0f });
 			ImGui::PushID(n);
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(n, 0), { l_icon_w,l_icon_w }))
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(n), { l_icon_w,l_icon_w }))
 				m_sel_tile = n;
 			ImGui::PopID();
 			if (l_is_selected)
@@ -98,7 +105,8 @@ void Level_window::draw_ui_gp_win(const Project_gfx& p_gfx, SP_Config& p_config)
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_SP_X, c::WIN_SP_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_SP_W, c::WIN_SP_H), ImGuiCond_FirstUseEver);
-	ImGui::Begin(l_gp_label.c_str());
+	
+	Main_window::window_start(l_gp_label, c::COL_WHITE, c::COL_RED, c::COL_RED_DARK, c::COL_RED_DARK);
 
 	if (l_gp_count > 0) {
 		m_current_gp = std::min(m_current_gp, l_gp_count);
@@ -140,7 +148,7 @@ void Level_window::draw_ui_gp_win(const Project_gfx& p_gfx, SP_Config& p_config)
 			ImGui::Text("Warning: No Special Port tile at this position");
 		else {
 			int l_tile_no = get_current_level().get_tile_no(l_gp_x, l_gp_y);
-			ImGui::Image(p_gfx.get_tile_texture(l_tile_no, 0), { c::TILE_W, c::TILE_W });
+			ImGui::Image(p_gfx.get_tile_texture(l_tile_no), { c::TILE_W, c::TILE_W });
 			ImGui::SameLine();
 			ImGui::Text(SP_Level::get_description(l_tile_no).c_str());
 		}
@@ -165,12 +173,6 @@ void Level_window::draw_ui_gp_win(const Project_gfx& p_gfx, SP_Config& p_config)
 
 	ImGui::End();
 }
-
-// forward declare as much of Main_window as we need
-class Main_window {
-public:
-	static void window_start(const std::string& p_title, c::SP_Color p_text, c::SP_Color p_active, c::SP_Color p_inactive, c::SP_Color p_collapsed);
-};
 
 void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config) {
 	bool l_shift = p_input.is_shift_pressed();
@@ -294,7 +296,7 @@ void Level_window::draw_ui_statistics(const Project_gfx& p_gfx) {
 				if (l_tile_count > 0 || m_show_stats_tc0) {
 					std::string l_text = "#" + std::to_string(tv) + " (" +
 						SP_Level::get_description(tv) + "): " + std::to_string(l_tile_count);
-					ImGui::Image(p_gfx.get_tile_texture(tv, 0), { c::TILE_W, c::TILE_W });
+					ImGui::Image(p_gfx.get_tile_texture(tv), { c::TILE_W, c::TILE_W });
 					ImGui::SameLine();
 					ImGui::Text(l_text.c_str());
 				}
