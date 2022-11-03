@@ -74,13 +74,17 @@ void Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::stri
 */
 void Project_gfx::generate_tile_definitions(void) {
 	m_tile_definitions.clear();
+	// keep this constant to make sure the first frame of
+	// "invisible tile" animation is the same as static
+	constexpr int RED_BALL_X{ 256 };
+	constexpr int RED_BALL_Y{ 64 + c::TILE_W };
 
 	// first 40 (#0-39) tiles will represent the icons in the program
 	for (int i{ 0 }; i < m_image_metadata.at(c::FILENAME_FIXED).m_width; i += c::TILE_W)
 		m_tile_definitions.push_back(std::make_pair(i, 0)
 		);
 	// we will add tile #40 as a special graphic (vanishing red ball)
-	m_tile_definitions.push_back({ 256, 100 + c::TILE_W });
+	m_tile_definitions.push_back({ RED_BALL_X, RED_BALL_Y });
 
 	// use these variables when making changes to hard coded animation frames
 	constexpr int FRM_PLAYER_S{ 41 };
@@ -92,7 +96,7 @@ void Project_gfx::generate_tile_definitions(void) {
 	constexpr int FRM_SCISSORS_S{ FRM_ELECTRON_S + FRM_ELECTRON_C };
 	constexpr int FRM_SCISSORS_C{ 2 };
 	constexpr int FRM_INVISIBLE_S{ FRM_SCISSORS_S + FRM_SCISSORS_C };
-	constexpr int FRM_INVISIBLE_C{ 3 };
+	constexpr int FRM_INVISIBLE_C{ 2 };
 
 	// hard coded animations
 	const std::vector<std::pair<int, int>> lc_hc_tiles{
@@ -105,7 +109,7 @@ void Project_gfx::generate_tile_definitions(void) {
 		// scissors frames
 		{32, 424 + c::TILE_W}, {32 + c::TILE_W, 424 + c::TILE_W}, //, {32 + 2 * c::TILE_W, 424 + c::TILE_W}, {32 + 3 * c::TILE_W, 424 + c::TILE_W}, {32 + 4 * c::TILE_W, 424 + c::TILE_W}, {32 + 5 * c::TILE_W, 424 + c::TILE_W},
 		// vanishing red ball represent invisible tiles
-		{256, 64 + c::TILE_W}, {256 + c::TILE_W, 64 + c::TILE_W}, {256 + 2 * c::TILE_W, 64 + c::TILE_W}
+		{RED_BALL_X + c::TILE_W, RED_BALL_Y}, {RED_BALL_X + 2 * c::TILE_W, RED_BALL_Y}
 	};
 
 	m_tile_definitions.insert(end(m_tile_definitions),
@@ -122,11 +126,10 @@ void Project_gfx::generate_tile_definitions(void) {
 	m_animations.push_back({ c::TILE_NO_MURPHY , FRM_PLAYER_S, FRM_PLAYER_S + 1, FRM_PLAYER_S + 2, FRM_PLAYER_S + 3, FRM_PLAYER_S + 4 }); // player start
 
 	// update at end for animation overrides
-	m_animations[c::TILE_NO_INVISIBLE] = { FRM_INVISIBLE_S, FRM_INVISIBLE_S + 1,FRM_INVISIBLE_S + 2, c::TILE_NO_EMPTY, c::TILE_NO_EMPTY, c::TILE_NO_EMPTY }; // invisible tile
+	m_animations[c::TILE_NO_INVISIBLE] = { c::TILE_NO_INVISIBLE, FRM_INVISIBLE_S, FRM_INVISIBLE_S + 1, c::TILE_NO_EMPTY, c::TILE_NO_EMPTY, c::TILE_NO_EMPTY }; // invisible tile
 	m_animations[c::TILE_NO_BUG] = { FRM_BUG_S + 1, FRM_BUG_S + 2, FRM_BUG_S, c::TILE_NO_BASE,c::TILE_NO_BASE, c::TILE_NO_BASE };			 //"bug" enemy
 	m_animations[c::TILE_NO_ELECTRON] = { FRM_ELECTRON_S, FRM_ELECTRON_S + 1, FRM_ELECTRON_S + 2, FRM_ELECTRON_S + 3, FRM_ELECTRON_S + 4, FRM_ELECTRON_S + 5 }; // "electron" enemy
 	m_animations[c::TILE_NO_SNIKSNAK] = { FRM_SCISSORS_S, FRM_SCISSORS_S + 1, FRM_SCISSORS_S, FRM_SCISSORS_S + 1, FRM_SCISSORS_S, FRM_SCISSORS_S + 1 }; // "scissors" enemy
-
 }
 
 Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
