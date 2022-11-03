@@ -161,7 +161,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 		{"Floppies", {c::TILE_NO_FLOPPY_O, c::TILE_NO_FLOPPY_Y, c::TILE_NO_FLOPPY_R, c::TILE_NO_TERMINAL}},
 		{"Ports", {c::TILE_NO_PORT_RIGHT, c::TILE_NO_PORT_DOWN, c::TILE_NO_PORT_LEFT, c::TILE_NO_PORT_UP, c::TILE_NO_PORT2WAY_V, c::TILE_NO_PORT2WAY_H, c::TILE_NO_PORT4WAY}},
 		{"RAM Chips", {c::TILE_NO_RAMCHIP,c::TILE_NO_RAM_LEFT, c::TILE_NO_RAM_RIGHT, c::TILE_NO_RAM_TOP, c::TILE_NO_RAM_BOTTOM}},
-		{"Decoration", {c::TILE_NO_HW01,c::TILE_NO_HW02,c::TILE_NO_HW03,c::TILE_NO_HW04,c::TILE_NO_HW05,c::TILE_NO_HW06,c::TILE_NO_HW07,c::TILE_NO_HW08,c::TILE_NO_HW09,c::TILE_NO_HW10, c::TILE_NO_MURPHY}},
+		{"Decoration", {c::TILE_NO_HW01,c::TILE_NO_HW02,c::TILE_NO_HW03,c::TILE_NO_HW04,c::TILE_NO_HW05,c::TILE_NO_HW06,c::TILE_NO_HW07,c::TILE_NO_HW08,c::TILE_NO_HW09,c::TILE_NO_HW10, c::TILE_NO_INVISIBLE, c::TILE_NO_MURPHY}},
 		{"Special Ports", {c::TILE_NO_GP_RIGHT, c::TILE_NO_GP_DOWN, c::TILE_NO_GP_LEFT, c::TILE_NO_GP_UP}}
 	};
 
@@ -266,6 +266,8 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			m_current_level = std::min(static_cast<int>(m_levels.size()), m_current_level + (l_ctrl ? 10 : 1));
 		else if (p_input.is_pressed(SDL_SCANCODE_DOWN))
 			m_current_level = std::max(1, m_current_level - (l_ctrl ? 10 : 1));
+		else if (p_input.is_pressed(SDL_SCANCODE_B))
+			get_current_level().apply_wall_border();
 	}
 
 	// handle mouse
@@ -374,7 +376,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 		}
 
 	auto l_spos = get_current_level().get_start_pos();
-	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(40, m_ui_animate ? l_atime : 0),
+	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(c::TILE_NO_PLAYER_START, m_ui_animate ? l_atime : 0),
 		c::TILE_W * l_spos.first, c::TILE_W * l_spos.second);
 
 	SDL_SetRenderDrawColor(p_rnd, l_pulse_colors[5].r,

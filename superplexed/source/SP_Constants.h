@@ -152,10 +152,11 @@ namespace c {
 	constexpr char TILE_DESC_HW10[]{ "Hardware 10" };
 	constexpr char TILE_DESC_RAM_TOP[]{ "RAM Chip - Top" };
 	constexpr char TILE_DESC_RAM_BOTTOM[]{ "RAM Chip - Bottom" };
+	constexpr char TILE_DESC_INVISIBLE_TILE[]{ "Invisible Tile" };
 	constexpr char TILE_DESC_PLAYER_START[]{ "Player Start" };
 
 	// tile numbers
-	constexpr int TILE_COUNT{ 40 };
+	constexpr int TILE_COUNT{ 41 }; // non-virtual gametiles
 	constexpr unsigned char TILE_NO_EMPTY{ 0 };
 	constexpr unsigned char TILE_NO_ZONK{ 1 };
 	constexpr unsigned char TILE_NO_BASE{ 2 };
@@ -196,7 +197,8 @@ namespace c {
 	constexpr unsigned char TILE_NO_HW10{ 37 };
 	constexpr unsigned char TILE_NO_RAM_TOP{ 38 };
 	constexpr unsigned char TILE_NO_RAM_BOTTOM{ 39 };
-	constexpr unsigned char TILE_NO_PLAYER_START{ 40 };
+	constexpr unsigned char TILE_NO_INVISIBLE{ 40 };
+	constexpr unsigned char TILE_NO_PLAYER_START{ 41 };
 
 	// supaplex dat filenames
 	// leves and level list
