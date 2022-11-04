@@ -288,6 +288,13 @@ void SP_Level::set_gp_y(int p_gp_no, int p_y) {
 	m_gravity_ports.at(p_gp_no).m_y = static_cast<byte>(p_y);
 }
 
+std::set<std::pair<int, int>> SP_Level::get_gp_positions(void) const {
+	std::set<std::pair<int, int>> result;
+	for (const auto& gp : m_gravity_ports)
+		result.insert(std::make_pair(gp.m_x, gp.m_y));
+	return result;
+}
+
 void SP_Level::set_gp_gravity(int p_gp_no, bool p_param) {
 	m_gravity_ports.at(p_gp_no).m_gravity = p_param;
 }

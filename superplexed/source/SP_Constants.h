@@ -272,7 +272,7 @@ namespace c {
 	constexpr int WIN_PAL_X{ 10 }, WIN_PAL_Y{ 480 }, WIN_PAL_W{ 400 }, WIN_PAL_H{ 270 };
 	constexpr int WIN_IMGPV_X{ 410 }, WIN_IMGPV_Y{ 5 }, WIN_IMGPV_W{ 610 }, WIN_IMGPV_H{ 405 };
 
-	constexpr int WIN_HF_X{ 10 }, WIN_HF_Y{ 240 }, WIN_HF_W{ 400 }, WIN_HF_H{ 225 };
+	constexpr int WIN_HF_X{ 10 }, WIN_HF_Y{ 245 }, WIN_HF_W{ 400 }, WIN_HF_H{ 205 };
 	constexpr int WIN_PL_X{ 415 }, WIN_PL_Y{ 5 }, WIN_PL_W{ 380 }, WIN_PL_H{ 580 };
 }
 

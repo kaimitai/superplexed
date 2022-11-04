@@ -97,6 +97,10 @@ int SP_Player_list::get_secs(int p_player_no) const {
 }
 
 // setters
+void SP_Player_list::solve_all(int p_player_no) {
+	m_players.at(p_player_no).m_level_status = std::vector<byte>(c::DEFAULT_LEVEL_COUNT, 0x01);
+}
+
 void SP_Player_list::toggle_status(int p_player_no, int p_level_no) {
 	++m_players.at(p_player_no).m_level_status.at(p_level_no);
 	m_players.at(p_player_no).m_level_status.at(p_level_no) %= 3;

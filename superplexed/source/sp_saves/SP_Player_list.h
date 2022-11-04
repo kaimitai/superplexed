@@ -41,6 +41,7 @@ public:
 	void set_secs(int p_player_no, int p_secs);
 	void delete_player(int p_player_no);
 	void move_player(int p_player_no, bool p_up);
+	void solve_all(int p_player_no);
 };
 
 #endif

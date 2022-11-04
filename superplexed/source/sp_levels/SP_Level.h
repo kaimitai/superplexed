@@ -2,6 +2,7 @@
 #define SP_LEVEL_H
 
 #include <map>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -52,6 +53,7 @@ public:
 	const std::vector<byte>& get_solution_bytes(void) const;
 	byte get_speedfix_version(void) const;
 	std::vector<int> get_tile_counts(void) const;
+	std::set<std::pair<int, int>> get_gp_positions(void) const;
 
 	// gravity port getters
 	int get_gravity_port_count(void) const;

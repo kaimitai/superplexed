@@ -351,6 +351,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 
 	int l_atime = m_timers[0].get_frame();
 	int l_ltime = m_timers[2].get_frame();
+	const auto& l_gp_poss{ get_current_level().get_gp_positions() };
 
 	// calculate pulsating colors for this frame
 	float l_pulse_progress = static_cast<float>(m_timers[1].get_frame()) / 255.0f;
@@ -362,37 +363,45 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_GREEN), Project_gfx::sp_col_to_sdl(c::COL_GREEN_LIGHT), l_pulse_progress));      // gravity port property turned on
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::SP_Color(0x30, 0x30, 0x30)), Project_gfx::sp_col_to_sdl(c::SP_Color(0x55, 0x55, 0x55)), l_pulse_progress));      // grid color
 
-	for (int i = 0; i < 60; ++i)
-		for (int j = 0; j < 24; ++j) {
+	for (int i = 0; i < c::LEVEL_W; ++i)
+		for (int j = 0; j < c::LEVEL_H; ++j) {
 			byte l_tile_no = get_current_level().get_tile_no(i, j);
 			klib::gfx::blit(p_rnd,
 				p_gfx.get_tile_texture(l_tile_no, m_ui_animate ? l_atime : 0),
 				i * c::TILE_W, j * c::TILE_W);
 
-			if (static_cast<byte>(m_sel_tile) == l_tile_no && m_ui_flash) {
+			// special port tile, without special port metadata
+			if (l_tile_no >= c::TILE_NO_GP_RIGHT && l_tile_no <= c::TILE_NO_GP_UP &&
+				l_gp_poss.find(std::make_pair(i, j)) == end(l_gp_poss))
+				p_gfx.blit_fixed(p_rnd, 3, i * c::TILE_W, j * c::TILE_W,
+					l_pulse_colors[2]);
+
+			// flashing tiles
+			if (static_cast<byte>(m_sel_tile) == l_tile_no && m_ui_flash)
 				p_gfx.blit_fixed(p_rnd, 4, i * c::TILE_W, j * c::TILE_W,
 					l_pulse_colors[4]);
-			}
 		}
 
+	// start position
 	auto l_spos = get_current_level().get_start_pos();
 	klib::gfx::blit(p_rnd, p_gfx.get_tile_texture(c::TILE_NO_PLAYER_START, m_ui_animate ? l_atime : 0),
 		c::TILE_W * l_spos.first, c::TILE_W * l_spos.second);
 
-	SDL_SetRenderDrawColor(p_rnd, l_pulse_colors[5].r,
-		l_pulse_colors[5].g, l_pulse_colors[5].b, 0);
-
+	// draw gridlines
 	if (m_ui_show_grid) {
+		SDL_SetRenderDrawColor(p_rnd, l_pulse_colors[5].r,
+			l_pulse_colors[5].g, l_pulse_colors[5].b, 0);
+
 		for (int i{ 1 }; i < c::LEVEL_W; ++i)
 			SDL_RenderDrawLine(p_rnd, i * c::TILE_W, 0, i * c::TILE_W, c::LEVEL_H * c::TILE_W);
 		for (int i{ 1 }; i < c::LEVEL_H; ++i)
 			SDL_RenderDrawLine(p_rnd, 0, i * c::TILE_W, c::LEVEL_W * c::TILE_W, i * c::TILE_W);
 	}
 
-	int l_letter_ind = m_timers[2].get_frame();
-
 	// draw special port indicators if animate flag is set
 	if (m_ui_animate) {
+		int l_letter_ind = m_timers[2].get_frame();
+
 		for (int i{ 0 }; i < get_current_level().get_gravity_port_count(); ++i) {
 			int l_x = c::TILE_W * get_current_level().get_gp_x(i);
 			int l_y = c::TILE_W * get_current_level().get_gp_y(i);
@@ -418,6 +427,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 		}
 	}
 
+	// draw selection rectangle
 	auto l_rect = this->get_selection_rectangle();
 	klib::gfx::draw_rect(p_rnd, c::TILE_W * l_rect.x, c::TILE_W * l_rect.y, c::TILE_W * (l_rect.w + 1), c::TILE_W * (l_rect.h + 1),
 		l_pulse_colors[2],

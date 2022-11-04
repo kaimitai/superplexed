@@ -13,7 +13,7 @@
 #error This backend requires SDL 2.0.17+ because of SDL_RenderGeometry() function
 #endif
 
-constexpr char ERROR_LOG_FILE[]{ "sp_err.log" };
+constexpr char ERROR_LOG_FILE[]{ "sp_errors.log" };
 
 using byte = unsigned char;
 

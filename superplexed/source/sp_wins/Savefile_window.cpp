@@ -107,7 +107,7 @@ void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 	ImGui::Separator();
 	if (ImGui::Button(c::SAVE_LST))
 		save_hallfame_lst(p_config);
-
+	ImGui::SameLine();
 	if (ImGui::Button(c::LOAD_LST))
 		load_hallfame_lst(p_config);
 
@@ -171,6 +171,10 @@ void Savefile_window::draw_ui_players(SP_Config& p_config) {
 	ImGui::Separator();
 	ImGui::Text("Player Database Operations");
 	ImGui::Separator();
+	if (ImGui::Button("Solve All")) {
+		m_players.solve_all(l_zindex);
+	}
+	ImGui::Separator();
 
 	if (ImGui::Button("Move Player Up"))
 		if (l_zindex > 0) {
@@ -192,6 +196,7 @@ void Savefile_window::draw_ui_players(SP_Config& p_config) {
 	ImGui::Separator();
 	if (ImGui::Button(c::SAVE_LST))
 		save_player_lst(p_config);
+	ImGui::SameLine();
 	if (ImGui::Button(c::LOAD_LST))
 		load_player_lst(p_config);
 
