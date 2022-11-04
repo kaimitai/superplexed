@@ -181,12 +181,16 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 		{{c::TILE_NO_PORT_LEFT, c::TILE_NO_PORT_RIGHT},
 		{c::TILE_NO_PORT_RIGHT, c::TILE_NO_PORT_LEFT},
 		{c::TILE_NO_GP_LEFT, c::TILE_NO_GP_RIGHT},
-		{c::TILE_NO_GP_RIGHT, c::TILE_NO_GP_LEFT}},
+		{c::TILE_NO_GP_RIGHT, c::TILE_NO_GP_LEFT},
+		{c::TILE_NO_RAM_LEFT, c::TILE_NO_RAM_RIGHT},
+		{c::TILE_NO_RAM_RIGHT, c::TILE_NO_RAM_LEFT}},
 		// flips in the y-direction
 		{{c::TILE_NO_PORT_UP, c::TILE_NO_PORT_DOWN},
 		{c::TILE_NO_PORT_DOWN, c::TILE_NO_PORT_UP},
 		{c::TILE_NO_GP_UP, c::TILE_NO_GP_DOWN},
-		{c::TILE_NO_GP_DOWN, c::TILE_NO_GP_UP}},
+		{c::TILE_NO_GP_DOWN, c::TILE_NO_GP_UP},
+		{c::TILE_NO_RAM_TOP , c::TILE_NO_RAM_BOTTOM},
+		{c::TILE_NO_RAM_BOTTOM, c::TILE_NO_RAM_TOP}},
 		// clockwise rotations
 		{{c::TILE_NO_PORT_RIGHT,c::TILE_NO_PORT_DOWN},
 		{c::TILE_NO_PORT_DOWN,c::TILE_NO_PORT_LEFT},
@@ -197,7 +201,11 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 		{c::TILE_NO_GP_LEFT,c::TILE_NO_GP_UP},
 		{c::TILE_NO_GP_UP,c::TILE_NO_GP_RIGHT},
 		{c::TILE_NO_PORT2WAY_H, c::TILE_NO_PORT2WAY_V},
-		{c::TILE_NO_PORT2WAY_V, c::TILE_NO_PORT2WAY_H}}
+		{c::TILE_NO_PORT2WAY_V, c::TILE_NO_PORT2WAY_H},
+		{c::TILE_NO_RAM_RIGHT, c::TILE_NO_RAM_BOTTOM},
+		{c::TILE_NO_RAM_BOTTOM, c::TILE_NO_RAM_LEFT},
+		{c::TILE_NO_RAM_LEFT, c::TILE_NO_RAM_TOP},
+		{c::TILE_NO_RAM_TOP, c::TILE_NO_RAM_RIGHT}}
 	};
 	// finally generate transform for counter-clockwise rotation
 	std::map<byte, byte> l_cc_transforms;
