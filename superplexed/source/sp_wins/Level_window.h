@@ -95,6 +95,10 @@ class Level_window {
 	void load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_all);
 	void save_file(SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const;
 
+	void commit_undo_block(void);
+	void set_tile_value(int p_x, int p_y, byte p_value, bool p_autocommit = false);
+	void apply_border_to_current_level(void);
+
 public:
 	Level_window(SDL_Renderer* p_rnd, SP_Config& p_config);
 	void move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h);

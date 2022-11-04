@@ -269,7 +269,11 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		else if (p_input.is_pressed(SDL_SCANCODE_DOWN))
 			m_current_level = std::max(1, m_current_level - (l_ctrl ? 10 : 1));
 		else if (p_input.is_pressed(SDL_SCANCODE_B))
-			get_current_level().apply_wall_border();
+			apply_border_to_current_level();
+		else if (p_input.is_pressed(SDL_SCANCODE_Z)) {
+			if (!m_levels.at(get_current_level_idx()).m_undo.apply_undo(get_current_level()))
+				p_config.add_message("No undo history");
+		}
 	}
 
 	// handle mouse
@@ -306,7 +310,7 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			if (m_sel_tile == c::TILE_NO_PLAYER_START)
 				get_current_level().set_player_start(tcoords.first, tcoords.second);
 			else {
-				get_current_level().set_tile_value(tcoords.first, tcoords.second, m_sel_tile);
+				set_tile_value(tcoords.first, tcoords.second, m_sel_tile, true);
 				if (m_sel_tile >= c::TILE_NO_GP_RIGHT &&
 					m_sel_tile <= c::TILE_NO_GP_UP &&
 					get_current_level().has_gp_at_pos(tcoords.first, tcoords.second) == -1 &&
@@ -501,9 +505,9 @@ void Level_window::flip_selection(bool p_vertical) {
 		for (int j{ 0 }; j <= l_rect.w; ++j)
 			for (int i{ 0 }; i <= l_rect.h / 2; ++i) {
 				byte l_tmp = get_current_level().get_tile_no(l_rect.x + j, l_rect.y + i);
-				get_current_level().set_tile_value(l_rect.x + j, l_rect.y + i,
+				set_tile_value(l_rect.x + j, l_rect.y + i,
 					get_current_level().get_tile_no(l_rect.x + j, l_rect.y + l_rect.h - i));
-				get_current_level().set_tile_value(l_rect.x + j, l_rect.y + l_rect.h - i, l_tmp);
+				set_tile_value(l_rect.x + j, l_rect.y + l_rect.h - i, l_tmp);
 			}
 	}
 	// horizontal flip
@@ -511,18 +515,20 @@ void Level_window::flip_selection(bool p_vertical) {
 		for (int j{ 0 }; j <= l_rect.w / 2; ++j)
 			for (int i{ 0 }; i <= l_rect.h; ++i) {
 				byte l_tmp = get_current_level().get_tile_no(l_rect.x + j, l_rect.y + i);
-				get_current_level().set_tile_value(l_rect.x + j, l_rect.y + i,
+				set_tile_value(l_rect.x + j, l_rect.y + i,
 					get_current_level().get_tile_no(l_rect.x + l_rect.w - j, l_rect.y + i));
-				get_current_level().set_tile_value(l_rect.x + l_rect.w - j, l_rect.y + i, l_tmp);
+				set_tile_value(l_rect.x + l_rect.w - j, l_rect.y + i, l_tmp);
 			}
 	}
 
 	for (int i{ 0 }; i <= l_rect.w; ++i)
 		for (int j{ 0 }; j <= l_rect.h; ++j)
-			get_current_level().set_tile_value(l_rect.x + i, l_rect.y + j,
+			set_tile_value(l_rect.x + i, l_rect.y + j,
 				apply_transform(get_current_level().get_tile_no(l_rect.x + i, l_rect.y + j),
 					p_vertical ? TRANS_V_IDX : TRANS_H_IDX)
 			);
+
+	commit_undo_block();
 }
 
 void Level_window::select_all(void) {
@@ -559,8 +565,9 @@ void Level_window::copy_to_clipboard(void) {
 void Level_window::paste_from_clipboard(void) {
 	for (int j{ 0 }; j < m_clipboard.size(); ++j)
 		for (int i{ 0 }; i < m_clipboard.at(j).size(); ++i)
-			get_current_level().set_tile_value(
+			set_tile_value(
 				m_sel_x + i, m_sel_y + j, m_clipboard[j][i]);
+	commit_undo_block();
 }
 
 void Level_window::delete_selection(bool p_delete_special_ports_only) {
@@ -572,9 +579,11 @@ void Level_window::delete_selection(bool p_delete_special_ports_only) {
 			if (l_gp_index >= 0)
 				get_current_level().delete_gravity_port(l_gp_index);
 			if (!p_delete_special_ports_only) {
-				get_current_level().set_tile_value(i, j, 0);
+				set_tile_value(i, j, 0);
 			}
 		}
+
+	commit_undo_block();
 }
 
 void Level_window::cut_selection(void) {
@@ -670,4 +679,27 @@ void Level_window::save_sp(std::size_t p_level_no, const SP_Config& p_config) co
 	std::filesystem::create_directory(p_config.get_SP_folder());
 	klib::file::write_bytes_to_file(m_levels.at(p_level_no).m_level.get_bytes(true),
 		p_config.get_SP_full_path(p_level_no));
+}
+
+void Level_window::set_tile_value(int p_x, int p_y, byte p_value, bool p_autocommit) {
+	m_levels.at(get_current_level_idx()).m_undo.set_tile_value(
+		get_current_level(),
+		p_x, p_y, p_value, p_autocommit
+	);
+}
+
+void Level_window::apply_border_to_current_level(void) {
+	for (int i{ 0 }; i < c::LEVEL_W; ++i) {
+		set_tile_value(i, 0, c::TILE_NO_WALL);
+		set_tile_value(i, static_cast<std::size_t>(c::LEVEL_H - 1), c::TILE_NO_WALL);
+	}
+	for (int i{ 0 }; i < c::LEVEL_H; ++i) {
+		set_tile_value(0, i, c::TILE_NO_WALL);
+		set_tile_value(static_cast<std::size_t>(c::LEVEL_W - 1), i, c::TILE_NO_WALL);
+	}
+	commit_undo_block();
+}
+
+void Level_window::commit_undo_block(void) {
+	m_levels.at(get_current_level_idx()).m_undo.commit_block();
 }

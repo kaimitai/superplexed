@@ -28,6 +28,7 @@ class SP_Level {
 	bool m_gravity, m_freeze_zonks;
 	unsigned int m_player_x, m_player_y;
 	byte m_solve_it_count, m_sf_version;
+	void apply_wall_border(void);
 	
 public:
 	SP_Level(void);
@@ -73,7 +74,6 @@ public:
 	void set_gravity(bool p_param);
 	void set_freeze_zonks(bool p_param);
 	void set_player_start(int p_x, int p_y);
-	void apply_wall_border(void);
 
 	// gravity port setters
 	void set_gp_x(int p_gp_no, int p_x);

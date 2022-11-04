@@ -53,10 +53,12 @@ std::string SP_Config::get_full_path(const std::string& p_filename, const std::s
 }
 
 void SP_Config::add_message(const std::string& p_msg) {
-	m_messages.push_front(p_msg);
-	if (m_messages.size() > c::MESSAGES_MAX_SIZE)
-		m_messages.pop_back();
-}
+	if (m_messages.empty() || m_messages.front() != p_msg) {
+		m_messages.push_front(p_msg);
+		if (m_messages.size() > c::MESSAGES_MAX_SIZE)
+			m_messages.pop_back();
+	}
+} 
 
 const std::deque<std::string>& SP_Config::get_messages(void) const {
 	return m_messages;
