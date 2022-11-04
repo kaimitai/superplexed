@@ -274,6 +274,10 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			if (!m_levels.at(get_current_level_idx()).m_undo.apply_undo(get_current_level()))
 				p_config.add_message("No undo history");
 		}
+		else if (p_input.is_pressed(SDL_SCANCODE_Y))
+			if (!m_levels.at(get_current_level_idx()).m_undo.apply_redo(get_current_level()))
+				p_config.add_message("No redo history");
+
 	}
 
 	// handle mouse

@@ -8,7 +8,7 @@ namespace c {
 	constexpr int APP_WIN_W_INITIAL{ 1024 };
 	constexpr int APP_WIN_H_INITIAL{ 768 };
 	constexpr char FILE_SIGNATURE[]{ "kaimitai@github " };
-	constexpr std::size_t UNDO_HISTORY_COUNT{ 500 };
+	constexpr std::size_t UNDO_HISTORY_COUNT{ 200 };
 
 	// filenames
 	constexpr char SPCONFIG_XML_FILENAME[]{ "spconfig.xml" };
