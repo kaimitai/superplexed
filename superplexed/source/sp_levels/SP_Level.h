@@ -90,6 +90,7 @@ public:
 		unsigned char p_cmin = 0x20, // space
 		unsigned char p_cmax = 0x5f  // underscore
 	);
+	static bool is_special_port(byte p_tile_no);
 };
 
 #endif

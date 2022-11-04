@@ -255,6 +255,16 @@ bool SP_Level::get_gp_freeze_enemies(int p_gp_no) const {
 
 // setters
 void SP_Level::set_tile_value(int p_x, int p_y, byte p_value) {
+	int l_gp_index{ has_gp_at_pos(p_x, p_y) };
+
+	if (is_special_port(p_value)) {
+		if (l_gp_index == -1 &&
+			m_gravity_ports.size() < c::MAX_GP_COUNT)
+			add_gravity_port(p_x, p_y);
+	}
+	else if (l_gp_index != -1)
+		delete_gravity_port(l_gp_index);
+
 	m_tiles.at(p_y).at(p_x) = p_value;
 }
 
@@ -326,7 +336,7 @@ int SP_Level::has_gp_at_pos(int p_x, int p_y) {
 // check if a gravity port psoition is using a gravity port tile (#13-#16)
 bool SP_Level::get_gp_status(int p_gp_no) const {
 	byte l_tile_no = get_tile_no(get_gp_x(p_gp_no), get_gp_y(p_gp_no));
-	return l_tile_no >= c::TILE_NO_GP_RIGHT && l_tile_no <= c::TILE_NO_GP_UP;
+	return is_special_port(l_tile_no);
 }
 
 // static members
@@ -373,4 +383,8 @@ std::string SP_Level::sanitize_sp_string(const std::string& p_str, int p_size,
 	}
 
 	return result;
+}
+
+bool SP_Level::is_special_port(byte p_tile_no) {
+	return p_tile_no >= c::TILE_NO_GP_RIGHT && p_tile_no <= c::TILE_NO_GP_UP;
 }

@@ -313,14 +313,8 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
 			if (m_sel_tile == c::TILE_NO_PLAYER_START)
 				get_current_level().set_player_start(tcoords.first, tcoords.second);
-			else {
+			else
 				set_tile_value(tcoords.first, tcoords.second, m_sel_tile, true);
-				if (m_sel_tile >= c::TILE_NO_GP_RIGHT &&
-					m_sel_tile <= c::TILE_NO_GP_UP &&
-					get_current_level().has_gp_at_pos(tcoords.first, tcoords.second) == -1 &&
-					get_current_level().get_gravity_port_count() < c::MAX_GP_COUNT)
-					get_current_level().add_gravity_port(tcoords.first, tcoords.second);
-			}
 		}
 		else if (p_input.mw_down()) {
 			if (l_shift && get_current_level_idx() > 0)
@@ -381,7 +375,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 				i * c::TILE_W, j * c::TILE_W);
 
 			// special port tile, without special port metadata
-			if (l_tile_no >= c::TILE_NO_GP_RIGHT && l_tile_no <= c::TILE_NO_GP_UP &&
+			if (SP_Level::is_special_port(l_tile_no) &&
 				l_gp_poss.find(std::make_pair(i, j)) == end(l_gp_poss))
 				p_gfx.blit_fixed(p_rnd, 3, i * c::TILE_W, j * c::TILE_W,
 					l_pulse_colors[2]);
@@ -579,11 +573,13 @@ void Level_window::delete_selection(bool p_delete_special_ports_only) {
 
 	for (int j{ l_rect.y }; j <= l_rect.y + l_rect.h; ++j)
 		for (int i{ l_rect.x }; i <= l_rect.x + l_rect.w; ++i) {
-			int l_gp_index = get_current_level().has_gp_at_pos(i, j);
-			if (l_gp_index >= 0)
-				get_current_level().delete_gravity_port(l_gp_index);
-			if (!p_delete_special_ports_only) {
+
+			if (!p_delete_special_ports_only)
 				set_tile_value(i, j, 0);
+			else {
+				int l_gp_index = get_current_level().has_gp_at_pos(i, j);
+				if (l_gp_index >= 0)
+					get_current_level().delete_gravity_port(l_gp_index);
 			}
 		}
 
