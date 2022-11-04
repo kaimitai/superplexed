@@ -159,6 +159,7 @@
     <ClInclude Include="source\sp_gfx\SP_Image.h" />
     <ClInclude Include="source\sp_gfx\SP_Palette.h" />
     <ClInclude Include="source\sp_levels\SP_Level.h" />
+    <ClInclude Include="source\sp_levels\SP_Level_undo_interface.h" />
     <ClInclude Include="source\sp_saves\SP_Hallfame.h" />
     <ClInclude Include="source\sp_saves\SP_Player_list.h" />
     <ClInclude Include="source\sp_wins\Graphics_window.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="source\sp_gfx\SP_Image.cpp" />
     <ClCompile Include="source\sp_gfx\SP_Palette.cpp" />
     <ClCompile Include="source\sp_levels\SP_Level.cpp" />
+    <ClCompile Include="source\sp_levels\SP_Level_undo_interface.cpp" />
     <ClCompile Include="source\sp_saves\SP_Hallfame.cpp" />
     <ClCompile Include="source\sp_saves\SP_Player_List.cpp" />
     <ClCompile Include="source\sp_wins\Graphics_window.cpp" />

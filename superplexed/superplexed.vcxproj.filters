@@ -138,6 +138,9 @@
     <ClInclude Include="source\sp_wins\Savefile_window.h">
       <Filter>Header Files\sp_wins</Filter>
     </ClInclude>
+    <ClInclude Include="source\sp_levels\SP_Level_undo_interface.h">
+      <Filter>Header Files\sp_levels</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -226,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="source\sp_wins\Savefile_window.cpp">
       <Filter>Source Files\sp_wins</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sp_levels\SP_Level_undo_interface.cpp">
+      <Filter>Source Files\sp_levels</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

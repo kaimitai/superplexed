@@ -10,6 +10,7 @@
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
 #include "./../SP_Config.h"
 #include "./../sp_levels/SP_Level.h"
+#include "./../sp_levels/SP_Level_undo_interface.h"
 #include "./../sp_gfx/Project_gfx.h"
 #include "./../common/klib/User_input.h"
 #include "./../common/klib/Timer.h"
@@ -18,22 +19,29 @@
 class Level_window {
 	enum class SP_file_type { bmp, dat, sp, xml };
 
-	std::vector<SP_Level> m_levels;
+	struct Level {
+		SP_Level m_level;
+		SP_Level_undo_interface m_undo;
+		Level(const SP_Level& p_level) : m_level{ p_level }
+		{}
+	};
+
+	std::vector<Level> m_levels;
 	int m_cam_x, m_current_level, m_current_gp, m_sel_tile;
 	SDL_Texture* m_texture;
 	bool m_ui_show_grid, m_ui_animate, m_ui_flash;
 	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 	float m_tile_picker_scale;
-	
+
 	// statistics variables
 	// -1: do not show
 	// 0: stats for all levels
 	// n>0: stats for level #n (counted from 1)
-	int m_show_stats; 
+	int m_show_stats;
 	bool m_show_stats_tc0; // show tiles with a count of 0 in the stats
 	std::vector<int> m_statistics;
-	
+
 
 	// selection
 	int m_sel_x, m_sel_y,

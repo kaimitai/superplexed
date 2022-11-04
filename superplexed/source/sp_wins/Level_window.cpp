@@ -23,7 +23,7 @@ void Level_window::save_file(SP_file_type p_ftype, SP_Config& p_config, const Pr
 		else if (p_ftype == SP_file_type::sp)
 			save_sp(p_level_no, p_config);
 		else if (p_ftype == SP_file_type::bmp)
-			p_gfx.save_level_bmp(m_levels.at(p_level_no),
+			p_gfx.save_level_bmp(m_levels.at(p_level_no).m_level,
 				p_level_no, p_config, m_ui_animate);
 		else
 			throw std::exception("Invalid filetype");
@@ -99,11 +99,11 @@ void Level_window::save_levels_dat(SP_Config& p_config) {
 	std::vector<byte> l_list_file_bytes;
 
 	for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
-		auto l_lvl_bytes = m_levels[i].get_bytes();
+		auto l_lvl_bytes = m_levels[i].m_level.get_bytes();
 		l_file_bytes.insert(end(l_file_bytes),
 			begin(l_lvl_bytes), end(l_lvl_bytes));
 
-		std::string l_line = klib::util::stringnum(i + 1) + ' ' + m_levels[i].get_title();
+		std::string l_line = klib::util::stringnum(i + 1) + ' ' + m_levels[i].m_level.get_title();
 
 		l_list_file_bytes.insert(end(l_list_file_bytes),
 			begin(l_line), end(l_line));
@@ -131,7 +131,9 @@ void Level_window::load_levels_dat(SP_Config& p_config) {
 		for (std::size_t i{ 0 }; i < l_bytes.size(); i += c::LVL_DATA_BYTE_SIZE)
 			l_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + c::LVL_DATA_BYTE_SIZE)));
 
-		m_levels = l_levels;
+		m_levels.clear();
+		for (const auto& l_lvl : l_levels)
+			m_levels.push_back(l_lvl);
 		p_config.add_message("Loaded " + std::to_string(m_levels.size()) + " levels from " + p_config.get_levels_dat_full_path());
 		if (m_current_level > static_cast<int>(m_levels.size()))
 			m_current_level = static_cast<int>(m_levels.size());
@@ -445,11 +447,11 @@ std::size_t Level_window::get_current_level_idx(void) const {
 }
 
 SP_Level& Level_window::get_current_level(void) {
-	return m_levels[get_current_level_idx()];
+	return m_levels[get_current_level_idx()].m_level;
 }
 
 const SP_Level& Level_window::get_current_level(void) const {
-	return m_levels[get_current_level_idx()];
+	return m_levels[get_current_level_idx()].m_level;
 }
 
 // selections
@@ -635,7 +637,7 @@ std::vector<int> Level_window::get_tile_counts(bool p_all_levels) const {
 	if (p_all_levels) {
 		std::vector<int> result(c::TILE_COUNT, 0);
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
-			auto l_lvl_counts = m_levels[i].get_tile_counts();
+			auto l_lvl_counts = m_levels[i].m_level.get_tile_counts();
 			for (std::size_t j{ 0 }; j < l_lvl_counts.size(); ++j)
 				result[j] += l_lvl_counts[j];
 		}
@@ -666,6 +668,6 @@ SP_Level Level_window::load_sp(std::size_t p_level_no, const SP_Config& p_config
 
 void Level_window::save_sp(std::size_t p_level_no, const SP_Config& p_config) const {
 	std::filesystem::create_directory(p_config.get_SP_folder());
-	klib::file::write_bytes_to_file(m_levels.at(p_level_no).get_bytes(true),
+	klib::file::write_bytes_to_file(m_levels.at(p_level_no).m_level.get_bytes(true),
 		p_config.get_SP_full_path(p_level_no));
 }

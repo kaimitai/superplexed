@@ -7,7 +7,7 @@
 #include <filesystem>
 
 void Level_window::save_xml(std::size_t p_level_no, const SP_Config& p_config) const {
-	const auto& l_lvl = m_levels.at(p_level_no);
+	const SP_Level& l_lvl = m_levels.at(p_level_no).m_level;
 
 	pugi::xml_document doc;
 	auto n_comments = doc.append_child(pugi::node_comment);
