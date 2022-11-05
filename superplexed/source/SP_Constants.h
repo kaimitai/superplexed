@@ -43,8 +43,6 @@ namespace c {
 	// xml tags, attributes and values
 	// configuration XML
 	constexpr char XML_ATTR_PROJECT_FOLDER[]{ "project_folder" };
-	constexpr char XML_ATTR_LEVELS_DAT_FILE[]{ "level_file" };
-	constexpr char XML_ATTR_LEVEL_LST_FILE[]{ "level_list_file" };
 
 	// level file XMLs
 	constexpr char XML_COMMENTS[]{ " Supaplex Level created by Superplexed (https://github.com/kaimitai/superplexed) " };
@@ -264,8 +262,8 @@ namespace c {
 	// dear imgui window constants
 	constexpr int WIN_MAIN_X{ 10 }, WIN_MAIN_Y{ 5 }, WIN_MAIN_W{ 400 }, WIN_MAIN_H{ 235 };
 
-	constexpr int WIN_LVL_X{ 10 }, WIN_LVL_Y{ 240 }, WIN_LVL_W{ 400 }, WIN_LVL_H{ 325 };
-	constexpr int WIN_SP_X{ 10 }, WIN_SP_Y{ 570 }, WIN_SP_W{ 400 }, WIN_SP_H{ 150 };
+	constexpr int WIN_LVL_X{ 10 }, WIN_LVL_Y{ 240 }, WIN_LVL_W{ 400 }, WIN_LVL_H{ 380 };
+	constexpr int WIN_SP_X{ 10 }, WIN_SP_Y{ 625 }, WIN_SP_W{ 400 }, WIN_SP_H{ 130 };
 	constexpr int WIN_TP_X{ 650 }, WIN_TP_Y{ 5 }, WIN_TP_W{ 370 }, WIN_TP_H{ 420 };
 	constexpr int WIN_STATS_X{ 415 }, WIN_STATS_Y{ 5 }, WIN_STATS_W{ 230 }, WIN_STATS_H{ 675 };
 

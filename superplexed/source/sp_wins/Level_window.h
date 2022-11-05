@@ -27,12 +27,14 @@ class Level_window {
 	};
 
 	std::vector<Level> m_levels;
+	std::vector<std::string> m_levelset_files;
 	int m_cam_x, m_current_level, m_current_gp, m_sel_tile;
 	SDL_Texture* m_texture;
 	bool m_ui_show_grid, m_ui_animate, m_ui_flash;
 	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 	float m_tile_picker_scale;
+	std::string m_selected_file;
 
 	// statistics variables
 	// -1: do not show
@@ -99,6 +101,9 @@ class Level_window {
 	void commit_undo_block(void);
 	void set_tile_value(int p_x, int p_y, byte p_value, bool p_autocommit = false);
 	void apply_border_to_current_level(void);
+
+	// file
+	std::vector<std::string> get_levelset_files(const SP_Config& p_config);
 
 public:
 	Level_window(SDL_Renderer* p_rnd, SP_Config& p_config);
