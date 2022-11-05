@@ -43,14 +43,14 @@ void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& 
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_TP_X, c::WIN_TP_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_TP_W, c::WIN_TP_H), ImGuiCond_FirstUseEver);
-	
+
 	Main_window::window_start(l_sel_tile, c::COL_BLACK, c::COL_GREEN, c::COL_GREEN_LIGHT, c::COL_GREEN_LIGHT);
 
 	float l_icon_w = m_tile_picker_scale * static_cast<float>(c::TILE_W);
 
 	std::string l_sel_tile_no{ "Selected Tile: #" + std::to_string(m_sel_tile) +
 		" (" + SP_Level::get_description(m_sel_tile) + ")" };
-	ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(m_sel_tile), { 2.0f * l_icon_w,2.0f * l_icon_w });
+	ImGui::ImageButton(p_gfx.get_tile_texture(m_sel_tile), { 2.0f * l_icon_w,2.0f * l_icon_w });
 	ImGui::SameLine();
 	ImGui::Checkbox("Flash", &m_ui_flash);
 
@@ -68,8 +68,14 @@ void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& 
 			if (l_is_selected)
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 1.0f, 1.0f, 0.0f, 1.0f });
 			ImGui::PushID(n);
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)p_gfx.get_tile_texture(n), { l_icon_w,l_icon_w }))
+
+			if (ImGui::ImageButton(p_gfx.get_tile_texture(n), { l_icon_w,l_icon_w })) {
 				m_sel_tile = n;
+			}
+
+			if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+				ImGui::SetTooltip(SP_Level::get_description(n).c_str());
+
 			ImGui::PopID();
 			if (l_is_selected)
 				ImGui::PopStyleColor();
@@ -105,7 +111,7 @@ void Level_window::draw_ui_gp_win(const Project_gfx& p_gfx, SP_Config& p_config)
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_SP_X, c::WIN_SP_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_SP_W, c::WIN_SP_H), ImGuiCond_FirstUseEver);
-	
+
 	Main_window::window_start(l_gp_label, c::COL_WHITE, c::COL_RED, c::COL_RED_DARK, c::COL_RED_DARK);
 
 	if (l_gp_count > 0) {
