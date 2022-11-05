@@ -7,7 +7,9 @@
 class SP_Config {
 
 	std::deque<std::string> m_messages;
-	std::string m_project_folder, m_levels_dat_filename;
+	std::string m_project_folder;
+	// levelset number: -1 is LEVELS.DAT and LEVEL.LST, 00 to 99 is LEVELS.Dxx, LEVEL.Lxx etc
+	int m_levelset_no;
 
 	std::string get_folder(const std::string& p_subfolder) const;
 	std::string get_full_path(const std::string& p_filename, const std::string& p_extension) const;
@@ -15,6 +17,11 @@ class SP_Config {
 	static std::string get_full_filename(const std::string& p_filename, const std::string& p_suffix);
 	std::string get_full_path_ignore_extension(const std::string& p_full_filename) const;
 	std::string get_levelset_lst_filename(void) const;
+	std::string get_levelset_dat_filename(void) const;
+	std::string get_prefix(void) const;
+	std::string strnum(void) const;
+
+	std::string get_extension(char p_first_letter) const;
 
 public:
 	SP_Config(void);
@@ -27,6 +34,9 @@ public:
 
 	std::string get_levels_dat_full_path(void) const;
 	std::string get_level_lst_full_path(void) const;
+	std::string get_player_lst_full_path(void) const;
+	std::string get_hallfame_lst_full_path(void) const;
+
 	std::string get_lst_full_path(const std::string& p_filename) const;
 	std::string get_dat_full_path(const std::string& p_filename) const;
 

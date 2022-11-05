@@ -15,7 +15,7 @@ Savefile_window::Savefile_window(SP_Config& p_config) :
 }
 
 void Savefile_window::load_player_lst(SP_Config& p_config, bool p_first_load) {
-	std::string l_in_file{ p_config.get_lst_full_path(c::FILENAME_PLAYER) };
+	std::string l_in_file{ p_config.get_player_lst_full_path() };
 
 	try {
 		m_players = SP_Player_list(klib::file::read_file_as_bytes(l_in_file));
@@ -31,7 +31,7 @@ void Savefile_window::load_player_lst(SP_Config& p_config, bool p_first_load) {
 }
 
 void Savefile_window::save_player_lst(SP_Config& p_config) {
-	std::string l_out_file{ p_config.get_lst_full_path(c::FILENAME_PLAYER) };
+	std::string l_out_file{ p_config.get_player_lst_full_path() };
 
 	try {
 		klib::file::write_bytes_to_file(m_players.to_bytes(), l_out_file);
@@ -43,7 +43,7 @@ void Savefile_window::save_player_lst(SP_Config& p_config) {
 }
 
 void Savefile_window::load_hallfame_lst(SP_Config& p_config, bool p_first_load) {
-	std::string l_infile{ p_config.get_lst_full_path(c::FILENAME_HALLFAME) };
+	std::string l_infile{ p_config.get_hallfame_lst_full_path() };
 	try {
 		m_hallfame = SP_Hallfame(klib::file::read_file_as_bytes(l_infile.c_str()));
 		if (!p_first_load)
@@ -58,7 +58,7 @@ void Savefile_window::load_hallfame_lst(SP_Config& p_config, bool p_first_load) 
 }
 
 void Savefile_window::save_hallfame_lst(SP_Config& p_config) {
-	std::string l_out_file{ p_config.get_lst_full_path(c::FILENAME_HALLFAME) };
+	std::string l_out_file{ p_config.get_hallfame_lst_full_path() };
 
 	try {
 		klib::file::write_bytes_to_file(m_hallfame.to_bytes(), l_out_file);

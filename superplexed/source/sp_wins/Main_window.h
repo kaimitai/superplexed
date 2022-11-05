@@ -21,6 +21,11 @@ class Main_window {
 	Graphics_window m_gfx_win;
 	Savefile_window m_savefile_win;
 	std::vector<std::string> m_selectable_windows;
+	std::string m_selected_file;
+	std::vector<std::string> m_levelset_files;
+
+	// file
+	std::vector<std::string> get_levelset_files(const SP_Config& p_config);
 
 public:
 	Main_window(SDL_Renderer* p_rnd, SP_Config& p_config);

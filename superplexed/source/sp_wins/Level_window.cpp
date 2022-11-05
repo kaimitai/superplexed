@@ -152,7 +152,7 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_ui_show_grid{ false }, m_ui_animate{ true }, m_ui_flash{ false },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
 	m_sel_tile{ 0 }, m_tile_picker_scale{ 1.0f },
-	m_show_stats{ -1 }, m_show_stats_tc0{ false }, m_selected_file{ SP_Config::get_default_levels_filename() }
+	m_show_stats{ -1 }, m_show_stats_tc0{ false }
 {
 	load_levels_dat(p_config);
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
@@ -212,8 +212,6 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	for (const auto& kv : m_transforms.at(TRANS_RC_IDX))
 		l_cc_transforms.insert(std::make_pair(kv.second, kv.first));
 	m_transforms.push_back(l_cc_transforms);
-
-	m_levelset_files = get_levelset_files(p_config);
 }
 
 int Level_window::get_max_cam_x(int p_w, int p_h) const {
@@ -737,26 +735,4 @@ void Level_window::apply_border_to_current_level(void) {
 
 void Level_window::commit_undo_block(void) {
 	m_levels.at(get_current_level_idx()).m_undo.commit_block();
-}
-
-// read current directory and get candidate filenames
-std::vector<std::string> Level_window::get_levelset_files(const SP_Config& p_config) {
-	std::vector<std::string> result;
-
-	for (const auto& ll_file :
-		std::filesystem::directory_iterator(p_config.get_project_folder())) {
-		if (ll_file.is_regular_file()) {
-			std::filesystem::path l_file{ ll_file.path() };
-			std::string l_ext{ l_file.extension().string() };
-			if (l_ext.size() == 4 &&
-				(l_ext[1] == 'd' || l_ext[1] == 'D') &&
-				(l_ext[2] >= '0' && l_ext[2] <= '9') &&
-				(l_ext[3] >= '0' && l_ext[3] <= '9'))
-				result.push_back(l_file.filename().string());
-		}
-	}
-	std::sort(begin(result), end(result));
-	result.insert(begin(result), SP_Config::get_default_levels_filename());
-
-	return result;
 }

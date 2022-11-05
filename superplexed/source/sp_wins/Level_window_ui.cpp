@@ -278,30 +278,6 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	ImGui::Checkbox("Animate", &m_ui_animate);
 	ImGui::SliderFloat("Icon Scale", &m_tile_picker_scale, 0.5f, 4.0f);
 
-	ImGui::Separator();
-
-	if (ImGui::BeginCombo("Levelset Files", m_selected_file.c_str(), 0)) {
-		for (const auto& l_filename : m_levelset_files) {
-			bool is_selected = (l_filename == m_selected_file);
-			if (ImGui::Selectable(l_filename.c_str(), is_selected)) {
-				m_selected_file = l_filename;
-				p_config.set_level_list_filename(m_selected_file);
-			}
-		}
-
-		ImGui::EndCombo();
-	}
-	if (ImGui::Button("Refresh Files")) {
-		m_levelset_files = get_levelset_files(p_config);
-		if (std::find(begin(m_levelset_files), end(m_levelset_files), m_selected_file)
-			== end(m_levelset_files)) {
-			m_selected_file = SP_Config::get_default_levels_filename();
-			p_config.set_level_list_filename(m_selected_file);
-		}
-
-		p_config.add_message("Refreshed levelset file list");
-	}
-
 	ImGui::End();
 }
 

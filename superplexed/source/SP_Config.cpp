@@ -6,7 +6,7 @@
 #include "./common/klib/klib_util.h"
 
 SP_Config::SP_Config(void) :
-	m_levels_dat_filename{ get_default_levels_filename() }
+	m_levelset_no{ -1 }
 {
 	load_configuration();
 }
@@ -42,16 +42,29 @@ void SP_Config::load_configuration(void) {
 	add_message("Level File: " + get_levels_dat_full_path());
 }
 
+std::string SP_Config::get_extension(char p_first_letter) const {
+	return p_first_letter + strnum();
+}
+
 std::string SP_Config::get_levelset_lst_filename() const {
-	auto l_pos = m_levels_dat_filename.find_last_of('.') + 1;
-	auto l_ext = m_levels_dat_filename.substr(l_pos);
-	if (l_ext == c::SUFFIX_DAT)
-		return get_full_filename(c::FILENAME_LEVEL, c::SUFFIX_LST);
-	else {
-		bool l_uppercase = m_levels_dat_filename[l_pos] == 'D';
-		return get_full_filename(m_levels_dat_filename.substr(0, l_pos - 1),
-			std::string(l_uppercase ? "L" : "l") + m_levels_dat_filename.substr(l_pos + 1));
-	}
+	return get_full_filename(c::FILENAME_LEVEL,
+		m_levelset_no == -1 ? c::SUFFIX_LST : get_extension('L'));
+}
+
+std::string SP_Config::get_levelset_dat_filename(void) const {
+	return get_full_filename(c::FILENAME_LEVELS,
+		m_levelset_no == -1 ? c::SUFFIX_LST : get_extension('D'));
+}
+
+std::string SP_Config::get_prefix(void) const {
+	if (m_levelset_no == -1)
+		return c::FILENAME_LEVELS;
+	else
+		return c::FILENAME_LEVELS + strnum();
+}
+
+std::string SP_Config::strnum(void) const {
+	return klib::util::stringnum(m_levelset_no, 2);
 }
 
 std::string SP_Config::get_full_path_ignore_extension(const std::string& p_full_filename) const {
@@ -60,6 +73,20 @@ std::string SP_Config::get_full_path_ignore_extension(const std::string& p_full_
 
 std::string SP_Config::get_level_lst_full_path(void) const {
 	return get_full_path_ignore_extension(get_levelset_lst_filename());
+}
+
+std::string SP_Config::get_player_lst_full_path(void) const {
+	return get_full_path_ignore_extension(
+		get_full_filename(c::FILENAME_PLAYER,
+			m_levelset_no == -1 ? c::SUFFIX_LST : get_extension('L'))
+	);
+}
+
+std::string SP_Config::get_hallfame_lst_full_path(void) const {
+	return get_full_path_ignore_extension(
+		get_full_filename(c::FILENAME_HALLFAME,
+			m_levelset_no == -1 ? c::SUFFIX_LST : get_extension('L'))
+	);
 }
 
 std::string SP_Config::get_lst_full_path(const std::string& p_filename) const {
@@ -71,7 +98,7 @@ std::string SP_Config::get_dat_full_path(const std::string& p_filename) const {
 }
 
 std::string SP_Config::get_levels_dat_full_path(void) const {
-	return get_full_path_ignore_extension(m_levels_dat_filename);
+	return get_full_path_ignore_extension(get_levelset_dat_filename());
 }
 
 std::string SP_Config::get_full_path(const std::string& p_filename, const std::string& p_extension) const {
@@ -117,17 +144,20 @@ std::string SP_Config::get_bmp_full_path(const std::string& p_dat_filename) cons
 // files derived from individual levels
 
 std::string SP_Config::get_xml_full_path(std::size_t p_level_no) const {
-	return get_xml_full_path(m_levels_dat_filename + '-' + klib::util::stringnum(p_level_no + 1));
+	return get_xml_full_path(get_prefix() + '-' + klib::util::stringnum(p_level_no + 1));
 }
 
 std::string SP_Config::get_SP_full_path(std::size_t p_level_no) const {
-	return get_SP_folder() + '/' + m_levels_dat_filename + '-' + klib::util::stringnum(p_level_no + 1) + ".SP";
+	return get_SP_folder() + '/' + get_prefix() + '-' + klib::util::stringnum(p_level_no + 1) + ".SP";
 }
 
 std::string SP_Config::get_bmp_full_path(std::size_t p_level_no) const {
-	return get_bmp_full_path(m_levels_dat_filename + '-' + klib::util::stringnum(p_level_no + 1));
+	return get_bmp_full_path(get_prefix() + '-' + klib::util::stringnum(p_level_no + 1));
 }
 
 void SP_Config::set_level_list_filename(const std::string& p_filename) {
-	m_levels_dat_filename = p_filename;
+	if (p_filename == get_default_levels_filename())
+		m_levelset_no = -1;
+	else
+		m_levelset_no = atoi(p_filename.substr(p_filename.find_last_of('.') + 2).c_str());
 }

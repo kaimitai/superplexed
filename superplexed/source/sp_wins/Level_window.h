@@ -34,7 +34,6 @@ class Level_window {
 	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 	float m_tile_picker_scale;
-	std::string m_selected_file;
 
 	// statistics variables
 	// -1: do not show
@@ -101,9 +100,6 @@ class Level_window {
 	void commit_undo_block(void);
 	void set_tile_value(int p_x, int p_y, byte p_value, bool p_autocommit = false);
 	void apply_border_to_current_level(void);
-
-	// file
-	std::vector<std::string> get_levelset_files(const SP_Config& p_config);
 
 public:
 	Level_window(SDL_Renderer* p_rnd, SP_Config& p_config);

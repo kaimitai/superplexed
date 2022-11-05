@@ -6,12 +6,14 @@
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
 #include "./../SP_Constants.h"
+#include <filesystem>
 
 Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_lvl_win{ p_rnd, p_config },
 	m_gfx{ p_rnd, p_config },
 	m_savefile_win{ p_config },
-	m_current_window{ 1 }
+	m_current_window{ 1 },
+	m_selected_file{ SP_Config::get_default_levels_filename() }
 {
 	// initialize selectable windows
 	m_selectable_windows = { "Graphics", "Levels", "Savefiles" };
@@ -21,11 +23,14 @@ Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_gfx_win.set_selected_file(m_gfx.get_meta().begin()->first);
 	m_gfx_win.set_palette_cache(m_gfx);
 
+	// scan directory for levelset files
+	m_levelset_files = get_levelset_files(p_config);
+
 	// initialize output
 	p_config.add_message("Build Date: " + std::string(__DATE__) + ' ' +
 		std::string(__TIME__) + " CET");
 	p_config.add_message("Homepage: https://github.com/kaimitai/superplexed");
-	p_config.add_message("Read the documentation for efficient usage!");
+	p_config.add_message("Read the documentation for efficient usage tips!");
 	p_config.add_message("Welcome to Superplexed by Kai E. Froeland");
 }
 
@@ -75,14 +80,39 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 
 	ImGui::Separator();
 
+	if (ImGui::BeginCombo("Levelset Files", m_selected_file.c_str(), 0)) {
+		for (const auto& l_filename : m_levelset_files) {
+			bool is_selected = (l_filename == m_selected_file);
+			if (ImGui::Selectable(l_filename.c_str(), is_selected)) {
+				m_selected_file = l_filename;
+				p_config.set_level_list_filename(m_selected_file);
+			}
+		}
+
+		ImGui::EndCombo();
+	}
+	if (ImGui::Button("Refresh Files")) {
+		m_levelset_files = get_levelset_files(p_config);
+		if (std::find(begin(m_levelset_files), end(m_levelset_files), m_selected_file)
+			== end(m_levelset_files)) {
+			m_selected_file = SP_Config::get_default_levels_filename();
+			p_config.set_level_list_filename(m_selected_file);
+		}
+
+		p_config.add_message("Refreshed levelset file list");
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Reload Configuration"))
+		p_config.load_configuration();
+
+	ImGui::Separator();
+
 	ImGui::Text("Output Messages");
 	ImGui::Separator();
 	for (const auto& msg : p_config.get_messages())
 		ImGui::Text(msg.c_str());
-
-	ImGui::Separator();
-	if (ImGui::Button("Reload Configuration"))
-		p_config.load_configuration();
 
 	ImGui::End();
 
@@ -124,4 +154,37 @@ void Main_window::window_start(const std::string& p_title, c::SP_Color p_text, c
 
 constexpr ImU32 Main_window::sp_color_to_imgui(c::SP_Color p_color) {
 	return IM_COL32(p_color.r, p_color.g, p_color.b, 255);
+}
+
+// read current directory and get candidate filenames
+std::vector<std::string> Main_window::get_levelset_files(const SP_Config& p_config) {
+	std::vector<std::string> result;
+
+	const auto touppercase = [](const std::string& pl_fname) -> std::string {
+		std::string result;
+		for (char c : pl_fname)
+			if (c >= 'a' && c <= 'z')
+				result.push_back(c - ('a' - 'A'));
+			else
+				result.push_back(c);
+		return result;
+	};
+
+	for (const auto& ll_file :
+		std::filesystem::directory_iterator(p_config.get_project_folder())) {
+		if (ll_file.is_regular_file()) {
+			std::filesystem::path l_file{ ll_file.path() };
+			std::string l_ext{ l_file.extension().string() };
+			if (touppercase(l_file.filename().string().substr(0, sizeof(c::FILENAME_LEVELS) - 1)) == c::FILENAME_LEVELS &&
+				l_ext.size() == 4 &&
+				(l_ext[1] == 'd' || l_ext[1] == 'D') &&
+				(l_ext[2] >= '0' && l_ext[2] <= '9') &&
+				(l_ext[3] >= '0' && l_ext[3] <= '9'))
+				result.push_back(touppercase(l_file.filename().string()));
+		}
+	}
+	std::sort(begin(result), end(result));
+	result.insert(begin(result), SP_Config::get_default_levels_filename());
+
+	return result;
 }
