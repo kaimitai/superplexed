@@ -319,7 +319,16 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		}
 		else if (p_input.mouse_held(false)) {
 			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
-			if (m_sel_tile == c::TILE_NO_PLAYER_START)
+			if (l_ctrl) {
+				byte l_source_col{ get_current_level().get_tile_no(tcoords.first, tcoords.second) };
+				byte l_target_col{ static_cast<byte>(m_sel_tile) };
+				if (l_source_col != l_target_col) {
+					floorfill(l_source_col, l_target_col,
+						tcoords.first, tcoords.second);
+					commit_undo_block();
+				}
+			}
+			else if (m_sel_tile == c::TILE_NO_PLAYER_START)
 				get_current_level().set_player_start(tcoords.first, tcoords.second);
 			else
 				set_tile_value(tcoords.first, tcoords.second, m_sel_tile, true);
@@ -676,6 +685,22 @@ void Level_window::toggle_selected_gp_property(int p_property_no) {
 		else if (p_property_no == 3)
 			l_lvl.set_gp_freeze_enemies(l_gp_index, !l_lvl.get_gp_freeze_enemies(l_gp_index));
 	}
+}
+
+void Level_window::floorfill(byte p_source_col, byte p_target_col, int p_x, int p_y) {
+	const auto recurse = [&](int pl_x, int pl_y) -> void {
+		if (pl_x >= 0 && pl_x < c::LEVEL_W && pl_y >= 0 && pl_y < c::LEVEL_H) {
+			byte l_next_col = get_current_level().get_tile_no(pl_x, pl_y);
+			if (l_next_col == p_source_col)
+				floorfill(p_source_col, p_target_col, pl_x, pl_y);
+		}
+	};
+
+	set_tile_value(p_x, p_y, p_target_col);
+	recurse(p_x + 1, p_y);
+	recurse(p_x - 1, p_y);
+	recurse(p_x, p_y + 1);
+	recurse(p_x, p_y - 1);
 }
 
 // SP load/save
