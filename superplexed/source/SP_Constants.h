@@ -39,6 +39,7 @@ namespace c {
 
 	// assorted texts used in the applications for labels or parts of strings
 	constexpr char TXT_FILE_OPERATIONS[]{ "File Operations" };
+	constexpr char TXT_HOLD_CTRL_TO_USE[]{ "Hold Ctrl to use this button" };
 
 	// xml tags, attributes and values
 	// configuration XML
@@ -260,18 +261,18 @@ namespace c {
 	constexpr SP_Color COL_GREEN_DARK{ 0x32,0xcd,0x32 };
 
 	// dear imgui window constants
-	constexpr int WIN_MAIN_X{ 10 }, WIN_MAIN_Y{ 5 }, WIN_MAIN_W{ 400 }, WIN_MAIN_H{ 235 };
+	constexpr int WIN_MAIN_X{ 10 }, WIN_MAIN_Y{ 5 }, WIN_MAIN_W{ 400 }, WIN_MAIN_H{ 255 };
 
-	constexpr int WIN_LVL_X{ 10 }, WIN_LVL_Y{ 240 }, WIN_LVL_W{ 400 }, WIN_LVL_H{ 380 };
-	constexpr int WIN_SP_X{ 10 }, WIN_SP_Y{ 625 }, WIN_SP_W{ 400 }, WIN_SP_H{ 130 };
+	constexpr int WIN_LVL_X{ 10 }, WIN_LVL_Y{ 265 }, WIN_LVL_W{ 400 }, WIN_LVL_H{ 325 };
+	constexpr int WIN_SP_X{ 10 }, WIN_SP_Y{ 600 }, WIN_SP_W{ 400 }, WIN_SP_H{ 130 };
 	constexpr int WIN_TP_X{ 650 }, WIN_TP_Y{ 5 }, WIN_TP_W{ 370 }, WIN_TP_H{ 420 };
 	constexpr int WIN_STATS_X{ 415 }, WIN_STATS_Y{ 5 }, WIN_STATS_W{ 230 }, WIN_STATS_H{ 675 };
 
-	constexpr int WIN_GFX_X{ 10 }, WIN_GFX_Y{ 240 }, WIN_GFX_W{ 400 }, WIN_GFX_H{ 235 };
-	constexpr int WIN_PAL_X{ 10 }, WIN_PAL_Y{ 480 }, WIN_PAL_W{ 400 }, WIN_PAL_H{ 270 };
+	constexpr int WIN_GFX_X{ 10 }, WIN_GFX_Y{ 265 }, WIN_GFX_W{ 400 }, WIN_GFX_H{ 235 };
+	constexpr int WIN_PAL_X{ 415 }, WIN_PAL_Y{ 415 }, WIN_PAL_W{ 400 }, WIN_PAL_H{ 270 };
 	constexpr int WIN_IMGPV_X{ 410 }, WIN_IMGPV_Y{ 5 }, WIN_IMGPV_W{ 610 }, WIN_IMGPV_H{ 405 };
 
-	constexpr int WIN_HF_X{ 10 }, WIN_HF_Y{ 245 }, WIN_HF_W{ 400 }, WIN_HF_H{ 205 };
+	constexpr int WIN_HF_X{ 10 }, WIN_HF_Y{ 265 }, WIN_HF_W{ 400 }, WIN_HF_H{ 205 };
 	constexpr int WIN_PL_X{ 415 }, WIN_PL_Y{ 5 }, WIN_PL_W{ 380 }, WIN_PL_H{ 580 };
 }
 

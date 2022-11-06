@@ -261,14 +261,20 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	if (ImGui::Button(c::SAVE_BMP))
 		save_file(SP_file_type::bmp, p_config, p_gfx, l_shift);
 	// load from disk
-	if (ImGui::Button(c::LOAD_DAT))
+	if (ImGui::Button(c::LOAD_DAT) && l_ctrl)
 		load_levels_dat(p_config);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 	ImGui::SameLine();
-	if (ImGui::Button(c::LOAD_XML))
+	if (ImGui::Button(c::LOAD_XML) && l_ctrl)
 		load_file(SP_file_type::xml, p_config, l_shift);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 	ImGui::SameLine();
-	if (ImGui::Button(c::LOAD_SP))
+	if (ImGui::Button(c::LOAD_SP) && l_ctrl)
 		load_file(SP_file_type::sp, p_config, l_shift);
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 
 	// UI settings
 	ImGui::Separator();

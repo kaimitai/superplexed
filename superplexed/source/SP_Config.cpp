@@ -53,7 +53,7 @@ std::string SP_Config::get_levelset_lst_filename() const {
 
 std::string SP_Config::get_levelset_dat_filename(void) const {
 	return get_full_filename(c::FILENAME_LEVELS,
-		m_levelset_no == -1 ? c::SUFFIX_LST : get_extension('D'));
+		m_levelset_no == -1 ? c::SUFFIX_DAT : get_extension('D'));
 }
 
 std::string SP_Config::get_prefix(void) const {
@@ -89,10 +89,6 @@ std::string SP_Config::get_hallfame_lst_full_path(void) const {
 	);
 }
 
-std::string SP_Config::get_lst_full_path(const std::string& p_filename) const {
-	return get_full_path(p_filename, c::SUFFIX_LST);
-}
-
 std::string SP_Config::get_dat_full_path(const std::string& p_filename) const {
 	return get_full_path(p_filename, c::SUFFIX_DAT);
 }
@@ -105,8 +101,8 @@ std::string SP_Config::get_full_path(const std::string& p_filename, const std::s
 	return m_project_folder + '/' + p_filename + '.' + p_extension;
 }
 
-void SP_Config::add_message(const std::string& p_msg) {
-	if (m_messages.empty() || m_messages.front() != p_msg) {
+void SP_Config::add_message(const std::string& p_msg, bool p_prevent_repeat) {
+	if (m_messages.empty() || (!p_prevent_repeat || m_messages.front() != p_msg)) {
 		m_messages.push_front(p_msg);
 		if (m_messages.size() > c::MESSAGES_MAX_SIZE)
 			m_messages.pop_back();

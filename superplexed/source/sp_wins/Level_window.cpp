@@ -280,11 +280,11 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			apply_border_to_current_level();
 		else if (p_input.is_pressed(SDL_SCANCODE_Z)) {
 			if (!m_levels.at(get_current_level_idx()).m_undo.apply_undo(get_current_level()))
-				p_config.add_message("No undo history");
+				p_config.add_message("No undo history", true);
 		}
 		else if (p_input.is_pressed(SDL_SCANCODE_Y))
 			if (!m_levels.at(get_current_level_idx()).m_undo.apply_redo(get_current_level()))
-				p_config.add_message("No redo history");
+				p_config.add_message("No redo history", true);
 
 	}
 

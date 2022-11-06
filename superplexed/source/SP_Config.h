@@ -25,7 +25,7 @@ class SP_Config {
 
 public:
 	SP_Config(void);
-	void add_message(const std::string& p_msg);
+	void add_message(const std::string& p_msg, bool p_prevent_repeat = false);
 	const std::deque<std::string>& get_messages(void) const;
 
 	std::string get_xml_folder(void) const;
@@ -37,7 +37,6 @@ public:
 	std::string get_player_lst_full_path(void) const;
 	std::string get_hallfame_lst_full_path(void) const;
 
-	std::string get_lst_full_path(const std::string& p_filename) const;
 	std::string get_dat_full_path(const std::string& p_filename) const;
 
 	void load_configuration(void);

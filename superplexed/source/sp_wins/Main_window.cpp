@@ -80,7 +80,7 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 
 	ImGui::Separator();
 
-	if (ImGui::BeginCombo("Levelset Files", m_selected_file.c_str(), 0)) {
+	if (ImGui::BeginCombo("Levelset File", m_selected_file.c_str(), 0)) {
 		for (const auto& l_filename : m_levelset_files) {
 			bool is_selected = (l_filename == m_selected_file);
 			if (ImGui::Selectable(l_filename.c_str(), is_selected)) {
@@ -91,7 +91,7 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 
 		ImGui::EndCombo();
 	}
-	if (ImGui::Button("Refresh Files")) {
+	if (ImGui::Button("Refresh File List")) {
 		m_levelset_files = get_levelset_files(p_config);
 		if (std::find(begin(m_levelset_files), end(m_levelset_files), m_selected_file)
 			== end(m_levelset_files)) {
@@ -160,27 +160,21 @@ constexpr ImU32 Main_window::sp_color_to_imgui(c::SP_Color p_color) {
 std::vector<std::string> Main_window::get_levelset_files(const SP_Config& p_config) {
 	std::vector<std::string> result;
 
-	const auto touppercase = [](const std::string& pl_fname) -> std::string {
-		std::string result;
-		for (char c : pl_fname)
-			if (c >= 'a' && c <= 'z')
-				result.push_back(c - ('a' - 'A'));
-			else
-				result.push_back(c);
-		return result;
-	};
-
 	for (const auto& ll_file :
 		std::filesystem::directory_iterator(p_config.get_project_folder())) {
 		if (ll_file.is_regular_file()) {
 			std::filesystem::path l_file{ ll_file.path() };
 			std::string l_ext{ l_file.extension().string() };
-			if (touppercase(l_file.filename().string().substr(0, sizeof(c::FILENAME_LEVELS) - 1)) == c::FILENAME_LEVELS &&
+			std::string l_name{ l_file.filename().string() };
+			std::transform(begin(l_ext), end(l_ext), begin(l_ext), ::toupper);
+			std::transform(begin(l_name), end(l_name), begin(l_name), ::toupper);
+
+			if (l_name.substr(0, l_name.find_first_of('.')) == c::FILENAME_LEVELS &&
 				l_ext.size() == 4 &&
-				(l_ext[1] == 'd' || l_ext[1] == 'D') &&
+				l_ext[1] == 'D' &&
 				(l_ext[2] >= '0' && l_ext[2] <= '9') &&
 				(l_ext[3] >= '0' && l_ext[3] <= '9'))
-				result.push_back(touppercase(l_file.filename().string()));
+				result.push_back(l_name);
 		}
 	}
 	std::sort(begin(result), end(result));
