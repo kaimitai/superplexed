@@ -263,9 +263,9 @@ namespace c {
 	// dear imgui window constants
 	constexpr int WIN_MAIN_X{ 10 }, WIN_MAIN_Y{ 5 }, WIN_MAIN_W{ 400 }, WIN_MAIN_H{ 255 };
 
-	constexpr int WIN_LVL_X{ 10 }, WIN_LVL_Y{ 265 }, WIN_LVL_W{ 400 }, WIN_LVL_H{ 325 };
+	constexpr int WIN_LVL_X{ 10 }, WIN_LVL_Y{ 265 }, WIN_LVL_W{ 400 }, WIN_LVL_H{ 255 };
 	constexpr int WIN_SP_X{ 10 }, WIN_SP_Y{ 600 }, WIN_SP_W{ 400 }, WIN_SP_H{ 130 };
-	constexpr int WIN_TP_X{ 650 }, WIN_TP_Y{ 5 }, WIN_TP_W{ 370 }, WIN_TP_H{ 420 };
+	constexpr int WIN_TP_X{ 630 }, WIN_TP_Y{ 5 }, WIN_TP_W{ 390 }, WIN_TP_H{ 430 };
 	constexpr int WIN_STATS_X{ 415 }, WIN_STATS_Y{ 5 }, WIN_STATS_W{ 230 }, WIN_STATS_H{ 675 };
 
 	constexpr int WIN_GFX_X{ 10 }, WIN_GFX_Y{ 265 }, WIN_GFX_W{ 400 }, WIN_GFX_H{ 235 };

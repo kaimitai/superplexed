@@ -30,7 +30,7 @@ class Level_window {
 	std::vector<std::string> m_levelset_files;
 	int m_cam_x, m_current_level, m_current_gp, m_sel_tile;
 	SDL_Texture* m_texture;
-	bool m_ui_show_grid, m_ui_animate, m_ui_flash;
+	bool m_ui_show_grid, m_ui_animate, m_ui_animate_ports, m_ui_flash;
 	std::vector<klib::Timer> m_timers;
 	std::vector<std::pair<std::string, std::vector<int>>> m_tile_picker;
 	float m_tile_picker_scale;

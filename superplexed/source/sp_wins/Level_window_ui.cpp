@@ -38,7 +38,6 @@ void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_i
 }
 
 void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& p_config, const Project_gfx& p_gfx) {
-
 	std::string l_sel_tile{ "Tiles - Cursor @ (" + std::to_string(m_sel_x) + "," + std::to_string(m_sel_y) + ")###tiles" };
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_TP_X, c::WIN_TP_Y), ImGuiCond_FirstUseEver);
@@ -53,6 +52,12 @@ void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& 
 	ImGui::ImageButton(p_gfx.get_tile_texture(m_sel_tile), { 2.0f * l_icon_w,2.0f * l_icon_w });
 	ImGui::SameLine();
 	ImGui::Checkbox("Flash", &m_ui_flash);
+	ImGui::SameLine();
+	ImGui::Checkbox("Grid", &m_ui_show_grid);
+	ImGui::SameLine();
+	ImGui::Checkbox("A-Tiles", &m_ui_animate);
+	ImGui::SameLine();
+	ImGui::Checkbox("A-ports", &m_ui_animate_ports);
 
 	ImGui::Text(l_sel_tile_no.c_str());
 
@@ -99,6 +104,9 @@ void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& 
 		m_statistics = get_tile_counts(l_all);
 		m_show_stats = l_all ? 0 : m_current_level;
 	}
+
+	ImGui::Separator();
+	ImGui::SliderFloat("Icon Scale", &m_tile_picker_scale, 0.5f, 4.0f);
 
 	ImGui::End();
 }
@@ -275,14 +283,6 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		load_file(SP_file_type::sp, p_config, l_shift);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
-
-	// UI settings
-	ImGui::Separator();
-	ImGui::Text("UI Settings");
-	ImGui::Checkbox("Show Grid", &m_ui_show_grid);
-	ImGui::SameLine();
-	ImGui::Checkbox("Animate", &m_ui_animate);
-	ImGui::SliderFloat("Icon Scale", &m_tile_picker_scale, 0.5f, 4.0f);
 
 	ImGui::End();
 }

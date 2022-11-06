@@ -149,7 +149,7 @@ void Level_window::load_levels_dat(SP_Config& p_config) {
 
 Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
-	m_ui_show_grid{ false }, m_ui_animate{ true }, m_ui_flash{ false },
+	m_ui_show_grid{ false }, m_ui_animate{ true }, m_ui_animate_ports{ true }, m_ui_flash{ false },
 	m_sel_x{ 0 }, m_sel_y{ 0 }, m_sel_x2{ -1 }, m_sel_y2{ 0 },
 	m_sel_tile{ 0 }, m_tile_picker_scale{ 1.0f },
 	m_show_stats{ -1 }, m_show_stats_tc0{ false }
@@ -420,7 +420,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	}
 
 	// draw special port indicators if animate flag is set
-	if (m_ui_animate) {
+	if (m_ui_animate_ports) {
 		int l_letter_ind = m_timers[2].get_frame();
 
 		for (int i{ 0 }; i < get_current_level().get_gravity_port_count(); ++i) {
