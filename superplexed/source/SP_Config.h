@@ -21,12 +21,13 @@ class SP_Config {
 	std::string get_prefix(void) const;
 	std::string strnum(void) const;
 
-	std::string get_extension(char p_first_letter) const;
 
 public:
 	SP_Config(void);
 	void add_message(const std::string& p_msg, bool p_prevent_repeat = false);
 	const std::deque<std::string>& get_messages(void) const;
+
+	std::string get_extension(char p_first_letter) const;
 
 	std::string get_xml_folder(void) const;
 	std::string get_bmp_folder(void) const;

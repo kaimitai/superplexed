@@ -257,7 +257,9 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	ImGui::Separator();
 	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	// save to disk
-	if (ImGui::Button(c::SAVE_DAT))
+	std::string l_save_dat{ "Save " + p_config.get_extension('D') };
+	std::string l_load_dat{ "Load " + p_config.get_extension('D') };
+	if (ImGui::Button(l_save_dat.c_str()))
 		save_levels_dat(p_config);
 	ImGui::SameLine();
 	if (ImGui::Button(c::SAVE_XML))
@@ -269,7 +271,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	if (ImGui::Button(c::SAVE_BMP))
 		save_file(SP_file_type::bmp, p_config, p_gfx, l_shift);
 	// load from disk
-	if (ImGui::Button(c::LOAD_DAT) && l_ctrl)
+	if (ImGui::Button(l_load_dat.c_str()) && l_ctrl)
 		load_levels_dat(p_config);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);

@@ -43,17 +43,20 @@ void SP_Config::load_configuration(void) {
 }
 
 std::string SP_Config::get_extension(char p_first_letter) const {
-	return p_first_letter + strnum();
+	if (m_levelset_no != -1)
+		return p_first_letter + strnum();
+	else
+		return (p_first_letter == 'D' ? c::SUFFIX_DAT : c::SUFFIX_LST);
 }
 
 std::string SP_Config::get_levelset_lst_filename() const {
 	return get_full_filename(c::FILENAME_LEVEL,
-		m_levelset_no == -1 ? c::SUFFIX_LST : get_extension('L'));
+		get_extension('L'));
 }
 
 std::string SP_Config::get_levelset_dat_filename(void) const {
 	return get_full_filename(c::FILENAME_LEVELS,
-		m_levelset_no == -1 ? c::SUFFIX_DAT : get_extension('D'));
+		get_extension('D'));
 }
 
 std::string SP_Config::get_prefix(void) const {

@@ -76,6 +76,8 @@ void Savefile_window::draw_ui(SP_Config& p_config) {
 
 void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 	int l_zindex = m_selected_hf - 1;
+	const std::string l_save_lst{ "Save " + p_config.get_extension('L') };
+	const std::string l_load_lst{ "Load " + p_config.get_extension('L') };
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_HF_X, c::WIN_HF_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_HF_W, c::WIN_HF_H), ImGuiCond_FirstUseEver);
@@ -105,10 +107,10 @@ void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 	ImGui::Separator();
 	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	ImGui::Separator();
-	if (ImGui::Button(c::SAVE_LST))
+	if (ImGui::Button(l_save_lst.c_str()))
 		save_hallfame_lst(p_config);
 	ImGui::SameLine();
-	if (ImGui::Button(c::LOAD_LST))
+	if (ImGui::Button(l_load_lst.c_str()))
 		load_hallfame_lst(p_config);
 
 	ImGui::End();
@@ -117,6 +119,8 @@ void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 void Savefile_window::draw_ui_players(SP_Config& p_config) {
 	int l_zindex = m_selected_player - 1;
 	int l_next_lvl = m_players.get_current_level(l_zindex) - 1;
+	const std::string l_save_lst{ "Save " + p_config.get_extension('L') };
+	const std::string l_load_lst{ "Load " + p_config.get_extension('L') };
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_PL_X, c::WIN_PL_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_PL_W, c::WIN_PL_H), ImGuiCond_FirstUseEver);
@@ -194,10 +198,10 @@ void Savefile_window::draw_ui_players(SP_Config& p_config) {
 
 	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	ImGui::Separator();
-	if (ImGui::Button(c::SAVE_LST))
+	if (ImGui::Button(l_save_lst.c_str()))
 		save_player_lst(p_config);
 	ImGui::SameLine();
-	if (ImGui::Button(c::LOAD_LST))
+	if (ImGui::Button(l_load_lst.c_str()))
 		load_player_lst(p_config);
 
 	ImGui::End();
