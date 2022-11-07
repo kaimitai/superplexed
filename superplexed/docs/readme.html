@@ -334,17 +334,17 @@
 
                 <hr>
 
-                <p>The XMLs for images store their pixel data row by row, from left to right. Each of these point to an element in the palette, and can thus assume any value from 0 to 15. Some images have an attribute "extra_bytes" in their header, which we tack onto the resultant DAT file to make it 100% identical with the original. What this extra byte is used for, if anything, I do not know. The header attribute "image_type" is "planar" for 16-color images, and "binary" for the font bitmaps, which are monochrome.</p>
+                <p>The XMLs for images store their pixel data row by row, from top to bottom and left to right. Each of these point to an element in the palette, and can thus assume any value from 0 to 15. Some images have an attribute "extra_bytes" in their header, which we tack onto the resultant DAT file to make it 100% identical with the original. What this extra byte is used for, if anything, I do not know. The header attribute "image_type" is "planar" for 16-color images, and "binary" for the font bitmaps, which are monochrome.</p>
 
                 <hr>
 
-                <p>The level file XMLs contain the tilemap row by row, going from left to right. The tile numbers go from 0 to 40. Other header attributes include player start, level title, the freeze zonks and the enable gravity attributes.</p>
+                <p>The level file XMLs contain the tilemap row by row, going from top to bottom and left to right. The tile numbers go from 0 to 40. Other header attributes include player start, level title, the freeze zonks and the enable gravity attributes.</p>
 
                 <p>Special ports, if any, come in their own section of the level file XML - and contain for each port its position, and 3 attributes.</p>
 
                 <p>Other header attributes are speedfix_version (1 byte), unknown bytes (4 bytes) and speedfix_demo_bytes (also 4 bytes). These are values which can be used by SpeedFix, but are not editable via the GUI.</p>
 
-                <p>Some level XMLs will also contain a secion called solution_bytes. These are extra bytes tacked onto the end of a level, usually coming from a stand-alone SP-file, which describe a way to solve the level. We retain the information but have no way of editing them outside the XML files. We keep the information so it is not lost when saving back to SP or XML. When saving to levelset DAT-files, this information can not be included there.</p>
+                <p>Some level XMLs will also contain a section called solution_bytes. These are extra bytes tacked onto the end of a level, usually coming from a stand-alone SP-file, which describe a way to solve the level. We retain the information but have no way of editing them outside the XML files. We keep the information so it is not lost when saving back to SP or XML. When saving to levelset DAT-files, this information can not be included there.</p>
 
             </section>
 
