@@ -209,7 +209,7 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	// title
 	std::string l_title_id{ "Title###title" + l_clvl };
 	char l_lvl_title[c::LENGTH_TITLE + 1]{};
-	strncpy_s(l_lvl_title, get_current_level().get_title().c_str(), sizeof(l_lvl_title) - 1);
+	strncpy(l_lvl_title, get_current_level().get_title().c_str(), sizeof(l_lvl_title) - 1);
 	if (ImGui::InputText(l_title_id.c_str(), l_lvl_title, c::LENGTH_TITLE + 1))
 		get_current_level().set_title(std::string(l_lvl_title));
 
