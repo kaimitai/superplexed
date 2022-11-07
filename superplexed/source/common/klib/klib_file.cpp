@@ -1,6 +1,7 @@
 #include "klib_file.h"
 
 #include <fstream>
+#include <stdexcept>
 
 using byte = unsigned char;
 
@@ -12,7 +13,7 @@ std::vector<byte> klib::file::read_file_as_bytes(const std::string& p_file_name)
 	if (!input.fail())
 		return std::vector<byte>((std::istreambuf_iterator<char>(input)), (std::istreambuf_iterator<char>()));
 	else
-		throw std::exception(("Could not open " + p_file_name).c_str());
+		throw std::runtime_error(("Could not open " + p_file_name).c_str());
 
 	return result;
 }
@@ -23,7 +24,7 @@ void klib::file::write_bytes_to_file(const std::vector<byte>& inp, const std::st
 	if (!output.fail())
 		output.write((const char*)(&inp[0]), inp.size());
 	else
-		throw std::exception("Could not write to file");
+		throw std::runtime_error("Could not write to file");
 
 	output.close();
 }

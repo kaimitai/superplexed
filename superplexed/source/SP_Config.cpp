@@ -4,6 +4,7 @@
 #include "./common/pugixml/pugixml.hpp"
 #include "./common/pugixml/pugiconfig.hpp"
 #include "./common/klib/klib_util.h"
+#include <stdexcept>
 
 SP_Config::SP_Config(void) :
 	m_levelset_no{ -1 }
@@ -27,7 +28,7 @@ void SP_Config::load_configuration(void) {
 	try {
 		pugi::xml_document doc;
 		if (!doc.load_file(c::SPCONFIG_XML_FILENAME))
-			throw std::exception("Could not load xml");
+			throw std::runtime_error("Could not load xml");
 		else {
 			auto n_meta = doc.child(c::XML_TAG_META);
 			m_project_folder = n_meta.attribute(c::XML_ATTR_PROJECT_FOLDER).as_string();

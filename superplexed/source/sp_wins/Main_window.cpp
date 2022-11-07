@@ -6,6 +6,7 @@
 #include "./../common/imgui/imgui_impl_sdl.h"
 #include "./../common/imgui/imgui_impl_sdlrenderer.h"
 #include "./../SP_Constants.h"
+#include <algorithm>
 #include <filesystem>
 
 Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :

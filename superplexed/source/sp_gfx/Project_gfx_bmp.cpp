@@ -2,6 +2,7 @@
 #include "./../common/klib/klib_gfx.h"
 #include "./../SP_Constants.h"
 #include <filesystem>
+#include <stdexcept>
 
 // load a bmp from file, update internal image and regenerate SDL texture
 void Project_gfx::load_bmp(SDL_Renderer* p_rnd,
@@ -13,15 +14,15 @@ void Project_gfx::load_bmp(SDL_Renderer* p_rnd,
 	int l_target_h = m_image_metadata.at(p_filename).m_height;
 
 	if (frame_srf == nullptr)
-		throw std::exception("Could not load BMP");
+		throw std::runtime_error("Could not load BMP");
 	else if (frame_srf->format->BitsPerPixel != 8) {
 		SDL_FreeSurface(frame_srf);
-		throw std::exception("Not a 256-color BMP");
+		throw std::runtime_error("Not a 256-color BMP");
 	}
 	else if (frame_srf->w != l_target_w ||
 		frame_srf->h != l_target_h) {
 		SDL_FreeSurface(frame_srf);
-		throw std::exception("Invalid image dimensions");
+		throw std::runtime_error("Invalid image dimensions");
 	}
 
 	// vector to be used as input for SP_Image

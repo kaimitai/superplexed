@@ -1,3 +1,4 @@
+#include <cstdint>
 #include "SP_Image.h"
 
 SP_Image::SP_Image(const std::vector<std::vector<byte>>& p_pixels,
