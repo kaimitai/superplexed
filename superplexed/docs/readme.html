@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Superplexed v0.1 - Documentation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="main-body">
+
+        <nav id="navbar">
+            <header style="font-size: 24px;">Documentation Menu</header>
+            <a href="#intro" class="nav-link">
+                Introduction
+            </a>
+            <a href="#basics" class="nav-link">
+                Basics
+            </a>
+            <a href="#configuration" class="nav-link">
+                Configuration
+            </a>
+            <a href="#edit_main" class="nav-link">
+                Main Window
+            </a>
+            <a href="#edit_lvl" class="nav-link">
+                Level Editor Window
+            </a>
+            <a href="#edit_gfx" class="nav-link">
+                Graphics Editor Window
+            </a>
+            <a href="#edit_saves" class="nav-link">
+                Savefile Editor Window
+            </a>
+            <a href="#xml_format" class="nav-link">
+                XML formats
+            </a>
+            <a href="#acknowledgments" class="nav-link">
+                Acknowledgments
+            </a>
+            <!--a href="#changelog" class="nav-link">
+                Changelog
+            </a-->
+            <a href="#roadmap" class="nav-link">
+                Roadmap
+            </a>
+            <a href="#troubleshooting" class="nav-link">
+                Troubleshooting
+            </a>
+            <a href="#contact" class="nav-link">
+                Contact
+            </a>
+
+        </nav>
+
+        <main id="main-doc">
+
+            <section class="main-section" id="intro">
+
+                <hr>
+
+                <header>Superplexed (version 0.1)</header>
+
+                <p>Thank you for checking out <a href="https://github.com/kaimitai/superplexed/">Superplexed</a>. With this tool you will be able to create and alter levels for Supaplex, as well as - with the help of an external bmp file editor - modify the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
+
+                <p>In order to use the level editor efficiently, it is recommended to read the section on keyboard shortcuts.</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="basics">
+
+                <header>Basics</header>
+
+                <p>
+                    This editor will let you edit the game data for Supaplex levelsets (LEVELS.DAT/LEVELS.Dxx), as well as the game's graphics and palettes. Included with the editor is the latest version of Supaplex for DOS, and starting the program out of the box will load these files. See the configuration section for how to alter files in other locations.
+                </p>
+
+                <p>
+                    To play the game, the original executable and game data are included, but a <a href="https://github.com/sergiou87/open-supaplex">modern source port</a> can be a good alternative.
+                </p>
+
+                <p>When the editor starts successfully, it will tell you which configuration is loaded, which directory it uses as the working directory, and which levelset file was loaded. If LEVELS.DAT cannot be found, the application will initialize a levelset with one empty level.</p>
+
+                <p>Some files need to be in the project folder for the application to start at all. These are the following graphics files: FIXED.DAT, MOVING.DAT and PALETTES.DAT. The application needs these files to generate its graphics.</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="configuration">
+
+                <header>Configuration</header>
+
+                <p>When opening the editor, the program looks for a file spconfig.xml in the same directory as the executable. This is a configuration XML which lets you set the project folder - the folder from which files will be read and written to.</p>
+
+                <p>By default the file points to the gamedata folder which ships with the editor. If spconfig.xml cannot be found, the project folder will be the same as the executable folder.</p>
+
+                <p>
+                    The configuration is loaded when the program starts, but can be reloaded during runtime if you want to work in a different location.
+                </p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="edit_main">
+                <header>Main Window</header>
+
+                <img src="./images/subwin01_main.png" alt="Main Window" />
+
+                <p>
+                    The Main Window is present in all editor modes, and contain the following sections:
+                </p>
+                <ul>
+                    <li><b>Editor Mode</b> dropdown: Lets you choose if you want to edit levels, graphics or savefiles.</li>
+                    <li><b>Levelset File</b> dropdown: Lets you choose the context for saving and loading files. Only relevant if you are working on different levelsets in the same folder. The default levelset is LEVELS.DAT, but other possible names are LEVELS.Dxx where xx is a number from 00 to 99. This is in line with how the latest SpeedFix version of Supaplex handles custom levelsets.</li>
+                    <li><b>Refresh File List</b> button: Will scan the project folder for levelsets, and repopulat the dropdown for levelset files.</li>
+                    <li><b>Reload Configuration</b> button: Reloads spconfig.xml if you want to change project folder during runtime.</li>
+                    <li><b>Output Messages</b>: A running list of user messages generated by the editor.</li>
+                </ul>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="edit_lvl">
+                <header>Editing Levels</header>
+
+                <p>In level editing mode, the following sub-windows will be available:</p>
+
+                <img src="./images/subwin02_levels_01_levels.png" alt="Levels sub-window" />
+
+                <ul>
+                    <li><b>Level</b> slidebar: The current level in the levelset being edited.</li>
+                    <li><b>Title</b>: The level's title. When editing the title, the editor will ensure you are only using characters that can be rendered in the game. (see images CHARS8 and CHARS6)</li>
+                    <li><b>#Infotrons</b>: The number of infotrons required to solve the level. If set to 0, the required number will be all Infotrons placed in the level</li>
+                    <li><b>Gravity</b> checkbox: Whether the level starts with gravity turned on</li>
+                    <li><b>Freeze Zonks</b>: Whether the level starts with Zonks frozen</li>
+                    <li><b>Insert Level</b> button: Will add a new empty level after the current one. If Shift is held, the level will be inserted before the current one.</li>
+                    <li><b>Delete Level</b>: Will erase the current level from the levelset. Hold Ctrl to use</li>
+                    <li><b>Save DAT</b>: Will save the levelset to LEVELS.DAT, or LEVELS.Dxx in the case of an other levelset.</li>
+                    <li><b>Load DAT</b>: Will load the levelset. Hold Ctrl to use this button</li>
+                    <li><b>Save/Load xml</b>: Will save or load the current level as an xml file. Hold shift to save/load all levels. Hold Ctrl to load.</li>
+                    <li><b>Save/Load SP</b>: Will save or load the current level as an SP file. Hold shift to save/load all levels. Hold Ctrl to load.</li>
+                    <li><b>Save bmp</b>: Will save the current level as a 256-color bmp image. Hold shift to save all levels. Output bmp files will indicate medatada properties for the level itself (gravity and freeze zonks), as well as for the special ports - UNLESS the animate ports checkbox is disabled.</li>
+                </ul>
+
+                <hr>
+                <img src="./images/subwin02_levels_02_tiles.png" alt="Tiles sub-window" />
+
+                <p>
+                    The tile picker window will let you choose a tile to be used for drawing and filling. The currently selected tile is shown at the top, along with its description. The selected tile in the tile picker will have a yellow outline. All tiles also have a tooltip for its description.
+                </p>
+
+                <ul>
+                    <li><b>Flash</b> checkbox: Will flash the currently selected tile on the gameboard</li>
+                    <li><b>Grid</b> checkbox: Shows gridlines</li>
+                    <li><b>A-Tiles</b> checkbox: Animate tiles</li>
+                    <li><b>A-Ports</b> checkbox: Animate special ports</li>
+                    <li><b>Count</b> button: Will count instances of the selected tile in the current level. Hold Shift to count for the whole levelset</li>
+                    <li><b>Statistics</b> button: Will count all instances for all tiles in the current level and present it in a new window. Hold Shift to run statistics on the whole levelset.</li>
+                    <li><b>Icon Scale</b> slidebar: Set the size of the tile picker icons</li>
+                </ul>
+                <hr>
+                <img src="./images/subwin02_levels_03_stats.png" alt="Statistics sub-window" />
+
+                <ul>
+                    <li><b>Show all</b> checkbox: Show tiles which have a count of 0</li>
+                    <li><b>Close</b> button: Closes the statistics window</li>
+                </ul>
+
+                <hr>
+                <img src="./images/subwin02_levels_04_special_ports.png" alt="Special Ports sub-window" />
+
+                <p>A level can have up to ten special ports. These can be configured in the Special Ports-subwindow. Special port properties are represented visually on the gameboard, special ports are automatically set when using the tile picker, and special port properties can be set using keyboard keys 1-3. This window is therefore rarely necessary to use.</p>
+
+                <ul>
+                    <li><b>Port</b> slider: Select the current special port</li>
+                    <li><b>x</b> slider: x-position of the port</li>
+                    <li><b>y</b> slider: y-position of the port</li>
+                    <li><b>Gravity</b> checkbox: Whether passing through the port enables gravity</li>
+                    <li><b>Freeze Zonks</b> checkbox: Whether passing through the port freezes Zonks</li>
+                    <li><b>Freeze Enemies</b> checkbox: Whether passing through the port freezes enemies</li>
+                    <li><b>Delete Port</b>: Erases selected special port</li>
+                    <li><b>Add port</b>: Inserts a special port at the cursor location</li>
+                </ul>
+
+                <p>The Special Ports subwindow will also show which tile is used at the port's location, or give a warning if the tile is not a special port at all.</p>
+
+                <hr>
+
+                <p><b>Internal Application Graphics</b></p>
+
+                <img src="./images/application_gfx.png" alt="Application Graphics" width="400" />
+
+                <ul>
+                    <li>F: Flashed tile, when flash is enabled in the tile picker</li>
+                    <li>G: Enable gravity (special port property): red for off and green for on</li>
+                    <li>Z: Freeze Zonks (special port property): red for off and green for on</li>
+                    <li>E: Freeze enemies (special port property): red for off and green for on</li>
+                    <li>Exclamation marks, red: A tile has a special port, but is not a special port tile</li>
+                    <li>Exclamation marks, yellow: A tile is a special port tile, but no special port is configured there. Can be legitimate use if you override the graphics and make special ports look different to regular ports.</li>
+                </ul>
+
+                <p>The tile selection rectangle is yellow, and the currently selected special port has a blue outline</p>
+
+                <hr>
+
+                <p>
+                    <b>Mouse functions for board grid:</b>
+                    <br>Left click the board grid to select a tile. If a special port is present there, it will be selected too
+                    <br>Shift + Left click the board grid to make a selection rectangle
+                    <br>G + Left click the board grid to move a special port to a new location
+                    <br>Ctrl + Left click the board grid to set the selected tile picker tile to be the clicked board tile ("color picker")
+                    <br>Right click the board grid to "paint", using the Tile Picker type
+                    <br>Ctrl + Right click will "fill", using the Tile Picker type
+                    <br>Mousehweel up and down will scroll the board left or right, hold Ctrl for faster scrolling
+                    <br>Shift + Mousehweel up and down will scroll between levels
+                </p>
+
+                <p>
+                    <b>Keyboard Shortcuts for board grid:</b> ("cursor" here means the selected board tile)
+                    <br>Ctrl+C - Copy selection to clipboard
+                    <br>Ctrl+V - Paste clipboard at cursor (if clipboard fits)
+                    <br>Ctrl+X - Cut selection
+                    <br>Delete - Clear selection, hold G to only delete special ports
+                    <br>Shift+V - Show where clipboard would be pasted, if using Ctrl+V (if clipboard fits)
+                    <br>Ctrl+A - Select all (whole board)
+                    <br>Arrow keys left/right - Move board view (hold Ctrl for faster panning)
+                    <br>Arrow keys up/down - Go to next/previous level in set (hold Ctrl for +/-10)
+                    <br>1 - Toggle selected special port's gravity attribute
+                    <br>2 - Toggle selected special port's Zonks attribute
+                    <br>3 - Toggle selected special port's enemies attribute
+                    <br>F - Flip selection around vertical axis (hold shift to flip around horizontal axis)
+                    <br>R - Rotate clipboard clockwise 90 degrees (hold Shift to rotate counter-clockwise)
+                    <br>Ctrl+S - Save DAT/Dxx
+                    <br>Home/End - Go to first/last board
+                    <br>Ctrl+B: Apply a wall border to the current level
+                    <br>Ctrl+Z: Undo
+                    <br>Ctrl+Y: Redo
+                    <br>Tab: Select next special port (wraps around at end), hold Shift to cycle backward
+					<br>Escape: Clear selection rectangle
+
+                </p>
+
+                <p>Flipping a selection or rotating the clipboard, will transform pipes and ram chips accordingly. For example, an upward facing port will be transformed into a downward facing port when flipping a selection around its horizontal axis.</p>
+
+                <p>Note also that copying and pasting will ignore the player start position which is not modeled as a tile in the editor. Special port properties will also be lost under copy/paste/undo and redo operations.</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="edit_gfx">
+                <header>Editing Graphics</header>
+
+                <p>The second editing mode is for graphics. When enabled, the following sub-windows will be available:</p>
+
+                <img src="./images/subwin03_gfx_01_images.png" alt="Images" />
+
+                <ul>
+                    <li><b>Image File dropdown</b>: The graphics DAT file to view/edit</li>
+                    <li><b>Load/Save DAT/xml/bmp</b> buttons: Save or load the image from disk. Only DAT files will be used by Supaplex, but you can convert from bmp
+                </ul>
+
+                <p>
+                    Exported bmp files will be 256-colors, even though the palette in Supaplex is only 16 colors. The first 16 colors of the bmp palette will be the game colors, while the rest will be all black. When changing graphics, try to use the same palette as the output files. Colors in a bmp file that do not match a Supaplex palette color will be recolored using a nearest-color scheme. When editing graphics, try to use an image editor that does not silently change your palette.
+                </p>
+
+                <hr>
+
+                <img src="./images/subwin03_gfx_02_palettes.png" alt="Images" />
+                <ul>
+                    <li><b>Palette</b> slider: The palette to view/edit</li>
+                    <li>The 16 colors of the palette can be changed using the color pickers, which become available when a palette color is clicked</li>
+                    <li><b>Load/Save DAT/xml</b> buttons: Save or load the palettes from disk. Only PALETTES.DAT will be used by Supaplex</li>
+                    <li><b>Apply Palettes</b> button: Will apply your palette to all currently open images using it</li>
+                </ul>
+
+                <p>The Supaplex palette can only hold 16 values per color-component, so what you see in the screen will not be 100% accurate before you apply the palettes.</p>
+
+                <p>Only the two first entries of the palettes are in use in the game as far as I know. Some images use a fixed palette which cannot be changed by the editor, as this data is probably stored in the Supaplex executable itself. The Image-subwindow will show metadata for all images, including which palette it uses. This metadata cannot be changed.</p>
+
+                <hr>
+
+                <img src="./images/subwin03_gfx_03_image_preview.png" alt="Images" />
+
+                <p>The Image Preview-window will just show the selected image, if it has been loaded.</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="edit_saves">
+                <header>Editing Savefiles</header>
+
+                <p>A levelset will have its own savefiles. The default levelset uses PLAYER.LST to contain a database of up to 20 players and their progress in the game, as well as a file HALLFAME.LST for the top three fastest solvers of the whole game. For levelsets other than the default one, these files will be called PLAYER.Lxx and HALLFAME.Lxx respectively, where xx is a 2-digit number.</p>
+
+                <p>The sub-windows of the Savefiles editing mode are as follows:</p>
+
+                <img src="./images/subwin04_saves_01_players.png" alt="Images" />
+
+                <ul>
+                    <li><b>Slot</b> slider: Selected player in the database</li>
+                    <li><b>Name</b> textbos: Name of selected player</li>
+                    <li><b>Hours, Minutes, Seconds</b> sliders: Time the player has spent playing</li>
+                    <li><b>Solve All</b> button: Mark all levels as solved</li>
+                    <li><b>Move Player Up/Down</b> button: Move the selected player's position in the database</li>
+                    <li><b>Delete Player</b> button: Remove the player from the database</li>
+                    <li><b>Save/Load LST</b> button: Load or save LST/Lxx-file to disk</li>
+                </ul>
+
+                <p>
+                    Click on a level number to toggle its status between unsolved (red), solved (green) and skipped (blue). The first unsolved level is marked in yellow, just like it would be in-game.
+                </p>
+
+                <hr>
+
+                <img src="./images/subwin04_saves_02_hallfame.png" alt="Images" />
+
+                <p>The Hall of Fame functions in much the same way, but it has only three slots, and no progress information - as users who end up in the Hall of Fame need to complete all levels.</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="xml_format">
+                <header>XML formats</header>
+
+                <p>The XMLs for palettes store the 4 game palettes in order, each of which has 16 individual colors. The rgb-components go from 0-15. I do not know what the fourth color component, which I have called "a" in the xml, signifies - but it can be edited via xml imports.</p>
+
+                <hr>
+
+                <p>The XMLs for images store their pixel data row by row, from left to right. Each of these point to an element in the palette, and can thus assume any value from 0 to 15. Some images have an attribute "extra_bytes" in their header, which we tack onto the resultant DAT file to make it 100% identical with the original. What this extra byte is used for, if anything, I do not know. The header attribute "image_type" is "planar" for 16-color images, and "binary" for the font bitmaps, which are monochrome.</p>
+
+                <hr>
+
+                <p>The level file XMLs contain the tilemap row by row, going from left to right. The tile numbers go from 0 to 40. Other header attributes include player start, level title, the freeze zonks and the enable gravity attributes.</p>
+
+                <p>Special ports, if any, come in their own section of the level file XML - and contain for each port its position, and 3 attributes.</p>
+
+                <p>Other header attributes are speedfix_version (1 byte), unknown bytes (4 bytes) and speedfix_demo_bytes (also 4 bytes). These are values which can be used by SpeedFix, but are not editable via the GUI.</p>
+
+                <p>Some level XMLs will also contain a secion called solution_bytes. These are extra bytes tacked onto the end of a level, usually coming from a stand-alone SP-file, which describe a way to solve the level. We retain the information but have no way of editing them outside the XML files. We keep the information so it is not lost when saving back to SP or XML. When saving to levelset DAT-files, this information can not be included there.</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="acknowledgments">
+
+                <header>Thanks and Acknowledgments</header>
+
+                <p>
+                    <br>Thanks to the good folks at <a href="https://www.supaplex.online/">Supaplex Online</a> for keeping Supaplex alive, and for providing me with information in their Discord channel.
+                </p>
+
+                <p>
+                    Program written in C++20, using the following external libraries:
+					<br><a href="https://github.com/ocornut/imgui/">Dear ImGui</a>
+					<br><a href="https://pugixml.org/">pugixml</a>
+                    <br><a href="https://www.libsdl.org/">SDL2 (2.24.0)</a>
+                </p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="roadmap">
+                <header>Roadmap</header>
+
+                <p>
+                    Apart from fixing bugs as they are discovered, the following ideas are possible extensions in the future:
+                </p>
+
+                <ul>
+                    <li>Show more informational and error messages in the application</li>
+                    <li>Add a help/quickstart screen in the application</li>
+                    <li>Clean up the code, and reduce wasted cycles :)</li>
+                    <li>Improve special port support, keep their properties when doing  copy/paste/undo/redo</li>
+                    <li>Make it easier to load individual files rather than see everything in the context of levelsets</li>
+                </ul>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="troubleshooting">
+                <header>Troubleshooting</header>
+
+                <p>If the program does not start at all, check the file sp_errors.log which will be created when an unhandled exception occurs. Usually this will be due to an invalid input file (xml/dat/SP), or invalid project_directory in the config xml. The application requires that FIXED.DAT, MOVING.DAT and PALETTES.DAT be present in the project folder.</p>
+
+                <p>If Windows gives you a message that the program cannot be started, make sure you have the x64 Visual C++ Redistributables. This should be part of most Windows installations by default, but can also be found at <a href="https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0">Microsoft Support Visual C++ downloads</a>.</p>
+
+                <p>If the edited graphics look terrible, try to use a graphics editor that does not change the palettes of the images without warning. You can test the bmp importer by loading DAT files, exporting them to bmp - then importing them again and saving back to DAT. This should give you back the identical DAT files you started with. (unless two palette entries point to the same color, in which case the byte difference should not have any visual difference)</p>
+
+            </section>
+
+            <hr>
+
+            <section class="main-section" id="contact">
+                <header>Contact Information</header>
+
+                <p>For feedback, suggestions, bug reports and questions, the author (Kai E. Fr&oslash;land aka "kaimitai") can be reached via <a href="mailto:kaimitai@pm.me">email</a>, <a href="https://threema.id/79K5EKHC">Threema</a> or <a href="https://github.com/kaimitai">GitHub</a>.</p>
+
+            </section>
+
+        </main>
+    </div>
+</body>
+</html>

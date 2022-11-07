@@ -57,7 +57,7 @@ void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& 
 	ImGui::SameLine();
 	ImGui::Checkbox("A-Tiles", &m_ui_animate);
 	ImGui::SameLine();
-	ImGui::Checkbox("A-ports", &m_ui_animate_ports);
+	ImGui::Checkbox("A-Ports", &m_ui_animate_ports);
 
 	ImGui::Text(l_sel_tile_no.c_str());
 
@@ -247,13 +247,16 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 			+ " current");
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Delete Level")) {
+	if (ImGui::Button("Delete Level") && l_ctrl) {
 		if (m_levels.size() > 1) {
 			m_levels.erase(begin(m_levels) + get_current_level_idx());
 			p_config.add_message("Deleted level #" + l_clvl);
 			m_current_level = std::min<int>(static_cast<int>(m_levels.size()), m_current_level);
 		}
 	}
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
+
 	ImGui::Separator();
 	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	// save to disk

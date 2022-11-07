@@ -9,7 +9,7 @@ The editor allows you to alter all Supaplex datafiles; levels, graphics and save
 ### Level Editing
 The main part of the editor is of course level editing. The "Levels" window presents all the levels in a levelset-file in a graphical way, and lets you edit a level's metadata and its tilemap. The board grid features copy/paste capabilities, undo/redo with history, operations to flip or rotate a selection (which will also flip/rotate pipe tiles and RAM chip tiles accordingly), as well as supporting painting and color fills. The editor can be completely mouse-driven, but supports keyboard shortcuts for almost all operations. The board tiles can be animated, and gridlines can be enabled.
 <br></br>
-We can save the boards to levelsets (DAT), individual levels (SP), and even bmp images. We also support our own XML format - which allows users to more easily compare file versions, use version control systems to track file history, and collaborate on level pack projects.
+We can save the boards to levelsets (DAT) and individual levels (SP). These formats are supported by the DOS version of the game, as well as the excellent port [Supaplex Online](https://supaplex.online/), where you can upload and share your creations. We can export the levels as bmp images, and we also support our own XML format - which allows users to more easily compare file versions, use version control systems to track file history, and collaborate on level pack projects.
 
 ![alt text](./superplexed/docs/images/win01_levels.png)
 ###### The editor will show all the level and tile information

@@ -24,7 +24,7 @@ void Level_window::save_file(SP_file_type p_ftype, SP_Config& p_config, const Pr
 			save_sp(p_level_no, p_config);
 		else if (p_ftype == SP_file_type::bmp)
 			p_gfx.save_level_bmp(m_levels.at(p_level_no).m_level,
-				p_level_no, p_config, m_ui_animate);
+				p_level_no, p_config, m_ui_animate_ports);
 		else
 			throw std::exception("Invalid filetype");
 	};
@@ -282,10 +282,12 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			if (!m_levels.at(get_current_level_idx()).m_undo.apply_undo(get_current_level()))
 				p_config.add_message("No undo history", true);
 		}
-		else if (p_input.is_pressed(SDL_SCANCODE_Y))
+		else if (p_input.is_pressed(SDL_SCANCODE_Y)) {
 			if (!m_levels.at(get_current_level_idx()).m_undo.apply_redo(get_current_level()))
 				p_config.add_message("No redo history", true);
-
+		}
+		else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE))
+			clear_selection();
 	}
 
 	// handle mouse
@@ -392,7 +394,9 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 				i * c::TILE_W, j * c::TILE_W);
 
 			// special port tile, without special port metadata
-			if (SP_Level::is_special_port(l_tile_no) &&
+			// only draw when animate ports is set
+			if (m_ui_animate_ports &&
+				SP_Level::is_special_port(l_tile_no) &&
 				l_gp_poss.find(std::make_pair(i, j)) == end(l_gp_poss))
 				p_gfx.blit_fixed(p_rnd, 3, i * c::TILE_W, j * c::TILE_W,
 					l_pulse_colors[2]);
