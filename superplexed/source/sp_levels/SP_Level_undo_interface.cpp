@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "SP_Level_undo_interface.h"
 #include "./../SP_Constants.h"
 
@@ -24,7 +25,7 @@ void SP_Level_undo_interface::set_tile_value(SP_Level& p_level, int p_x, int p_y
 
 bool SP_Level_undo_interface::apply_undo(SP_Level& p_level) {
 	if (!m_working_block.empty())
-		throw std::exception("Tried to apply undo with uncommitted change block");
+		throw std::runtime_error("Tried to apply undo with uncommitted change block");
 
 	if (m_history.empty())
 		return false;

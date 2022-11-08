@@ -5,6 +5,7 @@
 #include "./../SP_Constants.h"
 #include "./../SP_Config.h"
 #include <filesystem>
+#include <stdexcept>
 
 void Level_window::save_xml(std::size_t p_level_no, const SP_Config& p_config) const {
 	const SP_Level& l_lvl = m_levels.at(p_level_no).m_level;
@@ -93,13 +94,13 @@ void Level_window::save_xml(std::size_t p_level_no, const SP_Config& p_config) c
 
 	std::filesystem::create_directory(p_config.get_xml_folder());
 	if (!doc.save_file(p_config.get_xml_full_path(p_level_no).c_str()))
-		throw std::exception("Could not save XML");
+		throw std::runtime_error("Could not save XML");
 }
 
 SP_Level Level_window::load_xml(std::size_t p_level_no, const SP_Config& p_config) const {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_config.get_xml_full_path(p_level_no).c_str()))
-		throw std::exception("Could not load xml");
+		throw std::runtime_error("Could not load xml");
 
 	pugi::xml_node n_meta = doc.child(c::XML_TAG_META);
 	auto n_level = n_meta.child(c::XML_TAG_LEVEL);

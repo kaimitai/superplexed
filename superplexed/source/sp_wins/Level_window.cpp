@@ -8,6 +8,7 @@
 #include "./../SP_Constants.h"
 #include <algorithm>
 #include <filesystem>
+#include <stdexcept>
 
 constexpr std::size_t TRANS_H_IDX{ 0 };
 constexpr std::size_t TRANS_V_IDX{ 1 };
@@ -26,7 +27,7 @@ void Level_window::save_file(SP_file_type p_ftype, SP_Config& p_config, const Pr
 			p_gfx.save_level_bmp(m_levels.at(p_level_no).m_level,
 				p_level_no, p_config, m_ui_animate_ports);
 		else
-			throw std::exception("Invalid filetype");
+			throw std::runtime_error("Invalid filetype");
 	};
 
 	for (std::size_t i{ p_all ? 0 : get_current_level_idx() };
@@ -66,7 +67,7 @@ void Level_window::load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_a
 		else if (p_ftype == SP_file_type::sp)
 			return load_sp(p_level_no, p_config);
 		else
-			throw std::exception("Invalid filetype");
+			throw std::runtime_error("Invalid filetype");
 	};
 
 	for (std::size_t i{ p_all ? 0 : get_current_level_idx() };
@@ -384,7 +385,7 @@ void Level_window::regenerate_texture(SDL_Renderer* p_rnd, const Project_gfx& p_
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_YELLOW), Project_gfx::sp_col_to_sdl(c::COL_ORANGE), l_pulse_progress));        // selection rectangle
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_BLUE_LIGHT), Project_gfx::sp_col_to_sdl(c::COL_BLUE), l_pulse_progress));      // selected gravity port outline
 	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::COL_GREEN), Project_gfx::sp_col_to_sdl(c::COL_GREEN_LIGHT), l_pulse_progress));      // gravity port property turned on
-	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(c::SP_Color(0x30, 0x30, 0x30)), Project_gfx::sp_col_to_sdl(c::SP_Color(0x55, 0x55, 0x55)), l_pulse_progress));      // grid color
+	l_pulse_colors.push_back(klib::gfx::pulse_color(Project_gfx::sp_col_to_sdl(0x30, 0x30, 0x30), Project_gfx::sp_col_to_sdl(0x55, 0x55, 0x55), l_pulse_progress));      // grid color
 
 	for (int i = 0; i < c::LEVEL_W; ++i)
 		for (int j = 0; j < c::LEVEL_H; ++j) {

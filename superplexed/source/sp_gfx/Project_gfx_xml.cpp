@@ -5,6 +5,7 @@
 #include "./../SP_Constants.h"
 #include "./../SP_Config.h"
 #include <filesystem>
+#include <stdexcept>
 
 void Project_gfx::save_palette_xml(const SP_Config& p_config) const {
 	pugi::xml_document doc;
@@ -39,12 +40,12 @@ void Project_gfx::save_palette_xml(const SP_Config& p_config) const {
 
 	std::filesystem::create_directory(p_config.get_xml_folder());
 	if (!doc.save_file(p_config.get_xml_full_path("PALETTES").c_str()))
-		throw std::exception("Could not save XML");
+		throw std::runtime_error("Could not save XML");
 }
 
 void Project_gfx::save_image_xml(const SP_Config& p_config, const std::string& p_filename) const {
 	if (m_image_files.find(p_filename) == end(m_image_files))
-		throw std::exception("Image not loaded");
+		throw std::runtime_error("Image not loaded");
 
 	pugi::xml_document doc;
 	auto n_comments = doc.append_child(pugi::node_comment);
@@ -81,13 +82,13 @@ void Project_gfx::save_image_xml(const SP_Config& p_config, const std::string& p
 
 	std::filesystem::create_directory(p_config.get_xml_folder());
 	if (!doc.save_file(p_config.get_xml_full_path(p_filename).c_str()))
-		throw std::exception("Could not save XML");
+		throw std::runtime_error("Could not save XML");
 }
 
 void Project_gfx::load_palette_xml(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_config.get_xml_full_path("PALETTES").c_str()))
-		throw std::exception("Could not load xml");
+		throw std::runtime_error("Could not load xml");
 
 	std::vector<SP_Palette> l_palettes;
 	pugi::xml_node n_meta = doc.child(c::XML_TAG_META);
@@ -114,7 +115,7 @@ void Project_gfx::load_palette_xml(SDL_Renderer* p_rnd, const SP_Config& p_confi
 void Project_gfx::load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename) {
 	pugi::xml_document doc;
 	if (!doc.load_file(p_config.get_xml_full_path(p_filename).c_str()))
-		throw std::exception("Could not load xml");
+		throw std::runtime_error("Could not load xml");
 
 	pugi::xml_node n_meta = doc.child(c::XML_TAG_META);
 	auto n_image = n_meta.child(c::XML_TAG_IMAGE);

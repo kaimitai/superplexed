@@ -1,6 +1,7 @@
 #include "KImage.h"
 #include <SDL.h>
 #include <map>
+#include <stdexcept>
 #include "klib_gfx.h"
 
 using byte = unsigned char;
@@ -37,7 +38,7 @@ klib::gfx::KImage::KImage(const std::string& p_filename) {
 	auto frame_srf = SDL_LoadBMP(p_filename.c_str());
 	if (frame_srf->format->BitsPerPixel != 8) {
 		SDL_FreeSurface(frame_srf);
-		throw std::exception("Not a 256-color image");
+		throw std::runtime_error("Not a 256-color image");
 	}
 
 	byte l_curcol{ 0 };

@@ -75,6 +75,10 @@ public:
 		return SDL_Color{ p_col.r, p_col.g, p_col.b };
 	}
 
+	constexpr static SDL_Color sp_col_to_sdl(unsigned char r, unsigned char g, unsigned char b) {
+		return SDL_Color{ r, g, b };
+	}
+
 	// palette functions
 	const std::vector<SP_Palette>& get_palettes(void) const;
 	void load_palettes(SDL_Renderer* p_rnd, const SP_Config& p_config);

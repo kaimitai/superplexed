@@ -92,7 +92,7 @@ void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 	ImGui::Separator();
 
 	char l_pname[c::PLAYER_NAME_SIZE + 1]{};
-	strncpy_s(l_pname, m_hallfame.get_name(l_zindex).c_str(), sizeof(l_pname) - 1);
+	strncpy(l_pname, m_hallfame.get_name(l_zindex).c_str(), sizeof(l_pname) - 1);
 	if (ImGui::InputText("Name###hfname", l_pname, c::PLAYER_NAME_SIZE + 1))
 		m_hallfame.set_name(l_zindex, SP_Level::sanitize_sp_string(l_pname, c::PLAYER_NAME_SIZE));
 	ImGui::Separator();
@@ -135,7 +135,7 @@ void Savefile_window::draw_ui_players(SP_Config& p_config) {
 
 	ImGui::Separator();
 	char l_pname[c::PLAYER_NAME_SIZE + 1]{};
-	strncpy_s(l_pname, m_players.get_name(l_zindex).c_str(), sizeof(l_pname) - 1);
+	strncpy(l_pname, m_players.get_name(l_zindex).c_str(), sizeof(l_pname) - 1);
 	if (ImGui::InputText("Name###plname", l_pname, c::PLAYER_NAME_SIZE + 1))
 		m_players.set_name(l_zindex, SP_Level::sanitize_sp_string(l_pname, c::PLAYER_NAME_SIZE));
 	ImGui::Separator();

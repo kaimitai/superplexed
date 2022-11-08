@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 #include "./common/imgui/imgui.h"
 #include "./common/imgui/imgui_impl_sdl.h"
@@ -23,19 +24,19 @@ int main(int argc, char* args[]) try {
 	bool l_exit{ false };
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-		throw std::exception(SDL_GetError());
+		throw std::runtime_error(SDL_GetError());
 	else {
 		// Event handler
 		SDL_Event e;
 
 		l_window = SDL_CreateWindow(c::APP_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, c::APP_WIN_W_INITIAL, c::APP_WIN_H_INITIAL, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 		if (l_window == nullptr)
-			throw std::exception(SDL_GetError());
+			throw std::runtime_error(SDL_GetError());
 		else {
 			l_rnd = SDL_CreateRenderer(l_window, -1, SDL_RENDERER_ACCELERATED);
 
 			if (l_rnd == nullptr)
-				throw std::exception(SDL_GetError());
+				throw std::runtime_error(SDL_GetError());
 			else {
 				//Initialize renderer color
 				SDL_SetRenderDrawColor(l_rnd, 0x00, 0x00, 0x00, 0x00);
