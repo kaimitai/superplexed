@@ -1,6 +1,6 @@
 # Superplexed - An all-round editor for Supaplex
 
-Welcome to the Superplexed code repository and release page. The current version of the editor is 0.1. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the application from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/superplexed/releases/). \
+Welcome to the Superplexed code repository and release page. The current version of the editor is 0.11. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the application from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/superplexed/releases/). \
 Make sure to read the included documentation (readme.html in the docs folder) for a detailed overview.
 <br></br>
 ### Editor Capabilities
@@ -27,3 +27,9 @@ A third window, Savefiles, will let you alter any aspect of the player database,
 <br></br>
 <hr>
 It is highly recommended to have a look at the documentation for efficient usage tips.
+<hr>
+
+### Changes since v0.1
+
+* Improved code portability, thanks to [skeeto](https://github.com/skeeto)
+* Fixed an oversight in the level bmp creator, where the wrong tile would be used for the "bug" enemy in output images
