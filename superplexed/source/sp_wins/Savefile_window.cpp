@@ -1,3 +1,8 @@
+// Visual Studio warnings
+#ifdef _MSC_VER
+#pragma warning (disable: 4996)     // 'This function or variable may be unsafe': strcpy, strdup, sprintf, vsnprintf, sscanf, fopen
+#endif
+
 #include "Savefile_window.h"
 #include "./../common/klib/klib_file.h"
 #include "./../common/klib/klib_util.h"
