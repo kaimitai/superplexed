@@ -3,8 +3,8 @@
 
 namespace c {
 	// application constants
-	constexpr char APP_TITLE[]{ "Superplexed v0.1" };
-	constexpr char APP_VERSION[]{ "0.1" };
+	constexpr char APP_TITLE[]{ "Superplexed v0.11" };
+	constexpr char APP_VERSION[]{ "0.11" };
 	constexpr int APP_WIN_W_INITIAL{ 1024 };
 	constexpr int APP_WIN_H_INITIAL{ 768 };
 	constexpr char FILE_SIGNATURE[]{ "kaimitai@github " };

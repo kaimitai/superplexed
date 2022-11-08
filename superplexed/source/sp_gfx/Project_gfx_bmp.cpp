@@ -113,7 +113,7 @@ bool Project_gfx::save_level_bmp(const SP_Level& p_level, std::size_t p_level_no
 	for (int j{ 0 }; j < c::LEVEL_H; ++j)
 		for (int i{ 0 }; i < c::LEVEL_W; ++i)
 			draw_tile_on_sdl_surface(l_bmp,
-				static_cast<int>(p_level.get_tile_no(i, j)),
+				static_cast<int>(m_animations.at(p_level.get_tile_no(i, j)).at(0)),
 				i, j);
 
 	draw_tile_on_sdl_surface(l_bmp, 3,
