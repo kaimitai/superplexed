@@ -219,10 +219,19 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		get_current_level().set_title(std::string(l_lvl_title));
 
 	// solve infotron count
-	std::string l_solve_it_id{ "#Infotrons###it" + l_clvl };
+	std::string l_solve_it_id{ "Infotrons###it" + l_clvl };
 	int l_solve_it_cnt = get_current_level().get_solve_it_count();
 	if (ImGui::SliderInt(l_solve_it_id.c_str(), &l_solve_it_cnt, 0, 255))
 		get_current_level().set_solve_it_count(l_solve_it_cnt);
+
+	std::string l_infotron_toolip{ "Infotrons: " +
+		std::to_string(get_current_level().get_tile_count(c::TILE_NO_INFOTRON)) +
+		", Electrons: " +
+		std::to_string(get_current_level().get_tile_count(c::TILE_NO_ELECTRON))
+	};
+
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+		ImGui::SetTooltip(l_infotron_toolip.c_str());
 
 	// gravity
 	std::string l_grav_id{ "Gravity###grav" + l_clvl };

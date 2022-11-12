@@ -322,7 +322,9 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		}
 		else if (p_input.mouse_held(false)) {
 			auto tcoords = mouse_coords_to_tile(p_input.mx(), p_input.my(), p_h);
-			if (l_ctrl) {
+			if (m_sel_tile == c::TILE_NO_PLAYER_START)
+				get_current_level().set_player_start(tcoords.first, tcoords.second);
+			else if (l_ctrl) {
 				byte l_source_col{ get_current_level().get_tile_no(tcoords.first, tcoords.second) };
 				byte l_target_col{ static_cast<byte>(m_sel_tile) };
 				if (l_source_col != l_target_col) {
@@ -331,8 +333,6 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 					commit_undo_block();
 				}
 			}
-			else if (m_sel_tile == c::TILE_NO_PLAYER_START)
-				get_current_level().set_player_start(tcoords.first, tcoords.second);
 			else
 				set_tile_value(tcoords.first, tcoords.second, m_sel_tile, true);
 		}

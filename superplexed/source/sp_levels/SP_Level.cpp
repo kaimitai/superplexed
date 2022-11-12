@@ -54,19 +54,23 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 		begin(p_bytes) + c::LVL_DATA_BYTE_SIZE,
 		end(p_bytes)
 		);
+
+	recalculate_tile_counts();
 }
 
 // default level
 SP_Level::SP_Level(void) :
-	m_title{ c::DEFAULT_LVL_TITLE }, m_solve_it_count{ 1 },
+	m_title{ c::DEFAULT_LVL_TITLE }, m_solve_it_count{ 0 },
 	m_sf_version{ c::DEFAULT_LVL_SF_VERSION }, m_gravity{ false }, m_freeze_zonks{ false },
 	m_sf_demo_bytes{ std::vector<byte>(4, 0) }, m_unused_bytes{ std::vector<byte>(4, 0) }
 {
 	m_tiles = std::vector<std::vector<byte>>(c::LEVEL_H, std::vector<byte>(c::LEVEL_W, c::TILE_NO_BASE));
+	apply_wall_border();
+	recalculate_tile_counts();
+
 	set_tile_value(c::LEVEL_W / 2, c::LEVEL_H / 2, c::TILE_NO_INFOTRON);
 	set_tile_value(c::LEVEL_W / 2 + 1, c::LEVEL_H / 2, c::TILE_NO_EXIT);
 	set_player_start(c::LEVEL_W / 2 - 1, c::LEVEL_H / 2);
-	apply_wall_border();
 }
 
 void SP_Level::apply_wall_border(void) {
@@ -91,7 +95,9 @@ SP_Level::SP_Level(const std::string& p_title,
 	m_gravity{ p_grav }, m_freeze_zonks{ p_fz },
 	m_sf_version{ p_sf_version }, m_sf_demo_bytes{ p_sf_demo_bytes },
 	m_unused_bytes{ p_unknown_bytes }, m_sf_solution_bytes{ p_solution_bytes }
-{ }
+{
+	recalculate_tile_counts();
+}
 
 std::vector<byte> SP_Level::get_bytes(bool p_include_demo) const {
 	std::vector<byte> result;
@@ -212,15 +218,23 @@ byte SP_Level::get_speedfix_version(void) const {
 	return m_sf_version;
 }
 
-// statistics - count each tile type
-std::vector<int> SP_Level::get_tile_counts(void) const {
-	std::vector<int> result(c::TILE_COUNT, 0);
-
+// count all tiles - should only be necessary after the constructors
+// all changes to the board should go through set_tile, which will
+// keep these counters updated
+void SP_Level::recalculate_tile_counts(void) {
+	m_tile_counts = std::vector<int>(c::TILE_COUNT, 0);
 	for (const auto& row : m_tiles)
 		for (byte v : row)
-			++result[v];
+			++m_tile_counts[v];
+}
 
-	return result;
+// statistics - count each tile type
+const std::vector<int>& SP_Level::get_tile_counts(void) const {
+	return m_tile_counts;
+}
+
+int SP_Level::get_tile_count(byte p_tile_no) const {
+	return m_tile_counts.at(p_tile_no);
 }
 
 // gravity port getters
@@ -265,7 +279,9 @@ void SP_Level::set_tile_value(int p_x, int p_y, byte p_value) {
 	else if (l_gp_index != -1)
 		delete_gravity_port(l_gp_index);
 
+	--m_tile_counts.at(get_tile_no(p_x, p_y));
 	m_tiles.at(p_y).at(p_x) = p_value;
+	++m_tile_counts.at(p_value);
 }
 
 void SP_Level::set_title(const std::string& p_title) {
