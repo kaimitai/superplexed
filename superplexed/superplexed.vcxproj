@@ -194,6 +194,7 @@
     <ClCompile Include="source\sp_saves\SP_Player_List.cpp" />
     <ClCompile Include="source\sp_wins\Graphics_window.cpp" />
     <ClCompile Include="source\sp_wins\Level_window.cpp" />
+    <ClCompile Include="source\sp_wins\Level_windows_file.cpp" />
     <ClCompile Include="source\sp_wins\Level_window_ui.cpp" />
     <ClCompile Include="source\sp_wins\Level_window_xml.cpp" />
     <ClCompile Include="source\sp_wins\Main_window.cpp" />

@@ -4,6 +4,7 @@
 #include "./common/pugixml/pugixml.hpp"
 #include "./common/pugixml/pugiconfig.hpp"
 #include "./common/klib/klib_util.h"
+#include <algorithm>
 #include <stdexcept>
 
 SP_Config::SP_Config(void) :
@@ -28,10 +29,26 @@ void SP_Config::load_configuration(void) {
 	try {
 		pugi::xml_document doc;
 		if (!doc.load_file(c::SPCONFIG_XML_FILENAME))
-			throw std::runtime_error("Could not load xml");
+			throw std::runtime_error("Could not load configuration xml");
 		else {
 			auto n_meta = doc.child(c::XML_TAG_META);
 			m_project_folder = n_meta.attribute(c::XML_ATTR_PROJECT_FOLDER).as_string();
+
+			auto n_predefined = n_meta.child(c::XML_TAG_PREDEFINED);
+			if (n_predefined) {
+				m_predefined_levelset = Predefined_levelset(
+					n_predefined.attribute(c::XML_ATTR_FILENAME).as_string(),
+					n_predefined.attribute(c::XML_ATTR_LEVEL_COUNT).as_int()
+				);
+
+				for (auto n_set_file = n_predefined.child(c::XML_TAG_LEVEL_FILE);
+					n_set_file;
+					n_set_file = n_set_file.next_sibling(c::XML_TAG_LEVEL_FILE)) {
+					m_predefined_levelset.add_file(
+						n_set_file.attribute(c::XML_ATTR_FILEPATH).as_string(),
+						n_set_file.attribute(c::XML_ATTR_LEVEL_NO).as_int());
+				}
+			}
 		}
 		add_message("Configuration loaded");
 	}
@@ -117,6 +134,14 @@ const std::deque<std::string>& SP_Config::get_messages(void) const {
 	return m_messages;
 }
 
+const SP_Config::Predefined_levelset& SP_Config::get_predefined_levelset(void) const {
+	return m_predefined_levelset;
+}
+
+bool SP_Config::has_predefined_levelset(void) const {
+	return !m_predefined_levelset.empty();
+}
+
 std::string SP_Config::get_folder(const std::string& p_subfolder) const {
 	return m_project_folder + '/' + p_subfolder;
 }
@@ -160,4 +185,18 @@ void SP_Config::set_level_list_filename(const std::string& p_filename) {
 		m_levelset_no = -1;
 	else
 		m_levelset_no = atoi(p_filename.substr(p_filename.find_last_of('.') + 2).c_str());
+}
+
+SP_Config::SP_file_type SP_Config::get_file_type_from_path(const std::string& p_file_path) {
+	std::string l_ext = p_file_path.substr(p_file_path.find_last_of('.') + 1);
+	std::transform(begin(l_ext), end(l_ext), begin(l_ext), ::toupper);
+
+	if (l_ext == c::SUFFIX_XML_UC)
+		return SP_file_type::xml;
+	else if (l_ext == c::SUFFIX_SP_UC)
+		return SP_file_type::sp;
+	else if (l_ext == c::SUFFIX_DAT_UC)
+		return SP_file_type::dat;
+	else
+		throw std::runtime_error("Invalid extenstion " + l_ext);
 }

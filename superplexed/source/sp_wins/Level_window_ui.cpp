@@ -280,13 +280,13 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		save_levels_dat(p_config);
 	ImGui::SameLine();
 	if (ImGui::Button(c::SAVE_XML))
-		save_file(SP_file_type::xml, p_config, p_gfx, l_shift);
+		save_file(SP_Config::SP_file_type::xml, p_config, p_gfx, l_shift);
 	ImGui::SameLine();
 	if (ImGui::Button(c::SAVE_SP))
-		save_file(SP_file_type::sp, p_config, p_gfx, l_shift);
+		save_file(SP_Config::SP_file_type::sp, p_config, p_gfx, l_shift);
 	ImGui::SameLine();
 	if (ImGui::Button(c::SAVE_BMP))
-		save_file(SP_file_type::bmp, p_config, p_gfx, l_shift);
+		save_file(SP_Config::SP_file_type::bmp, p_config, p_gfx, l_shift);
 	// load from disk
 	if (ImGui::Button(l_load_dat.c_str()) && l_ctrl)
 		load_levels_dat(p_config);
@@ -294,12 +294,12 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 	ImGui::SameLine();
 	if (ImGui::Button(c::LOAD_XML) && l_ctrl)
-		load_file(SP_file_type::xml, p_config, l_shift);
+		load_file(SP_Config::SP_file_type::xml, p_config, l_shift);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 	ImGui::SameLine();
 	if (ImGui::Button(c::LOAD_SP) && l_ctrl)
-		load_file(SP_file_type::sp, p_config, l_shift);
+		load_file(SP_Config::SP_file_type::sp, p_config, l_shift);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 

@@ -17,7 +17,6 @@
 #include "./../SP_Constants.h"
 
 class Level_window {
-	enum class SP_file_type { bmp, dat, sp, xml };
 
 	struct Level {
 		SP_Level m_level;
@@ -78,12 +77,16 @@ class Level_window {
 	void toggle_selected_gp_property(int p_property_no);
 	void floorfill(byte p_source_col, byte p_target_col, int p_x, int p_y);
 
+	// file definitions
+	void load_predefined_levelset(const SP_Config& p_config);
+	SP_Level level_xml_from_file(const std::string& p_filepath) const;
+	SP_Level level_sp_from_file(const std::string& p_filepath) const;
+	SP_Level level_dat_from_file(const std::string& p_filepath, std::size_t p_level_no) const;
+
 	// xml read/write
 	void save_xml(std::size_t p_level_no, const SP_Config& p_config) const;
-	SP_Level load_xml(std::size_t p_level_no, const SP_Config& p_config) const;
 	// sp read/write
 	void save_sp(std::size_t p_level_no, const SP_Config& p_config) const;
-	SP_Level load_sp(std::size_t p_level_no, const SP_Config& p_config) const;
 	// dat read/write
 	void load_levels_dat(SP_Config& p_config);
 	void save_levels_dat(SP_Config& p_config);
@@ -94,8 +97,8 @@ class Level_window {
 	void draw_ui_statistics(const Project_gfx& p_gfx);
 
 	// general procedures for saving to and loading from files
-	void load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_all);
-	void save_file(SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const;
+	void load_file(SP_Config::SP_file_type p_ftype, SP_Config& p_config, bool p_all);
+	void save_file(SP_Config::SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const;
 
 	void commit_undo_block(void);
 	void set_tile_value(int p_x, int p_y, byte p_value, bool p_autocommit = false);

@@ -97,10 +97,10 @@ void Level_window::save_xml(std::size_t p_level_no, const SP_Config& p_config) c
 		throw std::runtime_error("Could not save XML");
 }
 
-SP_Level Level_window::load_xml(std::size_t p_level_no, const SP_Config& p_config) const {
+SP_Level Level_window::level_xml_from_file(const std::string& p_filepath) const {
 	pugi::xml_document doc;
-	if (!doc.load_file(p_config.get_xml_full_path(p_level_no).c_str()))
-		throw std::runtime_error("Could not load xml");
+	if (!doc.load_file(p_filepath.c_str()))
+		throw std::runtime_error("Could not load " + p_filepath);
 
 	pugi::xml_node n_meta = doc.child(c::XML_TAG_META);
 	auto n_level = n_meta.child(c::XML_TAG_LEVEL);
