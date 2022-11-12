@@ -233,5 +233,8 @@
     <ClCompile Include="source\sp_levels\SP_Level_undo_interface.cpp">
       <Filter>Source Files\sp_levels</Filter>
     </ClCompile>
+    <ClCompile Include="source\sp_wins\Level_windows_file.cpp">
+      <Filter>Source Files\sp_wins</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

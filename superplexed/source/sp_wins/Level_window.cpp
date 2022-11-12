@@ -15,15 +15,15 @@ constexpr std::size_t TRANS_V_IDX{ 1 };
 constexpr std::size_t TRANS_RC_IDX{ 2 };
 constexpr std::size_t TRANS_RCC_IDX{ 3 };
 
-void Level_window::save_file(SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const {
+void Level_window::save_file(SP_Config::SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const {
 	int l_file_counter{ 0 };
 
-	const auto ll_save_level = [*this](SP_file_type p_ftype, std::size_t p_level_no, const SP_Config& p_config, const Project_gfx& p_gfx) -> void {
-		if (p_ftype == SP_file_type::xml)
+	const auto ll_save_level = [*this](SP_Config::SP_file_type p_ftype, std::size_t p_level_no, const SP_Config& p_config, const Project_gfx& p_gfx) -> void {
+		if (p_ftype == SP_Config::SP_file_type::xml)
 			save_xml(p_level_no, p_config);
-		else if (p_ftype == SP_file_type::sp)
+		else if (p_ftype == SP_Config::SP_file_type::sp)
 			save_sp(p_level_no, p_config);
-		else if (p_ftype == SP_file_type::bmp)
+		else if (p_ftype == SP_Config::SP_file_type::bmp)
 			p_gfx.save_level_bmp(m_levels.at(p_level_no).m_level,
 				p_level_no, p_config, m_ui_animate_ports);
 		else
@@ -46,11 +46,11 @@ void Level_window::save_file(SP_file_type p_ftype, SP_Config& p_config, const Pr
 		p_config.add_message("Saved " + std::to_string(l_file_counter) + " file(s)");
 	else if (l_file_counter != 0) {
 		std::size_t l_lvl_idx = get_current_level_idx();
-		if (p_ftype == SP_file_type::bmp)
+		if (p_ftype == SP_Config::SP_file_type::bmp)
 			p_config.add_message("Saved " + p_config.get_bmp_full_path(l_lvl_idx));
 		else
 			p_config.add_message("Saved " +
-				(p_ftype == SP_file_type::xml ?
+				(p_ftype == SP_Config::SP_file_type::xml ?
 					p_config.get_xml_full_path(l_lvl_idx) :
 					p_config.get_SP_full_path(l_lvl_idx))
 			);
@@ -58,14 +58,14 @@ void Level_window::save_file(SP_file_type p_ftype, SP_Config& p_config, const Pr
 
 }
 
-void Level_window::load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_all) {
+void Level_window::load_file(SP_Config::SP_file_type p_ftype, SP_Config& p_config, bool p_all) {
 	int l_file_counter{ 0 };
 
-	const auto ll_load_level = [*this](SP_file_type p_ftype, std::size_t p_level_no, const SP_Config& p_config)->SP_Level {
-		if (p_ftype == SP_file_type::xml)
-			return load_xml(p_level_no, p_config);
-		else if (p_ftype == SP_file_type::sp)
-			return load_sp(p_level_no, p_config);
+	const auto ll_load_level = [*this](SP_Config::SP_file_type p_ftype, std::size_t p_level_no, const SP_Config& p_config)->SP_Level {
+		if (p_ftype == SP_Config::SP_file_type::xml)
+			return level_xml_from_file(p_config.get_SP_full_path(p_level_no));
+		else if (p_ftype == SP_Config::SP_file_type::sp)
+			return level_sp_from_file(p_config.get_SP_full_path(p_level_no));
 		else
 			throw std::runtime_error("Invalid filetype");
 	};
@@ -88,7 +88,7 @@ void Level_window::load_file(SP_file_type p_ftype, SP_Config& p_config, bool p_a
 		p_config.add_message("Loaded " + std::to_string(l_file_counter) + " file(s)");
 	else if (l_file_counter != 0)
 		p_config.add_message("Loaded " +
-			(p_ftype == SP_file_type::xml ?
+			(p_ftype == SP_Config::SP_file_type::xml ?
 				p_config.get_xml_full_path(get_current_level_idx()) :
 				p_config.get_SP_full_path(get_current_level_idx()))
 		);
@@ -148,6 +148,13 @@ void Level_window::load_levels_dat(SP_Config& p_config) {
 	}
 }
 
+SP_Level Level_window::level_dat_from_file(const std::string& p_filepath, std::size_t p_level_no) const {
+	auto l_bytes = klib::file::read_file_as_bytes(p_filepath);
+	return SP_Level(std::vector<byte>(
+		begin(l_bytes) + p_level_no * c::LVL_DATA_BYTE_SIZE,
+		begin(l_bytes) + (p_level_no + 1) * c::LVL_DATA_BYTE_SIZE));
+}
+
 Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_current_level{ 1 }, m_current_gp{ 1 }, m_cam_x{ 0 },
 	m_ui_show_grid{ false }, m_ui_animate{ true }, m_ui_animate_ports{ true }, m_ui_flash{ false },
@@ -155,7 +162,11 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_sel_tile{ 0 }, m_tile_picker_scale{ 1.0f },
 	m_show_stats{ -1 }, m_show_stats_tc0{ false }
 {
-	load_levels_dat(p_config);
+	if (p_config.has_predefined_levelset())
+		load_predefined_levelset(p_config);
+	else
+		load_levels_dat(p_config);
+
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
 
 	// initialize the tile picker
@@ -709,8 +720,8 @@ void Level_window::floorfill(byte p_source_col, byte p_target_col, int p_x, int 
 }
 
 // SP load/save
-SP_Level Level_window::load_sp(std::size_t p_level_no, const SP_Config& p_config) const {
-	return SP_Level(klib::file::read_file_as_bytes(p_config.get_SP_full_path(p_level_no)));
+SP_Level Level_window::level_sp_from_file(const std::string& p_filepath) const {
+	return SP_Level(klib::file::read_file_as_bytes(p_filepath));
 }
 
 void Level_window::save_sp(std::size_t p_level_no, const SP_Config& p_config) const {

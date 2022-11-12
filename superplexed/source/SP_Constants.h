@@ -3,8 +3,8 @@
 
 namespace c {
 	// application constants
-	constexpr char APP_TITLE[]{ "Superplexed v0.11" };
-	constexpr char APP_VERSION[]{ "0.11" };
+	constexpr char APP_TITLE[]{ "Superplexed v0.2-snapshot" };
+	constexpr char APP_VERSION[]{ "0.2-snapshot" };
 	constexpr int APP_WIN_W_INITIAL{ 1024 };
 	constexpr int APP_WIN_H_INITIAL{ 768 };
 	constexpr char FILE_SIGNATURE[]{ "kaimitai@github " };
@@ -21,6 +21,12 @@ namespace c {
 	constexpr char SUFFIX_LST[]{ "LST" };
 	constexpr char SUFFIX_SP[]{ "SP" };
 	constexpr char SUFFIX_XML[]{ "xml" };
+
+	constexpr char SUFFIX_DAT_UC[]{ "DAT" };
+	constexpr char SUFFIX_BMP_UC[]{ "BMP" };
+	constexpr char SUFFIX_LST_UC[]{ "LST" };
+	constexpr char SUFFIX_SP_UC[]{ "SP" };
+	constexpr char SUFFIX_XML_UC[]{ "XML" };
 
 	// output messages
 	constexpr unsigned int MESSAGES_MAX_SIZE{ 25 };
@@ -56,6 +62,14 @@ namespace c {
 	constexpr char XML_TAG_GPS[]{ "special_ports" };
 	constexpr char XML_TAG_GP[]{ "special_port" };
 	constexpr char XML_TAG_SOLUTION[]{ "speedfix_solution" };
+
+	constexpr char XML_TAG_PREDEFINED[]{ "predefined_levelset" };
+	constexpr char XML_TAG_LEVEL_FILE[]{ "level_file" };
+
+	constexpr char XML_ATTR_FILENAME[]{ "filename" };
+	constexpr char XML_ATTR_LEVEL_COUNT[]{ "level_count" };
+	constexpr char XML_ATTR_FILEPATH[]{ "filepath" };
+	constexpr char XML_ATTR_LEVEL_NO[]{ "level_no" };
 
 	constexpr char XML_ATTR_APP_VERSION[]{ "app_version" };
 	constexpr char XML_ATTR_TITLE[]{ "title" };
