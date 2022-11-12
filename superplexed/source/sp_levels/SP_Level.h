@@ -28,6 +28,9 @@ class SP_Level {
 	bool m_gravity, m_freeze_zonks;
 	unsigned int m_player_x, m_player_y;
 	byte m_solve_it_count, m_sf_version;
+	std::vector<int> m_tile_counts;
+
+	void recalculate_tile_counts(void);
 	void apply_wall_border(void);
 	
 public:
@@ -53,7 +56,8 @@ public:
 	const std::vector<byte>& get_unused_bytes(void) const;
 	const std::vector<byte>& get_solution_bytes(void) const;
 	byte get_speedfix_version(void) const;
-	std::vector<int> get_tile_counts(void) const;
+	const std::vector<int>& get_tile_counts(void) const;
+	int get_tile_count(byte p_tile_no) const;
 	std::set<std::pair<int, int>> get_gp_positions(void) const;
 
 	// gravity port getters
