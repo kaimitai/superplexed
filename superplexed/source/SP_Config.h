@@ -9,7 +9,7 @@
 class SP_Config {
 public:
 
-	enum class SP_file_type { bmp, dat, sp, xml };
+	enum class SP_file_type { bmp, dat, sp, xml, unknown };
 
 	struct Predefined_levelset {
 		std::string m_levelset_filename;
@@ -70,6 +70,12 @@ public:
 
 	static SP_file_type get_file_type_from_path(const std::string& p_file_path);
 
+	// rewrite
+	static bool is_valid_level_filename(const std::string& p_filename);
+
+	void generate_level_filedata_cahce(const std::string& p_filepath,
+		bool p_generate_project_folder = false);
+
 private:
 	SP_Config::Predefined_levelset m_predefined_levelset;
 	std::deque<std::string> m_messages;
@@ -77,6 +83,23 @@ private:
 	// levelset number: -1 is LEVELS.DAT and LEVEL.LST, 00 to 99 is LEVELS.Dxx, LEVEL.Lxx etc
 	int m_levelset_no;
 
+	// rewrite - BEGIN
+
+	// rewrite variables
+	SP_file_type m_cf_extension;      // current file extension, internal
+	std::string m_cf_true_extension,  // cf true extension, use when writing back to same file
+		m_cf_filename,                // cf true filename, use when writing back to any file
+		m_cf_folder,                  // folder of current file
+		m_cf_hallfame_lst_full_name,  // HALLFAME.Lxx
+		m_cf_player_lst_full_name;    // PLAYER.Lxx
+
+	bool has_savefiles(void) const;
+	bool is_levelset_file(void) const;
+
+	// utility functions
+	static std::string to_uppercase(const std::string& p_input);
+
+	// rewrite - END
 
 	std::string get_folder(const std::string& p_subfolder) const;
 	std::string get_full_path(const std::string& p_filename, const std::string& p_extension) const;

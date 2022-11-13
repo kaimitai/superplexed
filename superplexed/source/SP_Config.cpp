@@ -11,6 +11,8 @@ SP_Config::SP_Config(void) :
 	m_levelset_no{ -1 }
 {
 	load_configuration();
+
+	generate_level_filedata_cahce("./gamedata/LEVELS.DAT", true);
 }
 
 std::string SP_Config::get_project_folder(void) const {
@@ -195,8 +197,12 @@ SP_Config::SP_file_type SP_Config::get_file_type_from_path(const std::string& p_
 		return SP_file_type::xml;
 	else if (l_ext == c::SUFFIX_SP_UC)
 		return SP_file_type::sp;
-	else if (l_ext == c::SUFFIX_DAT_UC)
+	else if (l_ext == c::SUFFIX_DAT_UC ||
+		(l_ext.size() == 3 && l_ext[0] == 'D'
+			&& l_ext[1] >= '0' && l_ext[1] <= '9' &&
+			l_ext[2] >= '0' && l_ext[2] <= '9'
+			))
 		return SP_file_type::dat;
 	else
-		throw std::runtime_error("Invalid extenstion " + l_ext);
+		return SP_file_type::unknown;
 }

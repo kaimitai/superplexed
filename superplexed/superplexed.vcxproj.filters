@@ -236,5 +236,8 @@
     <ClCompile Include="source\sp_wins\Level_windows_file.cpp">
       <Filter>Source Files\sp_wins</Filter>
     </ClCompile>
+    <ClCompile Include="source\SP_Config_file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
