@@ -73,7 +73,7 @@ public:
 	// rewrite
 	static bool is_valid_level_filename(const std::string& p_filename);
 
-	void generate_level_filedata_cahce(const std::string& p_filepath,
+	void generate_level_filedata_cache(const std::string& p_filepath,
 		bool p_generate_project_folder = false);
 
 private:
@@ -88,23 +88,54 @@ private:
 	// rewrite variables
 	SP_file_type m_cf_extension;      // current file extension, internal
 	std::string m_cf_true_extension,  // cf true extension, use when writing back to same file
+		m_cf_true_extension_uc,	      // cf true extension uppercase, use for button labels
 		m_cf_filename,                // cf true filename, use when writing back to any file
 		m_cf_folder,                  // folder of current file
-		m_cf_hallfame_lst_full_name,  // HALLFAME.Lxx
-		m_cf_player_lst_full_name;    // PLAYER.Lxx
+		m_cf_lst_extension,           // lst extension for savefiles
+		m_cf_lst_extension_uc;		  // lst extension uppercase, for button labels
 
 	bool has_savefiles(void) const;
 	bool is_levelset_file(void) const;
 
 	// utility functions
 	static std::string to_uppercase(const std::string& p_input);
+	static std::string to_lowercase(const std::string& p_input);
+	static std::string get_full_filename(const std::string& p_filename, const std::string& p_extension);
+	static std::string get_full_filepath(const std::string& p_path, const std::string& p_filename, const std::string& p_extension);
+	static std::string get_path_combine(const std::string& p_path, const std::string& p_subfolder_or_file);
+	std::string get_filename_postfix(std::size_t p_no) const;
+
+	// get folders for level files (these folders may need to be created by the callers)
+	std::string get_level_bmp_folder(void) const;
+	std::string get_level_xml_folder(void) const;
+	std::string get_level_sp_folder(void) const;
+	std::string get_level_dat_folder(void) const;
+
+	// get folders for graphics files (these folders may need to be created by the callers)
+	std::string get_gfx_bmp_folder(void) const;
+	std::string get_gfx_xml_folder(void) const;
+	std::string get_gfx_dat_folder(void) const;
+
+	// get full file paths to level files (used for read/write by the callers)
+	std::string get_level_bmp_full_path(std::size_t p_level_no) const;
+	std::string get_level_xml_full_path(std::size_t p_level_no) const;
+	std::string get_level_sp_full_path(std::size_t p_level_no) const;
+	std::string get_level_dat_full_path(void) const;
+	std::string get_level_list_full_path(void) const;
+
+	// get full file paths to gfx files (used for read/write by the callers)
+	std::string get_gfx_bmp_full_path(const std::string& p_filename) const;
+	std::string get_gfx_xml_full_path(const std::string& p_filename) const;
+	std::string get_gfx_dat_full_path(const std::string& p_filename) const;
+
+	// get full paths to savefiles (used for read/write by the caller)
+	std::string get_hallfame_full_path(void) const;
+	std::string get_player_db_full_path(void) const;
 
 	// rewrite - END
 
 	std::string get_folder(const std::string& p_subfolder) const;
 	std::string get_full_path(const std::string& p_filename, const std::string& p_extension) const;
-
-	static std::string get_full_filename(const std::string& p_filename, const std::string& p_suffix);
 
 	std::string get_full_path_ignore_extension(const std::string& p_full_filename) const;
 	std::string get_levelset_lst_filename(void) const;

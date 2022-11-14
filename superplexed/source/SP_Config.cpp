@@ -7,20 +7,61 @@
 #include <algorithm>
 #include <stdexcept>
 
+// #include "./common/klib/klib_file.h"
+
 SP_Config::SP_Config(void) :
 	m_levelset_no{ -1 }
 {
 	load_configuration();
+	/*
+	generate_level_filedata_cache("c:/supaplex/levels.d51", true);
+	constexpr char TEST_FILE[]{ "test.txt" };
 
-	generate_level_filedata_cahce("./gamedata/LEVELS.DAT", true);
+	klib::file::append_string_to_file("internal variables\n", TEST_FILE);
+
+	klib::file::append_string_to_file(m_cf_filename + "\n", TEST_FILE);
+	klib::file::append_string_to_file(m_cf_folder + "\n", TEST_FILE);
+	klib::file::append_string_to_file("> " + m_cf_lst_extension + "\n", TEST_FILE);
+	klib::file::append_string_to_file("> " + m_cf_lst_extension_uc + "\n", TEST_FILE);
+	klib::file::append_string_to_file(m_cf_true_extension + "\n", TEST_FILE);
+	klib::file::append_string_to_file("> " + m_cf_true_extension_uc + "\n", TEST_FILE);
+
+	klib::file::append_string_to_file("levelfile folders\n", TEST_FILE);
+
+	klib::file::append_string_to_file(get_level_bmp_folder() + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_level_xml_folder() + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_level_sp_folder() + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_level_dat_folder() + "\n", TEST_FILE);
+
+	klib::file::append_string_to_file("gfx folders\n", TEST_FILE);
+
+	klib::file::append_string_to_file(get_gfx_bmp_folder() + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_gfx_xml_folder() + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_gfx_dat_folder() + "\n", TEST_FILE);
+
+	klib::file::append_string_to_file("Level files (lvl=10)\n", TEST_FILE);
+
+	klib::file::append_string_to_file(get_level_bmp_full_path(10) + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_level_xml_full_path(10) + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_level_sp_full_path(10) + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_level_dat_full_path() + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_level_list_full_path() + "\n", TEST_FILE);
+
+	klib::file::append_string_to_file("Gfx files (file=BACK)\n", TEST_FILE);
+
+	klib::file::append_string_to_file(get_gfx_bmp_full_path("BACK") + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_gfx_xml_full_path("BACK") + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_gfx_dat_full_path("BACK") + "\n", TEST_FILE);
+
+	klib::file::append_string_to_file("Savefiles:\n", TEST_FILE);
+
+	klib::file::append_string_to_file(get_hallfame_full_path() + "\n", TEST_FILE);
+	klib::file::append_string_to_file(get_player_db_full_path() + "\n", TEST_FILE);
+	*/
 }
 
 std::string SP_Config::get_project_folder(void) const {
 	return m_project_folder;
-}
-
-std::string SP_Config::get_full_filename(const std::string& p_filename, const std::string& p_suffix) {
-	return p_filename + '.' + p_suffix;
 }
 
 std::string SP_Config::get_default_levels_filename(void) {
