@@ -624,6 +624,9 @@ void Level_window::paste_from_clipboard(void) {
 			set_tile_value(
 				m_sel_x + i, m_sel_y + j, m_clipboard[j][i]);
 	commit_undo_block();
+
+	// after pasting, set selection rectangle to show the pasted area
+	this->show_clipboard_destination();
 }
 
 void Level_window::delete_selection(bool p_delete_special_ports_only) {

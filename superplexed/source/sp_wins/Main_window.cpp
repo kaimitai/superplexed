@@ -116,7 +116,7 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 			== end(m_levelset_files))
 			m_selected_file = SP_Config::get_default_levels_filename();
 
-		p_config.add_message("Refreshed levelset file list");
+		p_config.add_message("Refreshed level(s) file list");
 	}
 
 	ImGui::Separator();
