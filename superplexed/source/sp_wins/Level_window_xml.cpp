@@ -92,8 +92,8 @@ void Level_window::save_xml(std::size_t p_level_no, const SP_Config& p_config) c
 			l_sol_bytes, ',').c_str());
 	}
 
-	std::filesystem::create_directory(p_config.get_xml_folder());
-	if (!doc.save_file(p_config.get_xml_full_path(p_level_no).c_str()))
+	std::filesystem::create_directory(p_config.get_level_xml_folder());
+	if (!doc.save_file(p_config.get_level_xml_full_path(p_level_no).c_str()))
 		throw std::runtime_error("Could not save XML");
 }
 

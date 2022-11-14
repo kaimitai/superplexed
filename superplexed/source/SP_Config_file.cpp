@@ -18,6 +18,7 @@ bool SP_Config::is_valid_level_filename(const std::string& p_filename) {
 		get_full_filename(c::FILENAME_GFX, c::SUFFIX_DAT),
 		get_full_filename(c::FILENAME_MENU, c::SUFFIX_DAT),
 		get_full_filename(c::FILENAME_MOVING, c::SUFFIX_DAT),
+		get_full_filename(c::FILENAME_PANEL, c::SUFFIX_DAT),
 		get_full_filename(c::FILENAME_PALETTES, c::SUFFIX_DAT),
 		get_full_filename(c::FILENAME_TITLE, c::SUFFIX_DAT),
 		get_full_filename(c::FILENAME_TITLE1, c::SUFFIX_DAT),
@@ -61,6 +62,26 @@ void SP_Config::generate_level_filedata_cache(const std::string& p_filepath,
 	m_cf_true_extension_uc = to_uppercase(m_cf_true_extension);
 }
 
+std::string SP_Config::get_project_folder(void) const {
+	return m_cf_folder;
+}
+
+void SP_Config::set_project_file(const std::string& p_folder) {
+	generate_level_filedata_cache(p_folder, false);
+}
+
+std::string SP_Config::get_dat_label(void) const {
+	return m_cf_true_extension_uc;
+}
+
+std::string SP_Config::get_lst_label(void) const {
+	return m_cf_lst_extension_uc;
+}
+
+SP_Config::SP_file_type SP_Config::get_extension(void) const {
+	return m_cf_extension;
+}
+
 bool SP_Config::has_savefiles(void) const {
 	return is_levelset_file() && to_uppercase(m_cf_filename) == c::FILENAME_LEVELS;
 }
@@ -92,8 +113,9 @@ std::string SP_Config::get_path_combine(const std::string& p_path, const std::st
 std::string SP_Config::get_filename_postfix(std::size_t p_no) const {
 	std::string result;
 	if (m_cf_true_extension_uc != c::SUFFIX_DAT)
-		result = m_cf_true_extension_uc;
-	result += "-" + klib::util::stringnum(p_no, 3);
+		result = m_cf_true_extension;
+	// add 1 to the input number, we count from 1 in the output/input files
+	result += "-" + klib::util::stringnum(p_no + 1, 3);
 	return result;
 }
 

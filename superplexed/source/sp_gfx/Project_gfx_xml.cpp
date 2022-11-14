@@ -38,8 +38,8 @@ void Project_gfx::save_palette_xml(const SP_Config& p_config) const {
 		}
 	}
 
-	std::filesystem::create_directory(p_config.get_xml_folder());
-	if (!doc.save_file(p_config.get_xml_full_path("PALETTES").c_str()))
+	std::filesystem::create_directory(p_config.get_gfx_xml_folder());
+	if (!doc.save_file(p_config.get_gfx_xml_full_path("PALETTES").c_str()))
 		throw std::runtime_error("Could not save XML");
 }
 
@@ -80,14 +80,14 @@ void Project_gfx::save_image_xml(const SP_Config& p_config, const std::string& p
 		n_pixel_row.attribute(c::XML_ATTR_VALUE).set_value(l_string_value.c_str());
 	}
 
-	std::filesystem::create_directory(p_config.get_xml_folder());
-	if (!doc.save_file(p_config.get_xml_full_path(p_filename).c_str()))
+	std::filesystem::create_directory(p_config.get_gfx_xml_folder());
+	if (!doc.save_file(p_config.get_gfx_xml_full_path(p_filename).c_str()))
 		throw std::runtime_error("Could not save XML");
 }
 
 void Project_gfx::load_palette_xml(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	pugi::xml_document doc;
-	if (!doc.load_file(p_config.get_xml_full_path("PALETTES").c_str()))
+	if (!doc.load_file(p_config.get_gfx_xml_full_path("PALETTES").c_str()))
 		throw std::runtime_error("Could not load xml");
 
 	std::vector<SP_Palette> l_palettes;
@@ -114,7 +114,7 @@ void Project_gfx::load_palette_xml(SDL_Renderer* p_rnd, const SP_Config& p_confi
 
 void Project_gfx::load_image_xml(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename) {
 	pugi::xml_document doc;
-	if (!doc.load_file(p_config.get_xml_full_path(p_filename).c_str()))
+	if (!doc.load_file(p_config.get_gfx_xml_full_path(p_filename).c_str()))
 		throw std::runtime_error("Could not load xml");
 
 	pugi::xml_node n_meta = doc.child(c::XML_TAG_META);

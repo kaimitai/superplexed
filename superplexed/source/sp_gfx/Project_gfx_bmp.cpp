@@ -9,7 +9,7 @@ void Project_gfx::load_bmp(SDL_Renderer* p_rnd,
 	const SP_Config& p_config,
 	const std::string& p_filename) {
 
-	auto frame_srf = SDL_LoadBMP(p_config.get_bmp_full_path(p_filename).c_str());
+	auto frame_srf = SDL_LoadBMP(p_config.get_gfx_bmp_full_path(p_filename).c_str());
 	int l_target_w = m_image_metadata.at(p_filename).m_width;
 	int l_target_h = m_image_metadata.at(p_filename).m_height;
 
@@ -161,8 +161,8 @@ bool Project_gfx::save_level_bmp(const SP_Level& p_level, std::size_t p_level_no
 		}
 	}
 
-	std::filesystem::create_directory(p_config.get_bmp_folder());
-	int file_status = SDL_SaveBMP(l_bmp, p_config.get_bmp_full_path(p_level_no).c_str());
+	std::filesystem::create_directory(p_config.get_level_bmp_folder());
+	int file_status = SDL_SaveBMP(l_bmp, p_config.get_level_bmp_full_path(p_level_no).c_str());
 	SDL_FreeSurface(l_bmp);
 	return (file_status != -1);
 }
@@ -184,11 +184,11 @@ bool Project_gfx::save_bmp(const std::string& p_filename, SP_Config& p_config) c
 	if (m_image_files.find(p_filename) == end(m_image_files))
 		return false;
 
-	std::filesystem::create_directory(p_config.get_bmp_folder());
+	std::filesystem::create_directory(p_config.get_gfx_bmp_folder());
 
 	return save_bmp(m_image_files.at(p_filename),
 		m_palettes.at(m_image_metadata.at(p_filename).m_palette_no),
-		p_config.get_bmp_full_path(p_filename));
+		p_config.get_gfx_bmp_full_path(p_filename));
 }
 
 bool Project_gfx::save_bmp(const SP_Image& p_image, const SP_Palette& p_palette, const std::string& p_filename) const {

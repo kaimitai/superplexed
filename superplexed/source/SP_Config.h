@@ -35,75 +35,21 @@ public:
 	const Predefined_levelset& get_predefined_levelset(void) const;
 	bool has_predefined_levelset(void) const;
 
-	std::string get_extension(char p_first_letter) const;
-
-	std::string get_xml_folder(void) const;
-	std::string get_bmp_folder(void) const;
-	std::string get_SP_folder(void) const;
-
-	std::string get_levels_dat_full_path(void) const;
-	std::string get_level_lst_full_path(void) const;
-	std::string get_player_lst_full_path(void) const;
-	std::string get_hallfame_lst_full_path(void) const;
-
-	std::string get_dat_full_path(const std::string& p_filename) const;
-
-	void load_configuration(void);
-
-	// project folder
-	std::string get_project_folder(void) const;
-	// dat conversion bmp
-	std::string get_bmp_full_path(const std::string& p_dat_filename) const;
-	// image xml
-	std::string get_xml_full_path(const std::string& p_filename) const;
-
-	// level image bmp
-	std::string get_bmp_full_path(std::size_t p_level_no) const;
-	// level xml
-	std::string get_xml_full_path(std::size_t p_level_no) const;
-	// level sp
-	std::string get_SP_full_path(std::size_t p_level_no) const;
-
-	// default level filename LEVELS.DAT
 	static std::string get_default_levels_filename(void);
-	void set_level_list_filename(const std::string& p_filename);
-
-	static SP_file_type get_file_type_from_path(const std::string& p_file_path);
-
-	// rewrite
-	static bool is_valid_level_filename(const std::string& p_filename);
-
-	void generate_level_filedata_cache(const std::string& p_filepath,
-		bool p_generate_project_folder = false);
-
-private:
-	SP_Config::Predefined_levelset m_predefined_levelset;
-	std::deque<std::string> m_messages;
-	std::string m_project_folder;
-	// levelset number: -1 is LEVELS.DAT and LEVEL.LST, 00 to 99 is LEVELS.Dxx, LEVEL.Lxx etc
-	int m_levelset_no;
-
-	// rewrite - BEGIN
-
-	// rewrite variables
-	SP_file_type m_cf_extension;      // current file extension, internal
-	std::string m_cf_true_extension,  // cf true extension, use when writing back to same file
-		m_cf_true_extension_uc,	      // cf true extension uppercase, use for button labels
-		m_cf_filename,                // cf true filename, use when writing back to any file
-		m_cf_folder,                  // folder of current file
-		m_cf_lst_extension,           // lst extension for savefiles
-		m_cf_lst_extension_uc;		  // lst extension uppercase, for button labels
 
 	bool has_savefiles(void) const;
 	bool is_levelset_file(void) const;
 
-	// utility functions
-	static std::string to_uppercase(const std::string& p_input);
-	static std::string to_lowercase(const std::string& p_input);
-	static std::string get_full_filename(const std::string& p_filename, const std::string& p_extension);
-	static std::string get_full_filepath(const std::string& p_path, const std::string& p_filename, const std::string& p_extension);
+	// utility
+	static bool is_valid_level_filename(const std::string& p_filename);
+	static SP_file_type get_file_type_from_path(const std::string& p_file_path);
 	static std::string get_path_combine(const std::string& p_path, const std::string& p_subfolder_or_file);
-	std::string get_filename_postfix(std::size_t p_no) const;
+
+	// settings regularly needed by the GUI
+	std::string get_project_folder(void) const;
+	std::string get_dat_label(void) const;
+	std::string get_lst_label(void) const;
+	SP_file_type get_extension(void) const;
 
 	// get folders for level files (these folders may need to be created by the callers)
 	std::string get_level_bmp_folder(void) const;
@@ -132,16 +78,32 @@ private:
 	std::string get_hallfame_full_path(void) const;
 	std::string get_player_db_full_path(void) const;
 
-	// rewrite - END
+	// setters
+	void set_project_file(const std::string& p_filename);
 
-	std::string get_folder(const std::string& p_subfolder) const;
-	std::string get_full_path(const std::string& p_filename, const std::string& p_extension) const;
+private:
+	// load configuration from xml and initialize the project
+	void load_configuration(void);
 
-	std::string get_full_path_ignore_extension(const std::string& p_full_filename) const;
-	std::string get_levelset_lst_filename(void) const;
-	std::string get_levelset_dat_filename(void) const;
-	std::string get_prefix(void) const;
-	std::string strnum(void) const;
+	SP_Config::Predefined_levelset m_predefined_levelset;
+	std::deque<std::string> m_messages;
+	void generate_level_filedata_cache(const std::string& p_filepath,
+		bool p_generate_project_folder = false);
+
+	SP_file_type m_cf_extension;      // current file extension, internal
+	std::string m_cf_true_extension,  // cf true extension, use when writing back to same file
+		m_cf_true_extension_uc,	      // cf true extension uppercase, use for button labels
+		m_cf_filename,                // cf true filename, use when writing back to any file
+		m_cf_folder,                  // folder of current file
+		m_cf_lst_extension,           // lst extension for savefiles
+		m_cf_lst_extension_uc;		  // lst extension uppercase, for button labels
+
+	// utility functions
+	static std::string to_uppercase(const std::string& p_input);
+	static std::string to_lowercase(const std::string& p_input);
+	static std::string get_full_filename(const std::string& p_filename, const std::string& p_extension);
+	static std::string get_full_filepath(const std::string& p_path, const std::string& p_filename, const std::string& p_extension);
+	std::string get_filename_postfix(std::size_t p_no) const;
 
 };
 

@@ -58,7 +58,7 @@ void Project_gfx::regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_f
 }
 
 void Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config) {
-	SP_Image l_tmp_image(klib::file::read_file_as_bytes(p_config.get_dat_full_path(p_filename)),
+	SP_Image l_tmp_image(klib::file::read_file_as_bytes(p_config.get_gfx_dat_full_path(p_filename)),
 		m_image_metadata.at(p_filename).m_width,
 		m_image_metadata.at(p_filename).m_binary);
 	m_image_files.erase(p_filename);
@@ -171,7 +171,7 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 
 void Project_gfx::save_dat(const std::string& p_filename, SP_Config& p_config) const {
 	klib::file::write_bytes_to_file(m_image_files.at(p_filename).to_bytes(),
-		p_config.get_dat_full_path(p_filename));
+		p_config.get_gfx_dat_full_path(p_filename));
 }
 
 SDL_Color Project_gfx::sp_color_to_sdl(const std::tuple<byte, byte, byte, byte>& p_col) const {
@@ -257,7 +257,7 @@ void Project_gfx::load_palettes(SDL_Renderer* p_rnd, const SP_Config& p_config) 
 		// palette 3: ???
 	m_palettes.clear();
 
-	std::vector<byte> l_bytes = klib::file::read_file_as_bytes(p_config.get_dat_full_path(c::FILENAME_PALETTES));
+	std::vector<byte> l_bytes = klib::file::read_file_as_bytes(p_config.get_gfx_dat_full_path(c::FILENAME_PALETTES));
 	for (std::size_t i{ 0 }; i < 4; ++i)
 		m_palettes.push_back(SP_Palette(std::vector<byte>(begin(l_bytes) + i * 4 * 16,
 			begin(l_bytes) + (i + 1) * 4 * 16)));
@@ -286,5 +286,5 @@ void Project_gfx::save_palettes_dat(const SP_Config& p_config) {
 	}
 
 	klib::file::write_bytes_to_file(l_out_bytes,
-		p_config.get_dat_full_path(c::FILENAME_PALETTES));
+		p_config.get_gfx_dat_full_path(c::FILENAME_PALETTES));
 }
