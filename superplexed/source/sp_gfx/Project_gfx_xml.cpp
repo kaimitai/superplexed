@@ -39,7 +39,7 @@ void Project_gfx::save_palette_xml(const SP_Config& p_config) const {
 	}
 
 	std::filesystem::create_directory(p_config.get_gfx_xml_folder());
-	if (!doc.save_file(p_config.get_gfx_xml_full_path("PALETTES").c_str()))
+	if (!doc.save_file(p_config.get_gfx_xml_full_path(c::FILENAME_PALETTES).c_str()))
 		throw std::runtime_error("Could not save XML");
 }
 
@@ -87,7 +87,7 @@ void Project_gfx::save_image_xml(const SP_Config& p_config, const std::string& p
 
 void Project_gfx::load_palette_xml(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 	pugi::xml_document doc;
-	if (!doc.load_file(p_config.get_gfx_xml_full_path("PALETTES").c_str()))
+	if (!doc.load_file(p_config.get_gfx_xml_full_path(c::FILENAME_PALETTES).c_str()))
 		throw std::runtime_error("Could not load xml");
 
 	std::vector<SP_Palette> l_palettes;
