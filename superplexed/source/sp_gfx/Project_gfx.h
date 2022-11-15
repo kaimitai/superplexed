@@ -66,6 +66,7 @@ public:
 	std::pair<int, int> get_image_dimensions(const std::string& p_filename) const;
 
 	void load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config);
+	void load_image_data_from_vector(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename, const std::vector<byte>& p_bytes);
 	bool save_bmp(const std::string& p_filename, SP_Config& p_config) const;
 	void save_dat(const std::string& p_filename, SP_Config& p_config) const;
 
