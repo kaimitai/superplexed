@@ -50,6 +50,7 @@ public:
 	std::string get_dat_label(void) const;
 	std::string get_lst_label(void) const;
 	SP_file_type get_extension(void) const;
+	std::string get_loaded_file_name(void) const;
 
 	// get folders for level files (these folders may need to be created by the callers)
 	std::string get_level_bmp_folder(void) const;

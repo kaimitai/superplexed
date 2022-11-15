@@ -82,6 +82,10 @@ SP_Config::SP_file_type SP_Config::get_extension(void) const {
 	return m_cf_extension;
 }
 
+std::string SP_Config::get_loaded_file_name(void) const {
+	return get_full_filename(m_cf_filename, m_cf_true_extension);
+}
+
 bool SP_Config::has_savefiles(void) const {
 	return is_levelset_file() && to_uppercase(m_cf_filename) == c::FILENAME_LEVELS;
 }
