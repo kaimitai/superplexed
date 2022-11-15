@@ -39,7 +39,7 @@ void SP_Config::load_configuration(void) {
 					n_set_file = n_set_file.next_sibling(c::XML_TAG_LEVEL_FILE)) {
 					m_predefined_levelset.add_file(
 						n_set_file.attribute(c::XML_ATTR_FILEPATH).as_string(),
-						n_set_file.attribute(c::XML_ATTR_LEVEL_NO).as_int());
+						n_set_file.attribute(c::XML_ATTR_LEVEL_NO).as_int() - 1);
 				}
 			}
 		}
@@ -50,7 +50,15 @@ void SP_Config::load_configuration(void) {
 		add_message(std::string(c::SPCONFIG_XML_FILENAME) + " not found; using default configuration");
 	}
 
-	this->generate_level_filedata_cache(get_path_combine(l_project_folder, get_default_levels_filename()), true);
+	if (has_predefined_levelset()) {
+		l_project_filename = m_predefined_levelset.m_levelset_filename;
+		if (!is_valid_level_filename(l_project_filename))
+			l_project_filename = get_full_filename(l_project_filename, to_lowercase(c::SUFFIX_DAT));
+	}
+	else
+		l_project_filename = SP_Config::get_default_levels_filename();
+
+	this->generate_level_filedata_cache(get_path_combine(l_project_folder, l_project_filename), true);
 
 	add_message("Level File: " + get_level_dat_full_path());
 }
