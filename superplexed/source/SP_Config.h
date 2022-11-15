@@ -29,7 +29,7 @@ public:
 		}
 	};
 
-	SP_Config(void);
+	SP_Config(const std::string& p_command_line_file_path);
 	void add_message(const std::string& p_msg, bool p_prevent_repeat = false);
 	const std::deque<std::string>& get_messages(void) const;
 	const Predefined_levelset& get_predefined_levelset(void) const;
