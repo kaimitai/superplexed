@@ -89,6 +89,7 @@ class Level_window {
 	void save_sp(std::size_t p_level_no, const SP_Config& p_config) const;
 	// dat read/write
 	void load_levels_dat(SP_Config& p_config);
+	std::vector<SP_Level> load_levels_dat(const std::string& p_file_full_path) const;
 	void save_levels_dat(SP_Config& p_config);
 	// ui
 	void draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config);
@@ -109,6 +110,8 @@ public:
 	void move(int p_delta_ms, const klib::User_input& p_input, SP_Config& p_config, int p_w, int p_h);
 	void draw(SDL_Renderer* p_rnd, const Project_gfx& p_gfx, int p_w, int p_h);
 	void draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_input, SP_Config& p_config);
+
+	void load_level_file(const std::string& p_filename);
 };
 
 #endif

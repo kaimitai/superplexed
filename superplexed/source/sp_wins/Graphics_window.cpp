@@ -66,7 +66,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::LOAD_DAT)) {
 		try {
 			p_gfx.load_image_data_from_file(p_rnd, m_selected_file, p_config);
-			p_config.add_message("Loaded " + p_config.get_dat_full_path(m_selected_file));
+			p_config.add_message("Loaded " + p_config.get_gfx_dat_full_path(m_selected_file));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(ex.what());
@@ -76,7 +76,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::LOAD_XML)) {
 		try {
 			p_gfx.load_image_xml(p_rnd, p_config, m_selected_file);
-			p_config.add_message("Loaded " + p_config.get_xml_full_path(m_selected_file));
+			p_config.add_message("Loaded " + p_config.get_gfx_xml_full_path(m_selected_file));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));
@@ -86,7 +86,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::LOAD_BMP)) {
 		try {
 			p_gfx.load_bmp(p_rnd, p_config, m_selected_file);
-			p_config.add_message("Loaded and recolored " + p_config.get_bmp_full_path(m_selected_file));
+			p_config.add_message("Loaded and recolored " + p_config.get_gfx_bmp_full_path(m_selected_file));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));
@@ -96,7 +96,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::SAVE_DAT)) {
 		try {
 			p_gfx.save_dat(m_selected_file, p_config);
-			p_config.add_message("Saved " + p_config.get_dat_full_path(m_selected_file));
+			p_config.add_message("Saved " + p_config.get_gfx_dat_full_path(m_selected_file));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));
@@ -106,7 +106,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::SAVE_XML)) {
 		try {
 			p_gfx.save_image_xml(p_config, m_selected_file);
-			p_config.add_message("Saved " + p_config.get_xml_full_path(m_selected_file));
+			p_config.add_message("Saved " + p_config.get_gfx_xml_full_path(m_selected_file));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));
@@ -115,7 +115,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	ImGui::SameLine();
 	if (ImGui::Button(c::SAVE_BMP)) {
 		if (p_gfx.save_bmp(m_selected_file, p_config))
-			p_config.add_message("Saved " + p_config.get_bmp_full_path(m_selected_file));
+			p_config.add_message("Saved " + p_config.get_gfx_bmp_full_path(m_selected_file));
 		else
 			p_config.add_message("Could not save bmp");
 	}
@@ -176,7 +176,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		try {
 			p_gfx.load_palettes(p_rnd, p_config);
 			this->set_palette_cache(p_gfx);
-			p_config.add_message("Loaded " + p_config.get_dat_full_path(c::FILENAME_PALETTES));
+			p_config.add_message("Loaded " + p_config.get_gfx_dat_full_path(c::FILENAME_PALETTES));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));
@@ -187,7 +187,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 		try {
 			p_gfx.load_palette_xml(p_rnd, p_config);
 			this->set_palette_cache(p_gfx);
-			p_config.add_message("Loaded " + p_config.get_xml_full_path(c::FILENAME_PALETTES));
+			p_config.add_message("Loaded " + p_config.get_gfx_xml_full_path(c::FILENAME_PALETTES));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));
@@ -199,7 +199,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 			set_project_gfx_palette(p_rnd, p_gfx);
 			p_gfx.save_palettes_dat(p_config);
 			set_palette_cache(p_gfx);
-			p_config.add_message("Applied palettes and saved " + p_config.get_dat_full_path(c::FILENAME_PALETTES));
+			p_config.add_message("Applied palettes and saved " + p_config.get_gfx_dat_full_path(c::FILENAME_PALETTES));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));
@@ -209,7 +209,7 @@ void Graphics_window::draw_ui(SDL_Renderer* p_rnd, Project_gfx& p_gfx, SP_Config
 	if (ImGui::Button(c::SAVE_XML)) {
 		try {
 			p_gfx.save_palette_xml(p_config);
-			p_config.add_message("Saved " + p_config.get_xml_full_path(c::FILENAME_PALETTES));
+			p_config.add_message("Saved " + p_config.get_gfx_xml_full_path(c::FILENAME_PALETTES));
 		}
 		catch (const std::exception& ex) {
 			p_config.add_message(std::string(ex.what()));

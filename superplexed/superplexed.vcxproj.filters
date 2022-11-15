@@ -141,6 +141,9 @@
     <ClInclude Include="source\sp_levels\SP_Level_undo_interface.h">
       <Filter>Header Files\sp_levels</Filter>
     </ClInclude>
+    <ClInclude Include="source\sp_gfx\SP_Embedded_gfx_files.h">
+      <Filter>Header Files\sp_gfx</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\main.cpp">
@@ -235,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="source\sp_wins\Level_windows_file.cpp">
       <Filter>Source Files\sp_wins</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SP_Config_file.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

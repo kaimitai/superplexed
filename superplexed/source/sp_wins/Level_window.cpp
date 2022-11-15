@@ -15,6 +15,26 @@ constexpr std::size_t TRANS_V_IDX{ 1 };
 constexpr std::size_t TRANS_RC_IDX{ 2 };
 constexpr std::size_t TRANS_RCC_IDX{ 3 };
 
+// will replace the entire loaded levelset with a given file
+void Level_window::load_level_file(const std::string& p_file_full_path) {
+	SP_Config::SP_file_type l_ftype = SP_Config::get_file_type_from_path(p_file_full_path);
+	std::vector<SP_Level> l_loaded_levels;
+
+	if (l_ftype == SP_Config::SP_file_type::sp)
+		l_loaded_levels.push_back(level_sp_from_file(p_file_full_path));
+	else if (l_ftype == SP_Config::SP_file_type::xml)
+		l_loaded_levels.push_back(level_xml_from_file(p_file_full_path));
+	else if (l_ftype == SP_Config::SP_file_type::dat)
+		l_loaded_levels = load_levels_dat(p_file_full_path);
+
+	m_levels.clear();
+	for (const auto& lvl : l_loaded_levels)
+		m_levels.push_back(lvl);
+
+	if (get_current_level_idx() >= m_levels.size())
+		m_current_level = static_cast<int>(m_levels.size());
+}
+
 void Level_window::save_file(SP_Config::SP_file_type p_ftype, SP_Config& p_config, const Project_gfx& p_gfx, bool p_all) const {
 	int l_file_counter{ 0 };
 
@@ -47,12 +67,12 @@ void Level_window::save_file(SP_Config::SP_file_type p_ftype, SP_Config& p_confi
 	else if (l_file_counter != 0) {
 		std::size_t l_lvl_idx = get_current_level_idx();
 		if (p_ftype == SP_Config::SP_file_type::bmp)
-			p_config.add_message("Saved " + p_config.get_bmp_full_path(l_lvl_idx));
+			p_config.add_message("Saved " + p_config.get_level_bmp_full_path(l_lvl_idx));
 		else
 			p_config.add_message("Saved " +
 				(p_ftype == SP_Config::SP_file_type::xml ?
-					p_config.get_xml_full_path(l_lvl_idx) :
-					p_config.get_SP_full_path(l_lvl_idx))
+					p_config.get_level_xml_full_path(l_lvl_idx) :
+					p_config.get_level_sp_full_path(l_lvl_idx))
 			);
 	}
 
@@ -63,9 +83,9 @@ void Level_window::load_file(SP_Config::SP_file_type p_ftype, SP_Config& p_confi
 
 	const auto ll_load_level = [*this](SP_Config::SP_file_type p_ftype, std::size_t p_level_no, const SP_Config& p_config)->SP_Level {
 		if (p_ftype == SP_Config::SP_file_type::xml)
-			return level_xml_from_file(p_config.get_SP_full_path(p_level_no));
+			return level_xml_from_file(p_config.get_level_xml_full_path(p_level_no));
 		else if (p_ftype == SP_Config::SP_file_type::sp)
-			return level_sp_from_file(p_config.get_SP_full_path(p_level_no));
+			return level_sp_from_file(p_config.get_level_sp_full_path(p_level_no));
 		else
 			throw std::runtime_error("Invalid filetype");
 	};
@@ -89,8 +109,8 @@ void Level_window::load_file(SP_Config::SP_file_type p_ftype, SP_Config& p_confi
 	else if (l_file_counter != 0)
 		p_config.add_message("Loaded " +
 			(p_ftype == SP_Config::SP_file_type::xml ?
-				p_config.get_xml_full_path(get_current_level_idx()) :
-				p_config.get_SP_full_path(get_current_level_idx()))
+				p_config.get_level_xml_full_path(get_current_level_idx()) :
+				p_config.get_level_sp_full_path(get_current_level_idx()))
 		);
 }
 
@@ -112,30 +132,35 @@ void Level_window::save_levels_dat(SP_Config& p_config) {
 	}
 
 	try {
-		klib::file::write_bytes_to_file(l_list_file_bytes,
-			p_config.get_level_lst_full_path());
-		p_config.add_message("Wrote " + p_config.get_level_lst_full_path());
+		if (p_config.has_savefiles()) {
+			klib::file::write_bytes_to_file(l_list_file_bytes,
+				p_config.get_level_list_full_path());
+			p_config.add_message("Wrote " + p_config.get_level_list_full_path());
+		}
 		klib::file::write_bytes_to_file(l_file_bytes,
-			p_config.get_levels_dat_full_path());
-		p_config.add_message("Wrote " + std::to_string(m_levels.size()) + " levels to " + p_config.get_levels_dat_full_path());
+			p_config.get_level_dat_full_path());
+		p_config.add_message("Wrote " + std::to_string(m_levels.size()) + " levels to " + p_config.get_level_dat_full_path());
 	}
 	catch (const std::exception& ex) {
 		p_config.add_message(ex.what());
 	}
 }
 
+std::vector<SP_Level> Level_window::load_levels_dat(const std::string& p_file_full_path) const {
+	std::vector<SP_Level> l_levels;
+	auto l_bytes = klib::file::read_file_as_bytes(p_file_full_path);
+	for (std::size_t i{ 0 }; i < l_bytes.size(); i += c::LVL_DATA_BYTE_SIZE)
+		l_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + c::LVL_DATA_BYTE_SIZE)));
+	return l_levels;
+}
+
 void Level_window::load_levels_dat(SP_Config& p_config) {
 	try {
-		std::vector<SP_Level> l_levels;
-		auto l_bytes = klib::file::read_file_as_bytes(p_config.get_levels_dat_full_path());
-
-		for (std::size_t i{ 0 }; i < l_bytes.size(); i += c::LVL_DATA_BYTE_SIZE)
-			l_levels.push_back(SP_Level(std::vector<byte>(begin(l_bytes) + i, begin(l_bytes) + i + c::LVL_DATA_BYTE_SIZE)));
-
+		std::vector<SP_Level> l_levels = load_levels_dat(p_config.get_level_dat_full_path());
 		m_levels.clear();
 		for (const auto& l_lvl : l_levels)
 			m_levels.push_back(l_lvl);
-		p_config.add_message("Loaded " + std::to_string(m_levels.size()) + " levels from " + p_config.get_levels_dat_full_path());
+		p_config.add_message("Loaded " + std::to_string(m_levels.size()) + " levels from " + p_config.get_level_dat_full_path());
 		if (m_current_level > static_cast<int>(m_levels.size()))
 			m_current_level = static_cast<int>(m_levels.size());
 	}
@@ -599,6 +624,9 @@ void Level_window::paste_from_clipboard(void) {
 			set_tile_value(
 				m_sel_x + i, m_sel_y + j, m_clipboard[j][i]);
 	commit_undo_block();
+
+	// after pasting, set selection rectangle to show the pasted area
+	this->show_clipboard_destination();
 }
 
 void Level_window::delete_selection(bool p_delete_special_ports_only) {
@@ -679,7 +707,7 @@ std::vector<int> Level_window::get_tile_counts(bool p_all_levels) const {
 	if (p_all_levels) {
 		std::vector<int> result(c::TILE_COUNT, 0);
 		for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
-			auto l_lvl_counts = m_levels[i].m_level.get_tile_counts();
+			const auto& l_lvl_counts = m_levels[i].m_level.get_tile_counts();
 			for (std::size_t j{ 0 }; j < l_lvl_counts.size(); ++j)
 				result[j] += l_lvl_counts[j];
 		}
@@ -725,9 +753,9 @@ SP_Level Level_window::level_sp_from_file(const std::string& p_filepath) const {
 }
 
 void Level_window::save_sp(std::size_t p_level_no, const SP_Config& p_config) const {
-	std::filesystem::create_directory(p_config.get_SP_folder());
+	std::filesystem::create_directory(p_config.get_level_sp_folder());
 	klib::file::write_bytes_to_file(m_levels.at(p_level_no).m_level.get_bytes(true),
-		p_config.get_SP_full_path(p_level_no));
+		p_config.get_level_sp_full_path(p_level_no));
 }
 
 void Level_window::set_tile_value(int p_x, int p_y, byte p_value, bool p_autocommit) {

@@ -8,6 +8,7 @@
 #include "./../SP_Constants.h"
 #include <algorithm>
 #include <filesystem>
+#include <stdexcept>
 
 Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_lvl_win{ p_rnd, p_config },
@@ -81,32 +82,42 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 
 	ImGui::Separator();
 
-	if (ImGui::BeginCombo("Levelset File", m_selected_file.c_str(), 0)) {
+	if (ImGui::BeginCombo("Level(s) File", m_selected_file.c_str(), 0)) {
 		for (const auto& l_filename : m_levelset_files) {
 			bool is_selected = (l_filename == m_selected_file);
 			if (ImGui::Selectable(l_filename.c_str(), is_selected)) {
 				m_selected_file = l_filename;
-				p_config.set_level_list_filename(m_selected_file);
 			}
 		}
 
 		ImGui::EndCombo();
 	}
-	if (ImGui::Button("Refresh File List")) {
-		m_levelset_files = get_levelset_files(p_config);
-		if (std::find(begin(m_levelset_files), end(m_levelset_files), m_selected_file)
-			== end(m_levelset_files)) {
-			m_selected_file = SP_Config::get_default_levels_filename();
-			p_config.set_level_list_filename(m_selected_file);
-		}
 
-		p_config.add_message("Refreshed levelset file list");
+	if (ImGui::Button("Load Selected File")) {
+		std::string l_new_file_full_path = SP_Config::get_path_combine(p_config.get_project_folder(), m_selected_file);
+		try {
+			m_lvl_win.load_level_file(l_new_file_full_path);
+			p_config.set_project_file(l_new_file_full_path);
+			p_config.add_message("Loaded " + l_new_file_full_path);
+		}
+		catch (const std::runtime_error& ex) {
+			p_config.add_message("Could not load " + l_new_file_full_path + ": " + ex.what());
+		}
+		catch (...) {
+			p_config.add_message("Could not parse " + l_new_file_full_path);
+		}
 	}
 
 	ImGui::SameLine();
 
-	if (ImGui::Button("Reload Configuration"))
-		p_config.load_configuration();
+	if (ImGui::Button("Refresh File List")) {
+		m_levelset_files = get_levelset_files(p_config);
+		if (std::find(begin(m_levelset_files), end(m_levelset_files), m_selected_file)
+			== end(m_levelset_files))
+			m_selected_file = SP_Config::get_default_levels_filename();
+
+		p_config.add_message("Refreshed level(s) file list");
+	}
 
 	ImGui::Separator();
 
@@ -165,21 +176,12 @@ std::vector<std::string> Main_window::get_levelset_files(const SP_Config& p_conf
 		std::filesystem::directory_iterator(p_config.get_project_folder())) {
 		if (ll_file.is_regular_file()) {
 			std::filesystem::path l_file{ ll_file.path() };
-			std::string l_ext{ l_file.extension().string() };
 			std::string l_name{ l_file.filename().string() };
-			std::transform(begin(l_ext), end(l_ext), begin(l_ext), ::toupper);
-			std::transform(begin(l_name), end(l_name), begin(l_name), ::toupper);
-
-			if (l_name.substr(0, l_name.find_first_of('.')) == c::FILENAME_LEVELS &&
-				l_ext.size() == 4 &&
-				l_ext[1] == 'D' &&
-				(l_ext[2] >= '0' && l_ext[2] <= '9') &&
-				(l_ext[3] >= '0' && l_ext[3] <= '9'))
+			if (SP_Config::is_valid_level_filename(l_name))
 				result.push_back(l_name);
 		}
 	}
-	std::sort(begin(result), end(result));
-	result.insert(begin(result), SP_Config::get_default_levels_filename());
 
+	std::sort(begin(result), end(result));
 	return result;
 }

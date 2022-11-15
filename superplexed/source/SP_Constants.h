@@ -22,12 +22,6 @@ namespace c {
 	constexpr char SUFFIX_SP[]{ "SP" };
 	constexpr char SUFFIX_XML[]{ "xml" };
 
-	constexpr char SUFFIX_DAT_UC[]{ "DAT" };
-	constexpr char SUFFIX_BMP_UC[]{ "BMP" };
-	constexpr char SUFFIX_LST_UC[]{ "LST" };
-	constexpr char SUFFIX_SP_UC[]{ "SP" };
-	constexpr char SUFFIX_XML_UC[]{ "XML" };
-
 	// output messages
 	constexpr unsigned int MESSAGES_MAX_SIZE{ 25 };
 

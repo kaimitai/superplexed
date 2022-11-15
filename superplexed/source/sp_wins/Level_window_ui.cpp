@@ -196,19 +196,24 @@ void Level_window::draw_ui_gp_win(const Project_gfx& p_gfx, SP_Config& p_config)
 void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Project_gfx& p_gfx, SP_Config& p_config) {
 	bool l_shift = p_input.is_shift_pressed();
 	bool l_ctrl = p_input.is_ctrl_pressed();
+	bool l_is_levelset = p_config.is_levelset_file();
 	std::string l_clvl{ std::to_string(m_current_level) };
 
-	std::string m_lvl_label{ "Level " + l_clvl + " of " + std::to_string(m_levels.size()) + ": \"" +
+	std::string m_lvl_label{ "Level" +
+		(l_is_levelset ? " " + l_clvl + " of " + std::to_string(m_levels.size()) : "") +
+		": \"" +
 		get_current_level().get_title() + "\"###levels" };
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_LVL_X, c::WIN_LVL_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_LVL_W, c::WIN_LVL_H), ImGuiCond_FirstUseEver);
 	Main_window::window_start(m_lvl_label, c::COL_BLACK, c::COL_ORANGE, c::COL_ORANGE_LIGHT, c::COL_ORANGE_LIGHT);
 
-	// current level number
-	ImGui::SliderInt("Level", &m_current_level, 1, static_cast<int>(m_levels.size()));
+	// current level number, if in a levelset file
+	if (l_is_levelset) {
+		ImGui::SliderInt("Level", &m_current_level, 1, static_cast<int>(m_levels.size()));
+		ImGui::Separator();
+	}
 
-	ImGui::Separator();
 	ImGui::Text("Level Metadata");
 
 	// title
@@ -248,37 +253,44 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		get_current_level().set_freeze_zonks(l_fz);
 
 	ImGui::Separator();
-	ImGui::Text("Level Collection Operations");
 
-	if (ImGui::Button("Insert Level")) {
-		std::size_t l_insert_idx{ get_current_level_idx() + (l_shift ? 0 : 1) };
-		m_levels.insert(begin(m_levels) + l_insert_idx,
-			SP_Level());
-		if (l_shift)
-			++m_current_level;
-		p_config.add_message("Inserted new level " +
-			std::string(l_shift ? "before" : "after")
-			+ " current");
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Delete Level") && l_ctrl) {
-		if (m_levels.size() > 1) {
-			m_levels.erase(begin(m_levels) + get_current_level_idx());
-			p_config.add_message("Deleted level #" + l_clvl);
-			m_current_level = std::min<int>(static_cast<int>(m_levels.size()), m_current_level);
+	if (l_is_levelset) {
+		ImGui::Text("Level Collection Operations");
+
+		if (ImGui::Button("Insert Level")) {
+			std::size_t l_insert_idx{ get_current_level_idx() + (l_shift ? 0 : 1) };
+			m_levels.insert(begin(m_levels) + l_insert_idx,
+				SP_Level());
+			if (l_shift)
+				++m_current_level;
+			p_config.add_message("Inserted new level " +
+				std::string(l_shift ? "before" : "after")
+				+ " current");
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Delete Level") && l_ctrl) {
+			if (m_levels.size() > 1) {
+				m_levels.erase(begin(m_levels) + get_current_level_idx());
+				p_config.add_message("Deleted level #" + l_clvl);
+				m_current_level = std::min<int>(static_cast<int>(m_levels.size()), m_current_level);
+			}
+		}
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+			ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 	}
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
 
 	ImGui::Separator();
 	ImGui::Text(c::TXT_FILE_OPERATIONS);
 	// save to disk
-	std::string l_save_dat{ "Save " + p_config.get_extension('D') };
-	std::string l_load_dat{ "Load " + p_config.get_extension('D') };
-	if (ImGui::Button(l_save_dat.c_str()))
-		save_levels_dat(p_config);
-	ImGui::SameLine();
+	std::string l_save_dat{ "Save " + p_config.get_dat_label() };
+	std::string l_load_dat{ "Load " + p_config.get_dat_label() };
+
+	if (l_is_levelset) {
+		if (ImGui::Button(l_save_dat.c_str()))
+			save_levels_dat(p_config);
+		ImGui::SameLine();
+	}
+
 	if (ImGui::Button(c::SAVE_XML))
 		save_file(SP_Config::SP_file_type::xml, p_config, p_gfx, l_shift);
 	ImGui::SameLine();
@@ -287,12 +299,15 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 	ImGui::SameLine();
 	if (ImGui::Button(c::SAVE_BMP))
 		save_file(SP_Config::SP_file_type::bmp, p_config, p_gfx, l_shift);
+
 	// load from disk
-	if (ImGui::Button(l_load_dat.c_str()) && l_ctrl)
-		load_levels_dat(p_config);
-	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
-	ImGui::SameLine();
+	if (l_is_levelset) {
+		if (ImGui::Button(l_load_dat.c_str()) && l_ctrl)
+			load_levels_dat(p_config);
+		if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+			ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
+		ImGui::SameLine();
+	}
 	if (ImGui::Button(c::LOAD_XML) && l_ctrl)
 		load_file(SP_Config::SP_file_type::xml, p_config, l_shift);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))

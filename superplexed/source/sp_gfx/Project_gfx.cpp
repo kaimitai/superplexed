@@ -3,8 +3,10 @@
 #include "./../common/klib/klib_file.h"
 #include "./../SP_Constants.h"
 #include <filesystem>
+#include <stdexcept>
 #include <tuple>
 #include "./../common/klib/KImage.h"
+#include "SP_Embedded_gfx_files.h"
 
 using byte = unsigned char;
 
@@ -57,13 +59,17 @@ void Project_gfx::regenerate_texture(SDL_Renderer* p_rnd, const std::string& p_f
 	);
 }
 
-void Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config) {
-	SP_Image l_tmp_image(klib::file::read_file_as_bytes(p_config.get_dat_full_path(p_filename)),
+void Project_gfx::load_image_data_from_vector(SDL_Renderer* p_rnd, const SP_Config& p_config, const std::string& p_filename, const std::vector<byte>& p_bytes) {
+	SP_Image l_tmp_image(p_bytes,
 		m_image_metadata.at(p_filename).m_width,
 		m_image_metadata.at(p_filename).m_binary);
 	m_image_files.erase(p_filename);
 	m_image_files.insert(std::make_pair(p_filename, l_tmp_image));
 	regenerate_texture(p_rnd, p_filename);
+}
+
+void Project_gfx::load_image_data_from_file(SDL_Renderer* p_rnd, const std::string& p_filename, const SP_Config& p_config) {
+	load_image_data_from_vector(p_rnd, p_config, p_filename, klib::file::read_file_as_bytes(p_config.get_gfx_dat_full_path(p_filename)));
 }
 
 /* will load the tile definitions which will be used when generating tile data.
@@ -156,8 +162,19 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 
 	// read required image data for the program
 	generate_tile_definitions();
-	load_image_data_from_file(p_rnd, c::FILENAME_FIXED, p_config);
-	load_image_data_from_file(p_rnd, c::FILENAME_MOVING, p_config);
+	try {
+		load_image_data_from_file(p_rnd, c::FILENAME_FIXED, p_config);
+	}
+	catch (const std::exception&) {
+		load_image_data_from_vector(p_rnd, p_config, c::FILENAME_FIXED, std::vector<byte>(begin(SP_EMBEDDED_FIXED_DAT), end(SP_EMBEDDED_FIXED_DAT)));
+	}
+
+	try {
+		load_image_data_from_file(p_rnd, c::FILENAME_MOVING, p_config);
+	}
+	catch (const std::exception&) {
+		load_image_data_from_vector(p_rnd, p_config, c::FILENAME_MOVING, std::vector<byte>(begin(SP_EMBEDDED_MOVING_DAT), end(SP_EMBEDDED_MOVING_DAT)));
+	}
 
 	// create textures used by the editor
 	// tile textures
@@ -171,7 +188,7 @@ Project_gfx::Project_gfx(SDL_Renderer* p_rnd, const SP_Config& p_config) {
 
 void Project_gfx::save_dat(const std::string& p_filename, SP_Config& p_config) const {
 	klib::file::write_bytes_to_file(m_image_files.at(p_filename).to_bytes(),
-		p_config.get_dat_full_path(p_filename));
+		p_config.get_gfx_dat_full_path(p_filename));
 }
 
 SDL_Color Project_gfx::sp_color_to_sdl(const std::tuple<byte, byte, byte, byte>& p_col) const {
@@ -257,7 +274,15 @@ void Project_gfx::load_palettes(SDL_Renderer* p_rnd, const SP_Config& p_config) 
 		// palette 3: ???
 	m_palettes.clear();
 
-	std::vector<byte> l_bytes = klib::file::read_file_as_bytes(p_config.get_dat_full_path(c::FILENAME_PALETTES));
+	std::vector<byte> l_bytes;
+
+	try {
+		l_bytes = klib::file::read_file_as_bytes(p_config.get_gfx_dat_full_path(c::FILENAME_PALETTES));
+	}
+	catch (const std::exception&) {
+		l_bytes = std::vector<byte>(begin(SP_EMBEDDED_PALETTES_DAT), end(SP_EMBEDDED_PALETTES_DAT));
+	}
+
 	for (std::size_t i{ 0 }; i < 4; ++i)
 		m_palettes.push_back(SP_Palette(std::vector<byte>(begin(l_bytes) + i * 4 * 16,
 			begin(l_bytes) + (i + 1) * 4 * 16)));
@@ -286,5 +311,5 @@ void Project_gfx::save_palettes_dat(const SP_Config& p_config) {
 	}
 
 	klib::file::write_bytes_to_file(l_out_bytes,
-		p_config.get_dat_full_path(c::FILENAME_PALETTES));
+		p_config.get_gfx_dat_full_path(c::FILENAME_PALETTES));
 }

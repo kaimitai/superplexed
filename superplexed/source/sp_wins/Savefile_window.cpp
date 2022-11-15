@@ -20,7 +20,7 @@ Savefile_window::Savefile_window(SP_Config& p_config) :
 }
 
 void Savefile_window::load_player_lst(SP_Config& p_config, bool p_first_load) {
-	std::string l_in_file{ p_config.get_player_lst_full_path() };
+	std::string l_in_file{ p_config.get_player_db_full_path() };
 
 	try {
 		m_players = SP_Player_list(klib::file::read_file_as_bytes(l_in_file));
@@ -36,7 +36,7 @@ void Savefile_window::load_player_lst(SP_Config& p_config, bool p_first_load) {
 }
 
 void Savefile_window::save_player_lst(SP_Config& p_config) {
-	std::string l_out_file{ p_config.get_player_lst_full_path() };
+	std::string l_out_file{ p_config.get_player_db_full_path() };
 
 	try {
 		klib::file::write_bytes_to_file(m_players.to_bytes(), l_out_file);
@@ -48,7 +48,7 @@ void Savefile_window::save_player_lst(SP_Config& p_config) {
 }
 
 void Savefile_window::load_hallfame_lst(SP_Config& p_config, bool p_first_load) {
-	std::string l_infile{ p_config.get_hallfame_lst_full_path() };
+	std::string l_infile{ p_config.get_hallfame_full_path() };
 	try {
 		m_hallfame = SP_Hallfame(klib::file::read_file_as_bytes(l_infile.c_str()));
 		if (!p_first_load)
@@ -63,7 +63,7 @@ void Savefile_window::load_hallfame_lst(SP_Config& p_config, bool p_first_load) 
 }
 
 void Savefile_window::save_hallfame_lst(SP_Config& p_config) {
-	std::string l_out_file{ p_config.get_hallfame_lst_full_path() };
+	std::string l_out_file{ p_config.get_hallfame_full_path() };
 
 	try {
 		klib::file::write_bytes_to_file(m_hallfame.to_bytes(), l_out_file);
@@ -75,14 +75,23 @@ void Savefile_window::save_hallfame_lst(SP_Config& p_config) {
 }
 
 void Savefile_window::draw_ui(SP_Config& p_config) {
-	draw_ui_hallfame(p_config);
-	draw_ui_players(p_config);
+
+	if (!p_config.has_savefiles()) {
+		ImGui::Begin("Savefiles");
+		ImGui::Text("No savefiles available for the loaded level(s)");
+		ImGui::End();
+		return;
+	}
+	else {
+		draw_ui_hallfame(p_config);
+		draw_ui_players(p_config);
+	}
 }
 
 void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 	int l_zindex = m_selected_hf - 1;
-	const std::string l_save_lst{ "Save " + p_config.get_extension('L') };
-	const std::string l_load_lst{ "Load " + p_config.get_extension('L') };
+	const std::string l_save_lst{ "Save " + p_config.get_lst_label() };
+	const std::string l_load_lst{ "Load " + p_config.get_lst_label() };
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_HF_X, c::WIN_HF_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_HF_W, c::WIN_HF_H), ImGuiCond_FirstUseEver);
@@ -124,8 +133,8 @@ void Savefile_window::draw_ui_hallfame(SP_Config& p_config) {
 void Savefile_window::draw_ui_players(SP_Config& p_config) {
 	int l_zindex = m_selected_player - 1;
 	int l_next_lvl = m_players.get_current_level(l_zindex) - 1;
-	const std::string l_save_lst{ "Save " + p_config.get_extension('L') };
-	const std::string l_load_lst{ "Load " + p_config.get_extension('L') };
+	const std::string l_save_lst{ "Save " + p_config.get_lst_label() };
+	const std::string l_load_lst{ "Load " + p_config.get_lst_label() };
 
 	ImGui::SetNextWindowPos(ImVec2(c::WIN_PL_X, c::WIN_PL_Y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowSize(ImVec2(c::WIN_PL_W, c::WIN_PL_H), ImGuiCond_FirstUseEver);
