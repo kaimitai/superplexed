@@ -7,8 +7,14 @@
 #include <algorithm>
 #include <stdexcept>
 
-SP_Config::SP_Config(void) {
-	load_configuration();
+SP_Config::SP_Config(const std::string& p_command_line_file_path) {
+	if (p_command_line_file_path.empty())
+		load_configuration();
+	else {
+		generate_level_filedata_cache(p_command_line_file_path, true);
+	}
+	
+	add_message("Level File: " + get_level_dat_full_path());
 }
 
 std::string SP_Config::get_default_levels_filename(void) {
@@ -59,8 +65,6 @@ void SP_Config::load_configuration(void) {
 		l_project_filename = SP_Config::get_default_levels_filename();
 
 	this->generate_level_filedata_cache(get_path_combine(l_project_folder, l_project_filename), true);
-
-	add_message("Level File: " + get_level_dat_full_path());
 }
 
 void SP_Config::add_message(const std::string& p_msg, bool p_prevent_repeat) {

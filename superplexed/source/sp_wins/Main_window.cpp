@@ -15,7 +15,7 @@ Main_window::Main_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 	m_gfx{ p_rnd, p_config },
 	m_savefile_win{ p_config },
 	m_current_window{ 1 },
-	m_selected_file{ SP_Config::get_default_levels_filename() }
+	m_selected_file{ p_config.get_loaded_file_name() }
 {
 	// initialize selectable windows
 	m_selectable_windows = { "Graphics", "Levels", "Savefiles" };
@@ -114,7 +114,7 @@ void Main_window::draw_ui(SDL_Renderer* p_rnd, const klib::User_input& p_input, 
 		m_levelset_files = get_levelset_files(p_config);
 		if (std::find(begin(m_levelset_files), end(m_levelset_files), m_selected_file)
 			== end(m_levelset_files))
-			m_selected_file = SP_Config::get_default_levels_filename();
+			m_selected_file = p_config.get_loaded_file_name();
 
 		p_config.add_message("Refreshed level(s) file list");
 	}

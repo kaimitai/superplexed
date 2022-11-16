@@ -29,7 +29,7 @@ public:
 		}
 	};
 
-	SP_Config(void);
+	SP_Config(const std::string& p_command_line_file_path);
 	void add_message(const std::string& p_msg, bool p_prevent_repeat = false);
 	const std::deque<std::string>& get_messages(void) const;
 	const Predefined_levelset& get_predefined_levelset(void) const;
@@ -50,6 +50,7 @@ public:
 	std::string get_dat_label(void) const;
 	std::string get_lst_label(void) const;
 	SP_file_type get_extension(void) const;
+	std::string get_loaded_file_name(void) const;
 
 	// get folders for level files (these folders may need to be created by the callers)
 	std::string get_level_bmp_folder(void) const;

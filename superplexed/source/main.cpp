@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <string>
 #include <vector>
 #include "./common/imgui/imgui.h"
 #include "./common/imgui/imgui_impl_sdl.h"
@@ -56,7 +57,7 @@ int main(int argc, char* args[]) try {
 			ImGui::GetIO().IniFilename = c::SP_IMGUI_INI_FILENAME;
 
 			// main window object to handle all logic and drawing
-			SP_Config config;
+			SP_Config config(argc > 1 ? args[1] : std::string());
 			Main_window main_window(l_rnd, config);
 			main_window.set_application_icon(l_window);
 
