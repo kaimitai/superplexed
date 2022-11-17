@@ -39,6 +39,7 @@ public:
 
 	bool has_savefiles(void) const;
 	bool is_levelset_file(void) const;
+	unsigned int get_undo_history_size(void) const;
 
 	// utility
 	static bool is_valid_level_filename(const std::string& p_filename);
@@ -90,6 +91,7 @@ private:
 	std::deque<std::string> m_messages;
 	void generate_level_filedata_cache(const std::string& p_filepath,
 		bool p_generate_project_folder = false);
+	unsigned int m_undo_history_size;
 
 	SP_file_type m_cf_extension;      // current file extension, internal
 	std::string m_cf_true_extension,  // cf true extension, use when writing back to same file
@@ -105,7 +107,6 @@ private:
 	static std::string get_full_filename(const std::string& p_filename, const std::string& p_extension);
 	static std::string get_full_filepath(const std::string& p_path, const std::string& p_filename, const std::string& p_extension);
 	std::string get_filename_postfix(std::size_t p_no) const;
-
 };
 
 #endif

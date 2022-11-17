@@ -8,7 +8,7 @@ void SP_Level_undo_interface::commit_block(void) {
 		m_working_block.clear();
 		m_redo.clear();
 
-		if (m_history.size() > c::UNDO_HISTORY_COUNT)
+		if (m_history.size() > ms_history_size)
 			m_history.pop_front();
 	}
 }
@@ -59,4 +59,10 @@ std::map<std::pair<byte, byte>, byte> SP_Level_undo_interface::create_opposite_b
 		result.insert(std::make_pair(kv.first, p_level.get_tile_no(kv.first.first, kv.first.second)));
 
 	return result;
+}
+
+unsigned int SP_Level_undo_interface::ms_history_size{ c::UNDO_HISTORY_COUNT };
+
+void SP_Level_undo_interface::set_undo_history_size(unsigned int p_history_size) {
+	ms_history_size = p_history_size;
 }

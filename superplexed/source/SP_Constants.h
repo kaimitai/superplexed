@@ -3,8 +3,8 @@
 
 namespace c {
 	// application constants
-	constexpr char APP_TITLE[]{ "Superplexed v0.2-snapshot" };
-	constexpr char APP_VERSION[]{ "0.2-snapshot" };
+	constexpr char APP_TITLE[]{ "Superplexed v0.2" };
+	constexpr char APP_VERSION[]{ "0.2" };
 	constexpr int APP_WIN_W_INITIAL{ 1024 };
 	constexpr int APP_WIN_H_INITIAL{ 768 };
 	constexpr char FILE_SIGNATURE[]{ "kaimitai@github " };
@@ -44,6 +44,7 @@ namespace c {
 	// xml tags, attributes and values
 	// configuration XML
 	constexpr char XML_ATTR_PROJECT_FOLDER[]{ "project_folder" };
+	constexpr char XML_ATTR_UNDO_HISTORY_SIZE[]{ "undo_history" };
 
 	// level file XMLs
 	constexpr char XML_COMMENTS[]{ " Supaplex Level created by Superplexed (https://github.com/kaimitai/superplexed) " };

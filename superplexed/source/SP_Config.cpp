@@ -7,13 +7,14 @@
 #include <algorithm>
 #include <stdexcept>
 
-SP_Config::SP_Config(const std::string& p_command_line_file_path) {
+SP_Config::SP_Config(const std::string& p_command_line_file_path) :
+	m_undo_history_size{ c::UNDO_HISTORY_COUNT } {
 	if (p_command_line_file_path.empty())
 		load_configuration();
 	else {
 		generate_level_filedata_cache(p_command_line_file_path, true);
 	}
-	
+
 	add_message("Level File: " + get_level_dat_full_path());
 }
 
@@ -32,6 +33,9 @@ void SP_Config::load_configuration(void) {
 		else {
 			auto n_meta = doc.child(c::XML_TAG_META);
 			l_project_folder = n_meta.attribute(c::XML_ATTR_PROJECT_FOLDER).as_string();
+			unsigned int l_undo_history_size = n_meta.attribute(c::XML_ATTR_UNDO_HISTORY_SIZE).as_int();
+
+			m_undo_history_size = std::max<unsigned int>(l_undo_history_size, c::UNDO_HISTORY_COUNT);
 
 			auto n_predefined = n_meta.child(c::XML_TAG_PREDEFINED);
 			if (n_predefined) {
@@ -102,4 +106,8 @@ SP_Config::SP_file_type SP_Config::get_file_type_from_path(const std::string& p_
 		return SP_file_type::dat;
 	else
 		return SP_file_type::unknown;
+}
+
+unsigned SP_Config::get_undo_history_size(void) const {
+	return m_undo_history_size;
 }

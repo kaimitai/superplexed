@@ -194,6 +194,9 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
 
+	// set undo history
+	SP_Level_undo_interface::set_undo_history_size(p_config.get_undo_history_size());
+
 	// initialize the tile picker
 	m_tile_picker = {
 		{"Basic Tiles", {c::TILE_NO_PLAYER_START, c::TILE_NO_EMPTY, c::TILE_NO_BASE, c::TILE_NO_INFOTRON, c::TILE_NO_WALL, c::TILE_NO_EXIT, c::TILE_NO_ZONK, c::TILE_NO_SNIKSNAK, c::TILE_NO_ELECTRON, c::TILE_NO_BUG}},
@@ -313,13 +316,13 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 			m_current_level = std::min(static_cast<int>(m_levels.size()), m_current_level + (l_ctrl ? 10 : 1));
 		else if (p_input.is_pressed(SDL_SCANCODE_DOWN))
 			m_current_level = std::max(1, m_current_level - (l_ctrl ? 10 : 1));
-		else if (p_input.is_pressed(SDL_SCANCODE_B))
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_B))
 			apply_border_to_current_level();
-		else if (p_input.is_pressed(SDL_SCANCODE_Z)) {
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_Z)) {
 			if (!m_levels.at(get_current_level_idx()).m_undo.apply_undo(get_current_level()))
 				p_config.add_message("No undo history", true);
 		}
-		else if (p_input.is_pressed(SDL_SCANCODE_Y)) {
+		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_Y)) {
 			if (!m_levels.at(get_current_level_idx()).m_undo.apply_redo(get_current_level()))
 				p_config.add_message("No redo history", true);
 		}
