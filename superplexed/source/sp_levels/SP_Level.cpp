@@ -1,10 +1,14 @@
 #include "SP_Level.h"
 #include "./../SP_Constants.h"
+#include <stdexcept>
 
 using byte = unsigned char;
 
 SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 	m_player_x{ 0 }, m_player_y{ 0 } {
+
+	if (p_bytes.size() < c::LVL_DATA_BYTE_SIZE)
+		throw std::runtime_error("Invalid level byte size");
 
 	// it is possible to have more than one player start
 	// only the first found will be used, the rest will turn into "decorative" murphys
@@ -22,7 +26,7 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 				l_player_found = true;
 			}
 			else
-				l_row.push_back(l_value > c::TILE_NO_INVISIBLE ? c::TILE_NO_INVISIBLE : l_value);
+				l_row.push_back(l_value >= c::TILE_COUNT ? c::TILE_COUNT - 1 : l_value);
 		}
 		m_tiles.push_back(l_row);
 	}
@@ -42,6 +46,10 @@ SP_Level::SP_Level(const std::vector<byte>& p_bytes) :
 
 	// initialize gravity ports
 	byte l_gp_count = p_bytes.at(c::OFFSET_GP_COUNT);
+
+	if (l_gp_count > c::MAX_GP_COUNT)
+		throw std::runtime_error("Special port count higher than " + std::to_string(c::MAX_GP_COUNT));
+
 	for (std::size_t i{ 0 }; i < l_gp_count; ++i) {
 		std::size_t l_offset = c::OFFSET_GP + c::LENGTH_GP * i;
 		m_gravity_ports.push_back(std::vector<byte>(begin(p_bytes) + l_offset,
@@ -96,6 +104,21 @@ SP_Level::SP_Level(const std::string& p_title,
 	m_sf_version{ p_sf_version }, m_sf_demo_bytes{ p_sf_demo_bytes },
 	m_unused_bytes{ p_unknown_bytes }, m_sf_solution_bytes{ p_solution_bytes }
 {
+	if (m_unused_bytes.size() != c::LENGTH_UNUSED_BYTES ||
+		m_sf_demo_bytes.size() != c::LENGTH_SF_DEMO_BYTES ||
+		m_title.size() != c::LENGTH_TITLE)
+		throw std::runtime_error("Invalid level attribute size");
+
+	if (m_tiles.size() != c::LEVEL_H)
+		throw std::runtime_error("Invalid level height");
+	for (const auto& lrow : m_tiles) {
+		if (lrow.size() != c::LEVEL_W)
+			throw std::runtime_error("Invalid level width");
+		for (byte b : lrow)
+			if (b >= c::TILE_COUNT)
+				throw std::runtime_error("Invalid tile number");
+	}
+
 	recalculate_tile_counts();
 }
 
@@ -338,7 +361,8 @@ void SP_Level::delete_gravity_port(int p_gp_no) {
 }
 
 void SP_Level::add_gravity_port(int p_x, int p_y, bool p_grav, bool p_fz, bool p_fe, byte p_unknown) {
-	m_gravity_ports.push_back(Gravity_port(p_x, p_y, p_grav, p_fz, p_fe, p_unknown));
+	if (m_gravity_ports.size() < c::MAX_GP_COUNT)
+		m_gravity_ports.push_back(Gravity_port(p_x, p_y, p_grav, p_fz, p_fe, p_unknown));
 }
 
 // returns index of gravity port at the given position, -1 if there is none

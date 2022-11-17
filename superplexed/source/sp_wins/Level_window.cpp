@@ -138,8 +138,8 @@ void Level_window::save_levels_dat(SP_Config& p_config) {
 			p_config.add_message("Wrote " + p_config.get_level_list_full_path());
 		}
 		klib::file::write_bytes_to_file(l_file_bytes,
-			p_config.get_level_dat_full_path());
-		p_config.add_message("Wrote " + std::to_string(m_levels.size()) + " levels to " + p_config.get_level_dat_full_path());
+			p_config.get_level_file_full_path());
+		p_config.add_message("Wrote " + std::to_string(m_levels.size()) + " levels to " + p_config.get_level_file_full_path());
 	}
 	catch (const std::exception& ex) {
 		p_config.add_message(ex.what());
@@ -156,11 +156,11 @@ std::vector<SP_Level> Level_window::load_levels_dat(const std::string& p_file_fu
 
 void Level_window::load_levels_dat(SP_Config& p_config) {
 	try {
-		std::vector<SP_Level> l_levels = load_levels_dat(p_config.get_level_dat_full_path());
+		std::vector<SP_Level> l_levels = load_levels_dat(p_config.get_level_file_full_path());
 		m_levels.clear();
 		for (const auto& l_lvl : l_levels)
 			m_levels.push_back(l_lvl);
-		p_config.add_message("Loaded " + std::to_string(m_levels.size()) + " levels from " + p_config.get_level_dat_full_path());
+		p_config.add_message("Loaded " + std::to_string(m_levels.size()) + " levels from " + p_config.get_level_file_full_path());
 		if (m_current_level > static_cast<int>(m_levels.size()))
 			m_current_level = static_cast<int>(m_levels.size());
 	}
@@ -189,8 +189,12 @@ Level_window::Level_window(SDL_Renderer* p_rnd, SP_Config& p_config) :
 {
 	if (p_config.has_predefined_levelset())
 		load_predefined_levelset(p_config);
-	else
+	// if loading a dat file, use the error handling to initialize a default 1-level set if the load fails
+	else if (p_config.get_extension() == SP_Config::SP_file_type::dat)
 		load_levels_dat(p_config);
+	// for other files, just crash gracefully if the file cannot be parsed as as level
+	else
+		load_level_file(p_config.get_level_file_full_path());
 
 	m_texture = SDL_CreateTexture(p_rnd, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, c::LEVEL_W * c::TILE_W, c::LEVEL_H * c::TILE_W);
 

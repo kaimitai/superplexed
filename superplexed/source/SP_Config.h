@@ -67,7 +67,7 @@ public:
 	std::string get_level_bmp_full_path(std::size_t p_level_no) const;
 	std::string get_level_xml_full_path(std::size_t p_level_no) const;
 	std::string get_level_sp_full_path(std::size_t p_level_no) const;
-	std::string get_level_dat_full_path(void) const;
+	std::string get_level_file_full_path(void) const;
 	std::string get_level_list_full_path(void) const;
 
 	// get full file paths to gfx files (used for read/write by the callers)

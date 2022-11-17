@@ -191,7 +191,7 @@ std::string SP_Config::get_level_sp_full_path(std::size_t p_level_no) const {
 		m_cf_extension == SP_file_type::sp ? m_cf_true_extension : c::SUFFIX_SP);
 }
 
-std::string SP_Config::get_level_dat_full_path(void) const {
+std::string SP_Config::get_level_file_full_path(void) const {
 	return get_full_filepath(get_level_dat_folder(), m_cf_filename, m_cf_true_extension);
 }
 
