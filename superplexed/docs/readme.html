@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Superplexed v0.11 - Documentation</title>
+    <title>Superplexed v0.2 - Documentation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -60,7 +60,7 @@
 
                 <hr>
 
-                <header>Superplexed (version 0.11)</header>
+                <header>Superplexed (version 0.2)</header>
 
                 <p>Thank you for checking out <a href="https://github.com/kaimitai/superplexed/">Superplexed</a>. With this tool you will be able to create and alter levels for Supaplex, as well as - with the help of an external bmp file editor - modify the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
 
@@ -75,16 +75,18 @@
                 <header>Basics</header>
 
                 <p>
-                    This editor will let you edit the game data for Supaplex levelsets (LEVELS.DAT/LEVELS.Dxx), as well as the game's graphics and palettes. Included with the editor is the latest version of Supaplex for DOS, and starting the program out of the box will load these files. See the configuration section for how to alter files in other locations.
+                    This editor will let you edit the game data for Supaplex levelset files (LEVELS.DAT/LEVELS.Dxx), single level files (SP/xml) as well as the game's graphics and palettes. Included with the editor is the latest version of Supaplex for DOS, and starting the program out of the box will load these files. See the configuration section for how to alter files in other locations.
                 </p>
 
                 <p>
                     To play the game, the original executable and game data are included, but a <a href="https://github.com/sergiou87/open-supaplex">modern source port</a> can be a good alternative.
                 </p>
 
-                <p>When the editor starts successfully, it will tell you which configuration is loaded, which directory it uses as the working directory, and which levelset file was loaded. If LEVELS.DAT cannot be found, the application will initialize a levelset with one empty level.</p>
+                <p>When the editor starts successfully, it will tell you which configuration is loaded, which directory it uses as the working directory, and which level/levelset file was loaded. If LEVELS.DAT cannot be found, the application will initialize a levelset with one empty level.</p>
 
-                <p>Some files need to be in the project folder for the application to start at all. These are the following graphics files: FIXED.DAT, MOVING.DAT and PALETTES.DAT. The application needs these files to generate its graphics.</p>
+                <p>The graphics files FIXED.DAT, MOVING.DAT and PALETTES.DAT will initialize the graphics, if found in the project folder. Otherwise the application will initialize with the original Supaplex graphics.</p>
+				
+				<p>The application can also be started from the command-line with path to a level(s) file as parameter. This means you can drag and drop a levelfile on the application to immediately load the file, at least on Windows.</p>
 
             </section>
 
@@ -94,13 +96,13 @@
 
                 <header>Configuration</header>
 
-                <p>When opening the editor, the program looks for a file spconfig.xml in the same directory as the executable. This is a configuration XML which lets you set the project folder - the folder from which files will be read and written to.</p>
+                <p>When opening the editor, the program looks for a file spconfig.xml in the same directory as the executable. This is a configuration XML which lets you set the project folder - the folder from which files will be read and written to, and undo history.</p>
 
-                <p>By default the file points to the gamedata folder which ships with the editor. If spconfig.xml cannot be found, the project folder will be the same as the executable folder.</p>
-
-                <p>
-                    The configuration is loaded when the program starts, but can be reloaded during runtime if you want to work in a different location.
-                </p>
+                <p>By default the file points to the gamedata folder which ships with the editor. If spconfig.xml cannot be found, the project folder will be the same as the executable folder, and the undo history will be 200.</p>
+				
+				<p>
+				   The configuration file can also define a levelset file which will be generated on startup, which can import files from different sources. All level file formats are supported for import, but for dat-levelset files you also need to specify which level number to import. See the <a href="./examples/spconfig_predefined_levelset.xml">example xml</a>.
+				</p>
 
             </section>
 
@@ -116,9 +118,9 @@
                 </p>
                 <ul>
                     <li><b>Editor Mode</b> dropdown: Lets you choose if you want to edit levels, graphics or savefiles.</li>
-                    <li><b>Levelset File</b> dropdown: Lets you choose the context for saving and loading files. Only relevant if you are working on different levelsets in the same folder. The default levelset is LEVELS.DAT, but other possible names are LEVELS.Dxx where xx is a number from 00 to 99. This is in line with how the latest SpeedFix version of Supaplex handles custom levelsets.</li>
+                    <li><b>Level(s) File</b> dropdown: Shows all potential level files in the project folder; DAT/Dxx, SP and xml</li>
+					<li><b>Load Selected File</b> button: Will load the level or levelset file in the level editor.</li>
                     <li><b>Refresh File List</b> button: Will scan the project folder for levelsets, and repopulate the dropdown for levelset files.</li>
-                    <li><b>Reload Configuration</b> button: Reloads spconfig.xml if you want to change project folder during runtime.</li>
                     <li><b>Output Messages</b>: A running list of user messages generated by the editor.</li>
                 </ul>
 
@@ -136,13 +138,13 @@
                 <ul>
                     <li><b>Level</b> slidebar: The current level in the levelset being edited.</li>
                     <li><b>Title</b>: The level's title. When editing the title, the editor will ensure you are only using characters that can be rendered in the game. (see images CHARS8 and CHARS6)</li>
-                    <li><b>#Infotrons</b>: The number of infotrons required to solve the level. If set to 0, the required number will be all Infotrons placed in the level</li>
+                    <li><b>Infotrons</b>: The number of infotrons required to solve the level. If set to 0, the required number will be all Infotrons placed in the level. This slider has a tooltip showing the number of infotrons and electrons currently in the level.</li>
                     <li><b>Gravity</b> checkbox: Whether the level starts with gravity turned on</li>
                     <li><b>Freeze Zonks</b>: Whether the level starts with Zonks frozen</li>
                     <li><b>Insert Level</b> button: Will add a new empty level after the current one. If Shift is held, the level will be inserted before the current one.</li>
                     <li><b>Delete Level</b>: Will erase the current level from the levelset. Hold Ctrl to use</li>
-                    <li><b>Save DAT</b>: Will save the levelset to LEVELS.DAT, or LEVELS.Dxx in the case of an other levelset.</li>
-                    <li><b>Load DAT</b>: Will load the levelset. Hold Ctrl to use this button</li>
+                    <li><b>Save DAT</b>: Will save the levelset to LEVELS.DAT, or LEVELS.Dxx in the case of an other levelset. Only available when a levelset file is loaded.</li>
+                    <li><b>Load DAT</b>: Will load the levelset. Hold Ctrl to use this button. Only available when a levelset file is loaded.</li>
                     <li><b>Save/Load xml</b>: Will save or load the current level as an xml file. Hold shift to save/load all levels. Hold Ctrl to load.</li>
                     <li><b>Save/Load SP</b>: Will save or load the current level as an SP file. Hold shift to save/load all levels. Hold Ctrl to load.</li>
                     <li><b>Save bmp</b>: Will save the current level as a 256-color bmp image. Hold shift to save all levels. Output bmp files will indicate medatada properties for the level itself (gravity and freeze zonks), as well as for the special ports - UNLESS the animate ports checkbox is disabled.</li>

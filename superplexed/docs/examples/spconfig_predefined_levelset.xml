@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- Configuration file for Superplexed (https://github.com/kaimitai/superplexed) -->
+
+<!-- predefined levelset example file -->
+<superplexed app_version="0.2" project_folder="." undo_history="1000">
+  <!-- if level_count is given, the end of the file will be padded with empty levels. in this case it would be three since only five levels are specified below -->
+  <predefined_levelset filename="example.dat" level_count="8">
+  
+	<level_file filepath="./xml_file.xml" />
+	<level_file filepath="./sp_file.sp" />
+	<level_file filepath="c:/absolute/path/to/sp_file.sp" />
+	<!-- for dat-levelset files, specify which level number to import -->
+	<level_file filepath="./levels.dat" level_no="111" />
+	<level_file filepath="./levels.d50" level_no="42" />
+	
+  </predefined_levelset>
+  
+</superplexed>
