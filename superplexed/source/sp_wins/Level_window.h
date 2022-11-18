@@ -75,6 +75,7 @@ class Level_window {
 	std::pair<int, int> mouse_coords_to_tile(int p_mouse_x, int p_mouse_y, int p_screen_h) const;
 	std::vector<int> get_tile_counts(bool p_all_levels) const;
 	void toggle_selected_gp_property(int p_property_no);
+	void toggle_selected_level_property(int p_property_no);
 	void floorfill(byte p_source_col, byte p_target_col, int p_x, int p_y);
 
 	// file definitions
