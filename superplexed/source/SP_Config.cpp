@@ -15,7 +15,7 @@ SP_Config::SP_Config(const std::string& p_command_line_file_path) :
 		generate_level_filedata_cache(p_command_line_file_path, true);
 	}
 
-	add_message("Level File: " + get_level_dat_full_path());
+	add_message("Level File: " + get_level_file_full_path());
 }
 
 std::string SP_Config::get_default_levels_filename(void) {
