@@ -16,7 +16,10 @@ void Level_window::load_predefined_levelset(const SP_Config& p_config) {
 		std::string l_filepath = l_file.first;
 		std::size_t l_lvl_no = l_file.second;
 
-		if (SP_Config::get_file_type_from_path(l_filepath) == SP_Config::SP_file_type::xml)
+		// if not filepath is given, insert an empty level at this point
+		if (l_filepath.empty())
+			m_levels.push_back(SP_Level());
+		else if (SP_Config::get_file_type_from_path(l_filepath) == SP_Config::SP_file_type::xml)
 			m_levels.push_back(level_xml_from_file(l_filepath));
 		else if (SP_Config::get_file_type_from_path(l_filepath) == SP_Config::SP_file_type::sp)
 			m_levels.push_back(level_sp_from_file(l_filepath));
