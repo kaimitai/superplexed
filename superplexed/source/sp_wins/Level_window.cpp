@@ -306,10 +306,18 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		}
 		else if (l_ctrl && p_input.is_pressed(SDL_SCANCODE_S))
 			save_levels_dat(p_config);
-		else if (p_input.is_pressed(SDL_SCANCODE_1))
-			toggle_selected_gp_property(1);
-		else if (p_input.is_pressed(SDL_SCANCODE_2))
-			toggle_selected_gp_property(2);
+		else if (p_input.is_pressed(SDL_SCANCODE_1)) {
+			if (l_shift)
+				toggle_selected_level_property(1);
+			else
+				toggle_selected_gp_property(1);
+		}
+		else if (p_input.is_pressed(SDL_SCANCODE_2)) {
+			if (l_shift)
+				toggle_selected_level_property(2);
+			else
+				toggle_selected_gp_property(2);
+		}
 		else if (p_input.is_pressed(SDL_SCANCODE_3))
 			toggle_selected_gp_property(3);
 		else if (p_input.is_pressed(SDL_SCANCODE_HOME))
@@ -736,6 +744,15 @@ void Level_window::toggle_selected_gp_property(int p_property_no) {
 		else if (p_property_no == 3)
 			l_lvl.set_gp_freeze_enemies(l_gp_index, !l_lvl.get_gp_freeze_enemies(l_gp_index));
 	}
+}
+
+void Level_window::toggle_selected_level_property(int p_property_no) {
+	auto& l_lvl = get_current_level();
+
+	if (p_property_no == 1)
+		l_lvl.set_gravity(!l_lvl.get_gravity());
+	else if (p_property_no == 2)
+		l_lvl.set_freeze_zonks(!l_lvl.get_freeze_zonks());
 }
 
 void Level_window::floorfill(byte p_source_col, byte p_target_col, int p_x, int p_y) {
