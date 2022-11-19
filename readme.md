@@ -29,7 +29,18 @@ A third window, Savefiles, will let you alter any aspect of the player database,
 It is highly recommended to have a look at the documentation for efficient usage tips.
 <hr>
 
-### Changes since v0.1
+### 2022-11-18: Changes since v0.11
+
+* Support loading individual level file types (SP and xml) without going via a levelset file
+* Support predefining levelset in the config xml; this will load levelfiles of any type from different sources into one levelset file
+* Support for giving level file as a command line parameter; this will allow dragging and dropping a levelfile on the application to start it with that file loaded on several operating systems
+* Added undo history size as a parameter in the configuration xml
+* Embedded Supaplex graphics files in the application itself. These files will no longer be required to start the editor
+* Added keyboard shortcuts for setting level properties "Gravity" and "Freeze Zonks"
+* Added more complete error handling to the parsing of level files
+* Fixed a bug where "color filling" with the player start position was possible
+
+### 2022-11-08: Changes since v0.1
 
 * Improved code portability, thanks to [skeeto](https://github.com/skeeto)
 * Fixed an oversight in the level bmp creator, where the wrong tile would be used for the "bug" enemy in output images
