@@ -115,12 +115,25 @@ void Level_window::load_file(SP_Config::SP_file_type p_ftype, SP_Config& p_confi
 }
 
 void Level_window::save_levels_dat(SP_Config& p_config) {
+	SP_Config::SP_file_type l_filetype{ p_config.get_extension() };
+	if (l_filetype == SP_Config::SP_file_type::xml) {
+		try {
+			this->save_xml(0, p_config);
+			p_config.add_message("Saved " + p_config.get_level_file_full_path());
+		}
+		catch (const std::exception& ex) {
+			p_config.add_message(ex.what());
+		}
+
+		return;
+	}
+
 	// generate LEVELS.DAT and LEVEL.LST
 	std::vector<byte> l_file_bytes;
 	std::vector<byte> l_list_file_bytes;
 
 	for (std::size_t i{ 0 }; i < m_levels.size(); ++i) {
-		auto l_lvl_bytes = m_levels[i].m_level.get_bytes();
+		auto l_lvl_bytes = m_levels[i].m_level.get_bytes(l_filetype == SP_Config::SP_file_type::sp);
 		l_file_bytes.insert(end(l_file_bytes),
 			begin(l_lvl_bytes), end(l_lvl_bytes));
 
