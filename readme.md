@@ -1,6 +1,6 @@
 # Superplexed - An all-round editor for Supaplex
 
-Welcome to the Superplexed code repository and release page. The current version of the editor is 0.11. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the application from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/superplexed/releases/). \
+Welcome to the Superplexed code repository and release page. The current version of the editor is 0.2. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the application from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/superplexed/releases/). \
 Make sure to read the included documentation (readme.html in the docs folder) for a detailed overview.
 <br></br>
 ### Editor Capabilities
