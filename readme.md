@@ -1,6 +1,6 @@
 # Superplexed - An all-round editor for Supaplex
 
-Welcome to the Superplexed code repository and release page. The current version of the editor is 0.2. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the application from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/superplexed/releases/). \
+Welcome to the Superplexed code repository and release page. The current version of the editor is 0.21. The code is standard C++20, and the project files were created using Microsoft Visual Studio Community 2022. You can compile the application from source, or get the latest precompiled win-x64 distribution under the [repository releases](https://github.com/kaimitai/superplexed/releases/). \
 Make sure to read the included documentation (readme.html in the docs folder) for a detailed overview.
 <br></br>
 ### Editor Capabilities
@@ -28,6 +28,10 @@ A third window, Savefiles, will let you alter any aspect of the player database,
 <hr>
 It is highly recommended to have a look at the documentation for efficient usage tips.
 <hr>
+
+### 2022-12-14: Changes since v0.2
+
+* Support loading bmp files as tilemaps; When the Pixel Art button is clicked, art.bmp will be loaded as a tilemap section at the cursor position. The mapping from color to Supaplex game tile is defined in the configuration xml
 
 ### 2022-11-18: Changes since v0.11
 

@@ -2,7 +2,7 @@
 <!-- Configuration file for Superplexed (https://github.com/kaimitai/superplexed) -->
 <superplexed app_version="0.21" project_folder="./gamedata" undo_history="1000" >
   
-  <!-- map colors to tile numbers for pixel art generation. all tile numbers should be distinct, and no tile number should exceed 40.
+  <!-- map colors to tile numbers for pixel art generation. all tile numbers should be distinct, and no tile number should exceed 40. the following rgb-values are the average of each tile, but can be changed.
        tiles are as follows:
   00-09: "Empty Space", "Zonk", "Base", "Murphy", "Infotron", "RAM Chip - Chip", "Wall", "Exit", "Floppy - Orange", "Port - Right",
   10-19: "Port - Down", "Port - Left", "Port - Up", "Special Port - Right", "Special Port - Down", "Special Port - Left", "Special Port - Up", "Snik Snak", "Floppy - Yellow", "Terminal",

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Superplexed v0.2 - Documentation</title>
+    <title>Superplexed v0.21 - Documentation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -60,7 +60,7 @@
 
                 <hr>
 
-                <header>Superplexed (version 0.2)</header>
+                <header>Superplexed (version 0.21)</header>
 
                 <p>Thank you for checking out <a href="https://github.com/kaimitai/superplexed/">Superplexed</a>. With this tool you will be able to create and alter levels for Supaplex, as well as - with the help of an external bmp file editor - modify the graphics in the game. Check out the various sections of this document for an explanation of the program's functionality.</p>
 
@@ -103,6 +103,10 @@
                 <p>
                     The configuration file can also define a levelset file which will be generated on startup, which can import files from different sources. All level file formats are supported for import, but for dat-levelset files you also need to specify which level number to import. See the <a href="./examples/spconfig.xml">example xml</a>.
                 </p>
+				
+				<p>
+				    The configuration file has a section pixel_art_map which defines a map from colors (rgb-values) to Supaplex tiles (values 0-40). When art.bmp is loaded, its closest color in the map will be found, and the corresponding tile will be inserted.
+				</p>
 
             </section>
 
@@ -148,6 +152,7 @@
                     <li><b>Save/Load xml</b>: Will save or load the current level as an xml file. Hold shift to save/load all levels. Hold Ctrl to load.</li>
                     <li><b>Save/Load SP</b>: Will save or load the current level as an SP file. Hold shift to save/load all levels. Hold Ctrl to load.</li>
                     <li><b>Save bmp</b>: Will save the current level as a 256-color bmp image. Hold shift to save all levels. Output bmp files will indicate medatada properties for the level itself (gravity and freeze zonks), as well as for the special ports - UNLESS the animate ports checkbox is disabled.</li>
+					<li><b>Pixel Art</b>: Will load a 256-color bitmap art.bmp from the project folder, and transform it into a tilemap section at the cursor position. Each pixel will be transformed according to the pixel art configuration in spconfig.xml.</li>
                 </ul>
 
                 <hr>
@@ -245,6 +250,7 @@
                     <br>Ctrl+Y: Redo
                     <br>Tab: Select next special port (wraps around at end), hold Shift to cycle backward
                     <br>Escape: Clear selection rectangle
+					<br>F1: Reload pixel art configuration from spconfig.xml
 
                 </p>
 
@@ -355,6 +361,11 @@
             <hr>
 
             <section class="main-section" id="changelog">
+			
+                <header>2022-12-14: Changes since v0.2</header>
+                <ul>
+                    <li>Support loading bmp files as tilemaps; When the Pixel Art button is clicked, art.bmp will be loaded as a tilemap section at the cursor position. The mapping from color to Supaplex game tile is defined in the configuration xml</li>
+				</ul>
 
                 <header>2022-11-18: Changes since v0.11</header>
                 <ul>
