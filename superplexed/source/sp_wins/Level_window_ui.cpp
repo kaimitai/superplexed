@@ -22,24 +22,6 @@ void Level_window::draw_ui(const Project_gfx& p_gfx, const klib::User_input& p_i
 	draw_ui_gp_win(p_gfx, p_config);
 	if (m_show_stats != -1)
 		draw_ui_statistics(p_gfx);
-	/*
-	// test code for putting the gameboard graphics into a window
-	ImGui::Begin("Gameboard", nullptr, ImGuiWindowFlags_AlwaysHorizontalScrollbar);
-
-	ImVec2 l_wmin = ImGui::GetWindowContentRegionMin();
-	ImVec2 l_wmax = ImGui::GetWindowContentRegionMax();
-
-	float l_win_height = l_wmax.y - l_wmin.y;
-	float l_win_width = l_wmax.x - l_wmin.x;
-
-	int l_tpw = std::max(get_tile_pixel_w(static_cast<int>(l_win_height)), 1);
-	float l_imgpw = static_cast<float>(l_tpw * 60.0f);
-
-	ImGui::Image((void*)(intptr_t)m_texture,
-		ImVec2(l_imgpw, l_win_height));
-
-	ImGui::End();
-	*/
 }
 
 void Level_window::draw_ui_tile_win(const klib::User_input& p_input, SP_Config& p_config, const Project_gfx& p_gfx) {
@@ -317,6 +299,22 @@ void Level_window::draw_ui_level_win(const klib::User_input& p_input, const Proj
 		load_file(SP_Config::SP_file_type::sp, p_config, l_shift);
 	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 		ImGui::SetTooltip(c::TXT_HOLD_CTRL_TO_USE);
+	ImGui::SameLine();
+	if (ImGui::Button(c::PIXEL_ART)) {
+		try {
+			auto l_tiles = p_gfx.generate_tile_art(p_config, c::LEVEL_W - m_sel_x, c::LEVEL_H - m_sel_y);
+			for (std::size_t j{ 0 }; j < l_tiles.size(); ++j)
+				for (std::size_t i{ 0 }; i < l_tiles[j].size(); ++i)
+					set_tile_value(m_sel_x + static_cast<int>(i), m_sel_y + static_cast<int>(j), l_tiles[j][i]);
+			commit_undo_block();
+			p_config.add_message("Loaded pixel art from " + p_config.get_pixel_art_bmp_full_path());
+		}
+		catch (const std::exception& ex) {
+			p_config.add_message(ex.what());
+		}
+	}
+	if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+		ImGui::SetTooltip(c::TXT_PIXEL_ART_TOOLTIP);
 
 	ImGui::End();
 }

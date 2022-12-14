@@ -2,6 +2,7 @@
 #include "./../common/klib/klib_gfx.h"
 #include "./../SP_Constants.h"
 #include <filesystem>
+#include <map>
 #include <stdexcept>
 
 // load a bmp from file, update internal image and regenerate SDL texture
@@ -212,9 +213,9 @@ byte Project_gfx::find_nearest_palette_index(SDL_Color p_color, const SP_Palette
 	for (int i{ 0 }; i < static_cast<int>(p_palette.get_size()); ++i) {
 		SDL_Color col{ sp_color_to_sdl(p_palette.get_color(i)) };
 
-		int dr = col.r - p_color.r;
-		int dg = col.g - p_color.g;
-		int db = col.b - p_color.b;
+		int dr = static_cast<int>(col.r) - static_cast<int>(p_color.r);
+		int dg = static_cast<int>(col.g) - static_cast<int>(p_color.g);
+		int db = static_cast<int>(col.b) - static_cast<int>(p_color.b);
 
 		int l_dist = dr * dr + dg * dg + db * db;
 
@@ -223,6 +224,58 @@ byte Project_gfx::find_nearest_palette_index(SDL_Color p_color, const SP_Palette
 			result = static_cast<byte>(i);
 		}
 	}
+
+	return result;
+}
+
+std::vector<std::vector<byte>> Project_gfx::generate_tile_art(const SP_Config& p_config, int p_w, int p_h) const {
+	std::vector<std::vector<byte>> result;
+	const auto& lr_pixel_art_map{ p_config.get_pixel_art_map() };
+	if (lr_pixel_art_map.size() < 2)
+		throw std::runtime_error("Need to configure at least 2 tiles in the pixel art section of spconfig.xml");
+
+	const auto find_nearest_tile = [&lr_pixel_art_map](SDL_Color p_color) -> byte {
+		int min_distance = 3 * 256 * 256 + 1; // higher than any possible color distance
+		byte result{ 0 };
+
+		for (const auto& kv : lr_pixel_art_map) {
+			SDL_Color l_col{ std::get<0>(kv.first), std::get<1>(kv.first), std::get<2>(kv.first) };
+			int dr = static_cast<int>(p_color.r) - static_cast<int>(l_col.r);
+			int dg = static_cast<int>(p_color.g) - static_cast<int>(l_col.g);
+			int db = static_cast<int>(p_color.b) - static_cast<int>(l_col.b);
+
+			int l_dist = dr * dr + dg * dg + db * db;
+			if (l_dist < min_distance) {
+				min_distance = l_dist;
+				result = kv.second;
+			}
+		}
+
+		return result;
+	};
+
+	std::string l_art_filename{ p_config.get_pixel_art_bmp_full_path() };
+	SDL_Surface* l_bmp{ SDL_LoadBMP(l_art_filename.c_str()) };
+	if (l_bmp == nullptr)
+		throw std::runtime_error("Could not load " + l_art_filename);
+	if (l_bmp->format->BitsPerPixel != 8) {
+		SDL_FreeSurface(l_bmp);
+		throw std::runtime_error("Not a 256-color bitmap: " + l_art_filename);
+	}
+
+	for (int j{ 0 }; j < l_bmp->h && j < p_h; ++j) {
+		std::vector<byte> l_row;
+		for (int i{ 0 }; i < l_bmp->w && i < p_w; ++i) {
+			auto l_palindex(klib::gfx::get_pixel(l_bmp, i, j));
+			SDL_Color l_col{ l_bmp->format->palette->colors[l_palindex] };
+
+			l_row.push_back(find_nearest_tile(l_col));
+		}
+
+		result.push_back(l_row);
+	}
+
+	SDL_FreeSurface(l_bmp);
 
 	return result;
 }

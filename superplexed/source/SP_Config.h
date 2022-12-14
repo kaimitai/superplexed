@@ -2,9 +2,13 @@
 #define SP_CONFIG_H
 
 #include <deque>
+#include <map>
 #include <string>
+#include <tuple>
 #include <vector>
 #include <utility>
+
+using byte = unsigned char;
 
 class SP_Config {
 public:
@@ -33,6 +37,7 @@ public:
 	void add_message(const std::string& p_msg, bool p_prevent_repeat = false);
 	const std::deque<std::string>& get_messages(void) const;
 	const Predefined_levelset& get_predefined_levelset(void) const;
+	const std::map<std::tuple<byte, byte, byte>, byte>& get_pixel_art_map(void) const;
 	bool has_predefined_levelset(void) const;
 
 	static std::string get_default_levels_filename(void);
@@ -80,8 +85,14 @@ public:
 	std::string get_hallfame_full_path(void) const;
 	std::string get_player_db_full_path(void) const;
 
+	// get full path to pixel art bmp-file
+	std::string get_pixel_art_bmp_full_path(void) const;
+
 	// setters
 	void set_project_file(const std::string& p_filename);
+
+	// partial configuration that can be reloaded during runtime
+	void load_pixel_art_config(bool p_add_message = true);
 
 private:
 	// load configuration from xml and initialize the project
@@ -100,6 +111,7 @@ private:
 		m_cf_folder,                  // folder of current file
 		m_cf_lst_extension,           // lst extension for savefiles
 		m_cf_lst_extension_uc;		  // lst extension uppercase, for button labels
+	std::map<std::tuple<byte, byte, byte>, byte> m_pixel_art_map;
 
 	// utility functions
 	static std::string to_uppercase(const std::string& p_input);

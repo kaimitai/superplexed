@@ -1,3 +1,55 @@
 <?xml version="1.0"?>
 <!-- Configuration file for Superplexed (https://github.com/kaimitai/superplexed) -->
-<superplexed app_version="0.2" project_folder="./gamedata" undo_history="1000" />
+<superplexed app_version="0.21" project_folder="./gamedata" undo_history="1000" >
+  
+  <!-- map colors to tile numbers for pixel art generation. all tile numbers should be distinct, and no tile number should exceed 40.
+       tiles are as follows:
+  00-09: "Empty Space", "Zonk", "Base", "Murphy", "Infotron", "RAM Chip - Chip", "Wall", "Exit", "Floppy - Orange", "Port - Right",
+  10-19: "Port - Down", "Port - Left", "Port - Up", "Special Port - Right", "Special Port - Down", "Special Port - Left", "Special Port - Up", "Snik Snak", "Floppy - Yellow", "Terminal",
+  20-29: "Floppy - Red", "Port - Two-Way Vertical", "Port - Two-Way Horizontal", "Port - Four-Way", "Electron", "Bug", "RAM Chip - Left", "RAM Chip - Right", "Hardware 01", "Hardware 02",
+  30-40: "Hardware 03", "Hardware 04", "Hardware 05", "Hardware 06", "Hardware 07", "Hardware 08", "Hardware 09", "Hardware 10", "RAM Chip - Top", "RAM Chip - Bottom", "Invisible Tile" 
+  -->
+  <pixel_art_map>
+    <pixel_art rgb="0,0,0," tile_no="0" />
+	<pixel_art rgb="99,82,89," tile_no="1" />
+	<pixel_art rgb="7,90,151," tile_no="2" />
+	<!--pixel_art rgb="173,13,18," tile_no="3" /-->
+	<pixel_art rgb="41,30,36," tile_no="4" />
+	<pixel_art rgb="108,79,104," tile_no="5" />
+	<pixel_art rgb="133,133,133," tile_no="6" />
+	<pixel_art rgb="207,87,145," tile_no="7" />
+	<pixel_art rgb="139,189,130," tile_no="8" />
+	<pixel_art rgb="123,59,66," tile_no="9" />
+	<pixel_art rgb="123,59,66," tile_no="10" />
+	<pixel_art rgb="123,59,66," tile_no="11" />
+	<pixel_art rgb="123,59,66," tile_no="12" />
+	<pixel_art rgb="123,59,66," tile_no="13" />
+	<pixel_art rgb="123,59,66," tile_no="14" />
+	<pixel_art rgb="123,59,66," tile_no="15" />
+	<pixel_art rgb="123,59,66," tile_no="16" />
+	<pixel_art rgb="52,20,24," tile_no="17" />
+	<pixel_art rgb="137,183,137," tile_no="18" />
+	<pixel_art rgb="91,95,100," tile_no="19" />
+	<pixel_art rgb="137,185,119," tile_no="20" />
+	<pixel_art rgb="128,32,43," tile_no="21" />
+	<pixel_art rgb="128,32,43," tile_no="22" />
+	<pixel_art rgb="133,45,54," tile_no="23" />
+	<pixel_art rgb="17,34,19," tile_no="24" />
+	<pixel_art rgb="7,90,151," tile_no="25" />
+	<pixel_art rgb="113,93,110," tile_no="26" />
+	<pixel_art rgb="108,91,106," tile_no="27" />
+	<pixel_art rgb="49,100,135," tile_no="28" />
+	<pixel_art rgb="98,111,120," tile_no="29" />
+	<pixel_art rgb="112,130,114," tile_no="30" />
+	<pixel_art rgb="128,98,99," tile_no="31" />
+	<pixel_art rgb="115,52,115," tile_no="32" />
+	<pixel_art rgb="59,89,126," tile_no="33" />
+	<pixel_art rgb="82,68,102," tile_no="34" />
+	<pixel_art rgb="75,91,124," tile_no="35" />
+	<pixel_art rgb="73,79,108," tile_no="36" />
+	<pixel_art rgb="88,83,139," tile_no="37" />
+	<pixel_art rgb="113,93,110," tile_no="38" />
+	<pixel_art rgb="108,91,106," tile_no="39" />
+  </pixel_art_map>
+  
+</superplexed>
