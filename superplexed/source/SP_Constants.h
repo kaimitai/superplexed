@@ -3,8 +3,8 @@
 
 namespace c {
 	// application constants
-	constexpr char APP_TITLE[]{ "Superplexed v0.2" };
-	constexpr char APP_VERSION[]{ "0.2" };
+	constexpr char APP_TITLE[]{ "Superplexed v0.21" };
+	constexpr char APP_VERSION[]{ "0.21" };
 	constexpr int APP_WIN_W_INITIAL{ 1024 };
 	constexpr int APP_WIN_H_INITIAL{ 768 };
 	constexpr char FILE_SIGNATURE[]{ "kaimitai@github " };
@@ -36,10 +36,12 @@ namespace c {
 	constexpr char LOAD_LST[]{ "Load LST" };
 	constexpr char LOAD_SP[]{ "Load SP" };
 	constexpr char LOAD_XML[]{ "Load xml" };
+	constexpr char PIXEL_ART[]{ "Pixel Art" };
 
 	// assorted texts used in the applications for labels or parts of strings
 	constexpr char TXT_FILE_OPERATIONS[]{ "File Operations" };
 	constexpr char TXT_HOLD_CTRL_TO_USE[]{ "Hold Ctrl to use this button" };
+	constexpr char TXT_PIXEL_ART_TOOLTIP[]{ "Loads art.bmp and inserts tiles at cursor" };
 
 	// xml tags, attributes and values
 	// configuration XML
@@ -57,6 +59,8 @@ namespace c {
 	constexpr char XML_TAG_GPS[]{ "special_ports" };
 	constexpr char XML_TAG_GP[]{ "special_port" };
 	constexpr char XML_TAG_SOLUTION[]{ "speedfix_solution" };
+	constexpr char XML_TAG_PIXEL_ART_MAP[]{ "pixel_art_map" };
+	constexpr char XML_TAG_PIXEL_ART[]{ "pixel_art" };
 
 	constexpr char XML_TAG_PREDEFINED[]{ "predefined_levelset" };
 	constexpr char XML_TAG_LEVEL_FILE[]{ "level_file" };
@@ -74,6 +78,8 @@ namespace c {
 	constexpr char XML_ATTR_GRAV[]{ "gravity" };
 	constexpr char XML_ATTR_FZ[]{ "freeze_zonks" };
 	constexpr char XML_ATTR_NO[]{ "no" };
+	constexpr char XML_ATTR_TILE_NO[]{ "tile_no" };
+	constexpr char XML_ATTR_RGB[]{ "rgb" };
 	constexpr char XML_ATTR_VALUE[]{ "value" };
 	constexpr char XML_ATTR_SF_V[]{ "speedfix_version" };
 	constexpr char XML_ATTR_SF_DB[]{ "speedfix_demo_bytes" };
@@ -209,6 +215,8 @@ namespace c {
 	constexpr unsigned char TILE_NO_INVISIBLE{ 40 };
 	constexpr unsigned char TILE_NO_PLAYER_START{ 41 };
 
+	// pixel art filename
+	constexpr char FILENAME_PIXEL_ART[]{ "art" };
 	// supaplex dat filenames
 	// leves and level list
 	constexpr char FILENAME_LEVELS[]{ "LEVELS" };

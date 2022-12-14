@@ -175,10 +175,16 @@ std::vector<std::string> Main_window::get_levelset_files(const SP_Config& p_conf
 	for (const auto& ll_file :
 		std::filesystem::directory_iterator(p_config.get_project_folder())) {
 		if (ll_file.is_regular_file()) {
-			std::filesystem::path l_file{ ll_file.path() };
-			std::string l_name{ l_file.filename().string() };
-			if (SP_Config::is_valid_level_filename(l_name))
-				result.push_back(l_name);
+			try {
+				std::filesystem::path l_file{ ll_file.path() };
+				std::string l_name{ l_file.filename().string() };
+				if (SP_Config::is_valid_level_filename(l_name))
+					result.push_back(l_name);
+			}
+			catch (const std::exception&) {
+				// weird filename?
+				continue;
+			}
 		}
 	}
 

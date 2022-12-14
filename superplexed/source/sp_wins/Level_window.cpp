@@ -353,6 +353,8 @@ void Level_window::move(int p_delta_ms, const klib::User_input& p_input, SP_Conf
 		}
 		else if (p_input.is_pressed(SDL_SCANCODE_ESCAPE))
 			clear_selection();
+		else if (p_input.is_pressed(SDL_SCANCODE_F1))
+			p_config.load_pixel_art_config();
 	}
 
 	// handle mouse

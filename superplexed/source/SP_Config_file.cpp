@@ -221,3 +221,7 @@ std::string SP_Config::get_hallfame_full_path(void) const {
 std::string SP_Config::get_player_db_full_path(void) const {
 	return get_full_filepath(m_cf_folder, c::FILENAME_PLAYER, m_cf_lst_extension);
 }
+
+std::string SP_Config::get_pixel_art_bmp_full_path(void) const {
+	return get_full_filepath(m_cf_folder, c::FILENAME_PIXEL_ART, c::SUFFIX_BMP);
+}
